@@ -16,7 +16,7 @@ NC='\033[0m'
 VPS_IP="5.250.190.97"
 DOMAIN="elnopal.es"
 PROJECT_DIR="/var/www/elnopal"
-REPO_URL="https://github.com/TU_USUARIO/elnopal.git"  # ¡CAMBIAR POR TU REPO!
+REPO_URL="https://github.com/yalilms/elnopal.git"  # ¡CAMBIAR POR TU REPO!
 
 print_status() {
     echo -e "${BLUE}[INFO]${NC} $1"
