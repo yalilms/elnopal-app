@@ -1,0 +1,221 @@
+@import '../variables.css';
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--color-gray-100);
+  padding: 20px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-gray-200);
+}
+
+.login-title {
+  font-size: 2rem;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-left: 2.8rem;
+  border: 1px solid #aaaaaa;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333333;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.password-input-container input {
+  padding-right: 3.2rem;
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 155, 155, 0.2);
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666666;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0.6rem;
+  margin: 0;
+  cursor: pointer;
+  color: #666666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  line-height: 1;
+  transition: none !important;
+}
+
+.password-toggle-button:hover,
+.password-toggle-button:focus {
+  color: var(--color-primary) !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  transform: translateY(-50%) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: pointer;
+  transition: none !important;
+}
+
+.password-toggle-button svg {
+  font-size: 1rem;
+  transition: none !important;
+}
+
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.login-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.demo-credentials {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: var(--color-gray-100);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  border: 1px solid var(--color-gray-200);
+}
+
+.demo-credentials h3 {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.demo-credentials p {
+  margin: 0.25rem 0;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    padding: 1.5rem;
+  }
+  
+  .login-title {
+    font-size: 1.75rem;
+  }
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  color: #333333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: var(--transition-normal);
+}
+
+.back-button:hover {
+  color: var(--color-primary);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo {
+  max-width: 250px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  font-size: 1.25rem;
+  color: #333333;
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: rgba(230, 57, 70, 0.1);
+  color: #e63946;
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(230, 57, 70, 0.3);
+} 

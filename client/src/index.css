@@ -1,0 +1,31 @@
+/* Importar variables y fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import './styles/variables.css';
+
+/* Reset y estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-light);
+}
+
+/* Asegurarnos que los estilos del login tengan prioridad sobre otros estilos */
+@import './styles/auth/Login.css';
+
+/* Importar estilos de componentes */
+@import './styles/forms.css';
+@import './styles/ContactForm.css';
+@import './styles/admin/AdminForms.css';
+@import './styles/admin/AdminPanel.css';
+
+/* Estilos para elementos de código */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+} 

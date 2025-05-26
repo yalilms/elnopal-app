@@ -1,0 +1,221 @@
+/* Importar estilos globales de formularios */
+@import '../forms.css';
+
+/* Estilos específicos para formularios de administración */
+.admin-form-container {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  animation: slideDown var(--transition-normal);
+}
+
+.admin-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-form-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin: 0;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+/* Estilos para tablas de administración */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-md) 0;
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-table tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Estilos para filtros y búsqueda */
+.admin-filters {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.admin-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.admin-search input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  transition: all var(--transition-normal);
+}
+
+.admin-search input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Estilos para acciones en línea */
+.row-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.action-btn {
+  padding: var(--spacing-sm);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn.edit {
+  background-color: var(--warning-color);
+  color: var(--text-primary);
+}
+
+.action-btn.delete {
+  background-color: var(--danger-color);
+  color: var(--bg-primary);
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+/* Estilos para modales de administración */
+.admin-modal {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  max-width: 500px;
+  margin: var(--spacing-xl) auto;
+  position: relative;
+  box-shadow: var(--box-shadow-lg);
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-modal-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.admin-modal-close:hover {
+  color: var(--text-primary);
+}
+
+/* Estilos para mensajes de estado */
+.admin-status {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.admin-status.success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+}
+
+.admin-status.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+/* Estilos responsivos específicos */
+@media (max-width: 768px) {
+  .admin-form-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .admin-form-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .admin-form-actions .btn {
+    flex: 1;
+  }
+
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .admin-filters {
+    flex-direction: column;
+  }
+
+  .admin-search {
+    width: 100%;
+  }
+
+  .row-actions {
+    flex-direction: column;
+  }
+}
+
+/* Animaciones específicas */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

@@ -1,0 +1,199 @@
+/* Modal para lista negra - estilos forzados para alta especificidad */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 10000 !important; /* Valor muy alto para estar sobre todo */
+}
+
+.modal-content {
+  background-color: white !important;
+  padding: 2rem !important;
+  border-radius: 8px !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-shadow: 0 5px 30px rgba(0,0,0,0.3) !important;
+  color: #333333 !important;
+  border: 2px solid #dc3545 !important;
+}
+
+.modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+}
+
+.modal-header h3 {
+  margin: 0 !important;
+  color: #dc3545 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+}
+
+.close-button {
+  background: none !important;
+  border: none !important;
+  font-size: 1.25rem !important;
+  color: #666 !important;
+  cursor: pointer !important;
+  padding: 0.5rem !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.close-button:hover {
+  background-color: #f8f9fa !important;
+  color: #dc3545 !important;
+}
+
+.modal-body {
+  color: #333333 !important;
+}
+
+.customer-info {
+  background-color: #f8f9fa !important;
+  padding: 1rem !important;
+  border-radius: 6px !important;
+  margin-bottom: 1.5rem !important;
+  border: 1px solid #e5e5e5 !important;
+}
+
+.customer-info h4 {
+  margin: 0 0 1rem 0 !important;
+  color: #495057 !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+}
+
+.info-row {
+  display: flex !important;
+  margin-bottom: 0.8rem !important;
+  line-height: 1.5 !important;
+}
+
+.info-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+.info-row label {
+  flex: 0 0 100px !important;
+  font-weight: 600 !important;
+  color: #333333 !important;
+}
+
+.info-row span {
+  flex: 1 !important;
+  color: #333333 !important;
+}
+
+.form-group {
+  margin-bottom: 1.5rem !important;
+}
+
+.form-group label {
+  display: block !important;
+  margin-bottom: 0.5rem !important;
+  color: #333333 !important;
+  font-weight: 500 !important;
+}
+
+.form-group textarea {
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #999 !important;
+  border-radius: 4px !important;
+  resize: vertical !important;
+  min-height: 100px !important;
+  font-size: 0.9rem !important;
+  color: #333333 !important;
+  background-color: #ffffff !important;
+}
+
+.form-group textarea:focus {
+  outline: none !important;
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+}
+
+.confirmation-group {
+  background-color: #fff3f4 !important;
+  padding: 1rem !important;
+  border-radius: 6px !important;
+  border: 1px solid #ffdee1 !important;
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.5rem !important;
+  cursor: pointer !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 0.25rem !important;
+}
+
+.checkbox-label span {
+  font-size: 0.9rem !important;
+  color: #333333 !important;
+  line-height: 1.4 !important;
+}
+
+.modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 1rem !important;
+  margin-top: 2rem !important;
+}
+
+.cancel-button,
+.confirm-button {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-button {
+  background-color: #f8f9fa !important;
+  border: 1px solid #ddd !important;
+  color: #495057 !important;
+}
+
+.cancel-button:hover {
+  background-color: #e9ecef !important;
+}
+
+.confirm-button {
+  background-color: #dc3545 !important;
+  border: none !important;
+  color: white !important;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background-color: #c82333 !important;
+}
+
+.confirm-button:disabled {
+  background-color: #e9ecef !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+} 
