@@ -39,6 +39,9 @@ const testReviews = [
 
 // Componente para filtrado de contenido inapropiado
 const ContentWarning = ({ content }) => {
+  // Si no hay contenido, no mostrar warning
+  if (!content || typeof content !== 'string') return null;
+  
   // Lista de palabras o frases prohibidas (puedes ampliarla)
   const badWords = [
     'maldito', 'horrible', 'pésimo', 'asco', 'asqueroso', 
@@ -267,7 +270,7 @@ const AdminReviewsPanel = () => {
             'pendejo', 'estafa', 'fraude', 'denuncia', 'demanda'
           ];
           return badWords.some(word => 
-            review.comentario.toLowerCase().includes(word.toLowerCase())
+            review.comentario && review.comentario.toLowerCase().includes(word.toLowerCase())
           );
         });
       case 'pending':
@@ -279,8 +282,10 @@ const AdminReviewsPanel = () => {
   
   // Determinar si una reseña puede ser problemática
   const isPotentiallyBad = (review) => {
+    if (!review) return false;
+    
     // Si la calificación es baja (1 o 2)
-    if (review.calificacion <= 2) return true;
+    if (review.calificacion && review.calificacion <= 2) return true;
     
     // Si contiene palabras prohibidas
     const badWords = [
@@ -288,6 +293,8 @@ const AdminReviewsPanel = () => {
       'mierda', 'basura', 'puta', 'joder', 'coño', 'verga', 
       'pendejo', 'estafa', 'fraude', 'denuncia', 'demanda'
     ];
+    
+    if (!review.comentario) return false;
     
     return badWords.some(word => 
       review.comentario.toLowerCase().includes(word.toLowerCase())
@@ -364,17 +371,21 @@ const AdminReviewsPanel = () => {
                 onClick={() => setSelectedReview(review)}
               >
                 <div className="review-item-header">
-                  <h4>{review.nombre}</h4>
+                  <h4>{review.nombre || 'Sin nombre'}</h4>
                   <div className="review-rating">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={i < review.calificacion ? 'star filled' : 'star'}>★</span>
+                      <span key={i} className={i < (review.calificacion || 0) ? 'star filled' : 'star'}>★</span>
                     ))}
                   </div>
                 </div>
-                <p className="review-preview">{review.comentario.substring(0, 60)}...</p>
+                <p className="review-preview">
+                  {review.comentario ? review.comentario.substring(0, 60) + '...' : 'Sin comentario'}
+                </p>
                 <div className="review-item-footer">
-                  <span className="review-date">{review.fecha}</span>
-                  <span className={`review-status ${review.status}`}>{review.status === 'reviewed' ? 'Atendida' : 'Pendiente'}</span>
+                  <span className="review-date">{review.fecha || 'Sin fecha'}</span>
+                  <span className={`review-status ${review.status || 'pending'}`}>
+                    {(review.status === 'reviewed') ? 'Atendida' : 'Pendiente'}
+                  </span>
                 </div>
                 {isPotentiallyBad(review) && (
                   <div className="review-warning">⚠️</div>
@@ -388,25 +399,27 @@ const AdminReviewsPanel = () => {
           {selectedReview ? (
             <>
               <div className="review-detail-header">
-                <h3>{selectedReview.nombre}</h3>
+                <h3>{selectedReview.nombre || 'Sin nombre'}</h3>
                 <div className="review-rating">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < selectedReview.calificacion ? 'star filled' : 'star'}>★</span>
+                    <span key={i} className={i < (selectedReview.calificacion || 0) ? 'star filled' : 'star'}>★</span>
                   ))}
                 </div>
               </div>
               
               <div className="review-contact">
-                <p><strong>Email:</strong> {selectedReview.email}</p>
-                <p><strong>Fecha:</strong> {selectedReview.fecha}</p>
-                <p><strong>Estado:</strong> <span className={`status ${selectedReview.status}`}>{selectedReview.status === 'reviewed' ? 'Atendida' : 'Pendiente'}</span></p>
+                <p><strong>Email:</strong> {selectedReview.email || 'No disponible'}</p>
+                <p><strong>Fecha:</strong> {selectedReview.fecha || 'No disponible'}</p>
+                <p><strong>Estado:</strong> <span className={`status ${selectedReview.status || 'pending'}`}>
+                  {(selectedReview.status === 'reviewed') ? 'Atendida' : 'Pendiente'}
+                </span></p>
               </div>
               
               <div className="review-comment">
                 <h4>Comentario:</h4>
-                <p>{selectedReview.comentario}</p>
+                <p>{selectedReview.comentario || 'Sin comentario'}</p>
                 
-                <ContentWarning content={selectedReview.comentario} />
+                <ContentWarning content={selectedReview.comentario || ''} />
               </div>
               
               <div className="review-actions">
