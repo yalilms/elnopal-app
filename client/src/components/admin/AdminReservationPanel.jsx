@@ -2064,6 +2064,41 @@ const AdminReservationPanel = () => {
     return error;
   };
   
+// Modal para nueva reserva telefónica
+const renderNewReservationModal = () => {
+  if (!showNewReservationModal) return null;
+  
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 10000
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '8px',
+        width: '90%',
+        maxWidth: '600px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        position: 'relative',
+        boxShadow: '0 5px 30px rgba(0,0,0,0.3)',
+        color: '#333333',
+        border: '2px solid #009B9B'
+      }}>
+        {renderNewReservationForm()}
+      </div>
+    </div>
+  );
+}; 
   // Modal para detalles de reserva
   const renderDetailsModal = () => {
     if (!showDetailsModal || !selectedReservation) return null;
