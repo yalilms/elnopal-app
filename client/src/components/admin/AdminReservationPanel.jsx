@@ -4,9 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { getTimeSlotsForDay } from '../../data/tablesData';
 import { useAuth } from '../../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes, faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
+import CancelReservationModal from './CancelReservationModal';
 import '../../styles/admin/BlacklistModal.css';
 import { addToBlacklist, getBlacklist, removeFromBlacklist } from '../../services/reservationService';
 import BlacklistManagement from './BlacklistManagement';
@@ -35,11 +36,18 @@ const AdminReservationPanel = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [isCreatingReservation, setIsCreatingReservation] = useState(false);
   const [showBlacklistModal, setShowBlacklistModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [adminFormAvailableSlots, setAdminFormAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [blacklistEntries, setBlacklistEntries] = useState([]);
+  
+  // Nuevos estados para validación
+  const [newFormErrors, setNewFormErrors] = useState({});
+  const [newFormTouched, setNewFormTouched] = useState({});
+  const [editFormErrors, setEditFormErrors] = useState({});
+  const [editFormTouched, setEditFormTouched] = useState({});
   
   const formatDateToDDMMYYYY = (dateString) => {
     if (!dateString || typeof dateString !== 'string') {
@@ -131,6 +139,7 @@ const AdminReservationPanel = () => {
     date: '',
     time: '',
     partySize: '',
+    tableId: '', // Agregar tableId para edición
     tableIds: [],
     specialRequests: '',
     needsBabyCart: false,
@@ -278,6 +287,7 @@ const AdminReservationPanel = () => {
       date: selectedReservation.date,
       time: selectedReservation.time,
       partySize: selectedReservation.partySize,
+      tableId: selectedReservation.table?._id || selectedReservation.table || '', // Mesa principal
       tableIds: selectedReservation.tableIds || [],
       specialRequests: selectedReservation.specialRequests || '',
       needsBabyCart: selectedReservation.needsBabyCart || false,
@@ -322,24 +332,98 @@ const AdminReservationPanel = () => {
   // Manejar cambios en el formulario de edición
   const handleEditFormChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    
     setEditForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     }));
+    
+    // Si el campo ya fue tocado, validar en tiempo real
+    if (editFormTouched[name]) {
+      const error = validateField(name, newValue);
+      setEditFormErrors(prev => ({ ...prev, [name]: error }));
+    }
   };
   
   // Manejar cambios en el formulario de nueva reserva
   const handleNewReservationFormChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    
     setNewReservationForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     }));
+    
+    // Si el campo ya fue tocado, validar en tiempo real
+    if (newFormTouched[name]) {
+      const error = validateField(name, newValue);
+      setNewFormErrors(prev => ({ ...prev, [name]: error }));
+    }
   };
   
-  // Guardar cambios en la reserva
+  // Validar formulario de nueva reserva completo
+  const validateNewReservationForm = () => {
+    const errors = {};
+    const requiredFields = ['name', 'phone', 'date', 'time', 'partySize'];
+    
+    requiredFields.forEach(field => {
+      const error = validateField(field, newReservationForm[field]);
+      if (error) errors[field] = error;
+    });
+    
+    // Validar email si se proporciona
+    if (newReservationForm.email) {
+      const emailError = validateField('email', newReservationForm.email);
+      if (emailError) errors.email = emailError;
+    }
+    
+    // Validar peticiones especiales
+    const specialError = validateField('specialRequests', newReservationForm.specialRequests);
+    if (specialError) errors.specialRequests = specialError;
+    
+    setNewFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  
+  // Validar formulario de edición completo
+  const validateEditForm = () => {
+    const errors = {};
+    const requiredFields = ['name', 'phone', 'date', 'time', 'partySize'];
+    
+    requiredFields.forEach(field => {
+      const error = validateField(field, editForm[field]);
+      if (error) errors[field] = error;
+    });
+    
+    // Validar email
+    const emailError = validateField('email', editForm.email);
+    if (emailError) errors.email = emailError;
+    
+    // Validar peticiones especiales
+    const specialError = validateField('specialRequests', editForm.specialRequests);
+    if (specialError) errors.specialRequests = specialError;
+    
+    setEditFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  
+  // Guardar cambios en la reserva con validación mejorada
   const handleSaveEdit = () => {
     if (!selectedReservation) return;
+    
+    // Marcar todos los campos como tocados
+    const allFields = Object.keys(editForm);
+    const touchedState = {};
+    allFields.forEach(field => touchedState[field] = true);
+    setEditFormTouched(touchedState);
+    
+    // Validar formulario
+    if (!validateEditForm()) {
+      toast.error('Por favor, corrige los errores marcados en el formulario');
+      return;
+    }
     
     // Cancelar reserva actual
     cancelReservation(selectedReservation.id);
@@ -347,7 +431,6 @@ const AdminReservationPanel = () => {
     // Crear nueva reserva con datos actualizados
     const updatedReservation = {
       ...editForm,
-      // Asegurar que la fecha esté en formato DD/MM/YYYY
       date: editForm.date.includes('/') ? editForm.date : formatDateToDDMMYYYY(editForm.date),
       createdAt: new Date().toISOString()
     };
@@ -359,18 +442,28 @@ const AdminReservationPanel = () => {
     setSelectedReservation(newReservation);
     setIsEditing(false);
     
-    alert('Reserva actualizada correctamente');
+    // Limpiar estados de validación
+    setEditFormErrors({});
+    setEditFormTouched({});
+    
+    toast.success('Reserva actualizada correctamente');
   };
   
-  // Crear nueva reserva telefónica
+  // Crear nueva reserva telefónica con validación mejorada
   const handleCreateReservation = (e) => {
     e.preventDefault();
     
+    // Marcar todos los campos como tocados
+    const requiredFields = ['name', 'phone', 'date', 'time', 'partySize'];
+    const touchedState = {};
+    requiredFields.forEach(field => touchedState[field] = true);
+    if (newReservationForm.email) touchedState.email = true;
+    if (newReservationForm.specialRequests) touchedState.specialRequests = true;
+    setNewFormTouched(touchedState);
+    
     // Validar formulario
-    if (!newReservationForm.name || !newReservationForm.phone || 
-        !newReservationForm.date || !newReservationForm.time || 
-        !newReservationForm.partySize || !newReservationForm.tableId) {
-      alert('Por favor complete todos los campos obligatorios');
+    if (!validateNewReservationForm()) {
+      toast.error('Por favor, corrige los errores marcados en el formulario');
       return;
     }
     
@@ -382,7 +475,7 @@ const AdminReservationPanel = () => {
       date: formatDateToDDMMYYYY(newReservationForm.date),
       time: newReservationForm.time,
       partySize: newReservationForm.partySize,
-      tableIds: [newReservationForm.tableId],
+      ...(newReservationForm.tableId && { tableId: newReservationForm.tableId }),
       specialRequests: newReservationForm.specialRequests,
       needsBabyCart: newReservationForm.needsBabyCart,
       needsWheelchair: newReservationForm.needsWheelchair,
@@ -391,20 +484,22 @@ const AdminReservationPanel = () => {
       channel: 'telefónica'
     };
     
-    // Obtener información de la mesa para el nombre
-    const selectedTable = tables.find(t => t.id === newReservationForm.tableId);
-    if (selectedTable) {
-      newReservation.tableName = selectedTable.number;
+    // Obtener información de la mesa para el nombre (solo si se seleccionó)
+    if (newReservationForm.tableId) {
+      const selectedTable = tables.find(t => t.id === newReservationForm.tableId);
+      if (selectedTable) {
+        newReservation.tableName = selectedTable.number;
+      }
     }
     
     // Realizar la reserva
     const id = makeReservation(newReservation);
     
     if (id) {
-      alert('Reserva telefónica creada correctamente');
+      toast.success('Reserva telefónica creada correctamente');
       setIsCreatingReservation(false);
       
-      // Limpiar el formulario
+      // Limpiar el formulario y estados de validación
       setNewReservationForm({
         name: '',
         email: '',
@@ -417,7 +512,25 @@ const AdminReservationPanel = () => {
         needsBabyCart: false,
         needsWheelchair: false
       });
+      setNewFormErrors({});
+      setNewFormTouched({});
     }
+  };
+  
+  // Validar si el formulario de nueva reserva está completo
+  const isNewReservationFormValid = () => {
+    const requiredFields = ['name', 'phone', 'date', 'time', 'partySize'];
+    const hasRequiredFields = requiredFields.every(field => newReservationForm[field]);
+    const hasNoErrors = Object.keys(newFormErrors).every(key => !newFormErrors[key]);
+    return hasRequiredFields && hasNoErrors;
+  };
+  
+  // Validar si el formulario de edición está completo
+  const isEditFormValid = () => {
+    const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'partySize'];
+    const hasRequiredFields = requiredFields.every(field => editForm[field]);
+    const hasNoErrors = Object.keys(editFormErrors).every(key => !editFormErrors[key]);
+    return hasRequiredFields && hasNoErrors;
   };
   
   // Función para manejar no-show
@@ -434,25 +547,35 @@ const AdminReservationPanel = () => {
     setShowBlacklistModal(true);
   };
 
-  // Función para cancelar una reservación
+  // Función para cancelar una reservación con modal
   const handleCancelReservation = async (reservationId) => {
-    if (window.confirm('¿Estás seguro de que quieres cancelar esta reservación?')) {
-      try {
-        setLoading(true);
-        
-        await cancelReservation(reservationId, 'Cancelada por administrador');
-        
-        // Recargar datos
-        await loadData();
-        
-        toast.success('Reservación cancelada exitosamente');
-        setSelectedReservation(null);
-      } catch (error) {
-        console.error('Error al cancelar reservación:', error);
-        toast.error('Error al cancelar la reservación: ' + error.message);
-      } finally {
-        setLoading(false);
-      }
+    const reservation = reservations.find(r => r.id === reservationId);
+    if (reservation) {
+      setSelectedReservation(reservation);
+      setShowCancelModal(true);
+    }
+  };
+
+  // Confirmar cancelación con motivo
+  const handleConfirmCancellation = async (reason) => {
+    if (!selectedReservation) return;
+
+    try {
+      setLoading(true);
+      
+      await cancelReservation(selectedReservation.id, reason);
+      
+      // Recargar datos
+      await loadData();
+      
+      toast.success('Reservación cancelada exitosamente');
+      setSelectedReservation(null);
+      setShowCancelModal(false);
+    } catch (error) {
+      console.error('Error al cancelar reservación:', error);
+      toast.error('Error al cancelar la reservación: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -809,14 +932,13 @@ const AdminReservationPanel = () => {
                 fontSize: '0.95rem' 
               }}
             >
-              Mesa: *
+              Mesa:
             </label>
             <select
               id="tableId"
               name="tableId"
               value={newReservationForm.tableId}
               onChange={handleNewReservationFormChange}
-              required
               disabled={!newReservationForm.time || !newReservationForm.partySize}
               style={{
                 width: '100%',
@@ -837,13 +959,21 @@ const AdminReservationPanel = () => {
                 opacity: !newReservationForm.time || !newReservationForm.partySize ? 0.7 : 1
               }}
             >
-              <option value="" style={{ color: '#333333' }}>Seleccionar mesa</option>
+              <option value="">🤖 Asignación automática (recomendado)</option>
               {availableTables.map(table => (
                 <option key={table.id} value={table.id} style={{ color: '#333333' }}>
-                  Mesa {table.number} - {table.capacity} personas
+                  Mesa {table.number} - {table.capacity} personas ({table.location})
                 </option>
               ))}
             </select>
+            <p style={{
+              color: '#666',
+              fontSize: '0.85rem',
+              marginTop: '0.5rem',
+              fontStyle: 'italic'
+            }}>
+              💡 La asignación automática usa las reglas del restaurante: mesas 2-10 para 1-3 personas, 11-18 para 4-5 personas, mesas juntas para grupos grandes
+            </p>
             {newReservationForm.time && newReservationForm.partySize && availableTables.length === 0 && (
               <p style={{
                 color: '#dc3545',
@@ -1057,17 +1187,6 @@ const AdminReservationPanel = () => {
               <span>Canceladas</span>
               <span className="filter-count">{dayStats.cancelled}</span>
             </button>
-            
-            {dayStats.noShow > 0 && (
-              <button 
-                className={`filter-tab no-show ${filterStatus === 'no-show' ? 'active' : ''}`}
-                onClick={() => setFilterStatus('no-show')}
-              >
-                <FontAwesomeIcon icon={faUserTimes} />
-                <span>No Show</span>
-                <span className="filter-count">{dayStats.noShow}</span>
-              </button>
-            )}
           </div>
         </div>
         
@@ -1429,6 +1548,60 @@ const AdminReservationPanel = () => {
                 boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
               }}
             />
+          </div>
+          
+          {/* SELECTOR DE MESAS PARA EDICIÓN */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-tableId" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Mesa:
+            </label>
+            <select
+              id="edit-tableId"
+              name="tableId"
+              value={editForm.tableId || ''}
+              onChange={handleEditFormChange}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                appearance: 'none',
+                backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 1rem center',
+                backgroundSize: '16px',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="">Sin mesa asignada (asignación automática)</option>
+              {tables && tables.map(table => (
+                <option key={table._id} value={table._id}>
+                  Mesa {table.number} - {table.capacity} personas ({table.location})
+                </option>
+              ))}
+            </select>
+            <p style={{
+              color: '#666',
+              fontSize: '0.85rem',
+              marginTop: '0.5rem',
+              fontStyle: 'italic'
+            }}>
+              💡 Deja "Sin mesa asignada" para usar asignación automática según las reglas del restaurante
+            </p>
           </div>
           
           <div style={{ marginBottom: '1.5rem' }}>
@@ -1816,6 +1989,76 @@ const AdminReservationPanel = () => {
     }
   };
 
+  // Función para validar campos individuales
+  const validateField = (name, value) => {
+    let error = '';
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'El nombre es obligatorio';
+        } else if (value.trim().length < 2) {
+          error = 'El nombre debe tener al menos 2 caracteres';
+        } else if (value.trim().length > 50) {
+          error = 'El nombre no puede tener más de 50 caracteres';
+        } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value.trim())) {
+          error = 'El nombre solo puede contener letras y espacios';
+        }
+        break;
+        
+      case 'phone':
+        if (!value.trim()) {
+          error = 'El teléfono es obligatorio';
+        } else if (!/^[+]?[\d\s-()]{9,15}$/.test(value.replace(/\s/g, ''))) {
+          error = 'Introduce un teléfono válido (mínimo 9 dígitos)';
+        }
+        break;
+        
+      case 'email':
+        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = 'Introduce un email válido (ejemplo@correo.com)';
+        }
+        break;
+        
+      case 'date':
+        if (!value) {
+          error = 'La fecha es obligatoria';
+        } else {
+          const selectedDate = new Date(value);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (selectedDate < today) {
+            error = 'No se pueden hacer reservas para fechas pasadas';
+          }
+        }
+        break;
+        
+      case 'time':
+        if (!value) {
+          error = 'La hora es obligatoria';
+        }
+        break;
+        
+      case 'partySize':
+        if (!value) {
+          error = 'El número de personas es obligatorio';
+        } else if (parseInt(value) > 8) {
+          error = 'Para grupos de más de 8 personas, contacta directamente';
+        }
+        break;
+        
+      case 'specialRequests':
+        if (value && value.length > 500) {
+          error = 'Las peticiones especiales no pueden tener más de 500 caracteres';
+        }
+        break;
+    }
+    
+    return error;
+  };
+  
+  // Función para obtener el estilo del campo según su estado
   return (
     <div className="admin-reservation-panel">
       <div className="panel-header">
@@ -1932,16 +2175,6 @@ const AdminReservationPanel = () => {
                 </div>
               </div>
               
-              <div className="stat-card no-show">
-                <div className="stat-icon">
-                  <FontAwesomeIcon icon={faUserTimes} />
-                </div>
-                <div className="stat-content">
-                  <span className="stat-number">{dayStats.noShow}</span>
-                  <span className="stat-label">No se presentaron</span>
-                </div>
-              </div>
-              
               <div className="stat-card guests">
                 <div className="stat-icon">
                   <FontAwesomeIcon icon={faUsers} />
@@ -1959,16 +2192,6 @@ const AdminReservationPanel = () => {
                 <div className="stat-content">
                   <span className="stat-number">{dayStats.occupancyRate}%</span>
                   <span className="stat-label">Ocupación</span>
-                </div>
-              </div>
-              
-              <div className="stat-card popular-time">
-                <div className="stat-icon">
-                  <FontAwesomeIcon icon={faClock} />
-                </div>
-                <div className="stat-content">
-                  <span className="stat-number">{dayStats.mostPopularTime}</span>
-                  <span className="stat-label">Hora popular</span>
                 </div>
               </div>
             </div>
@@ -2017,6 +2240,14 @@ const AdminReservationPanel = () => {
           customer={selectedCustomer}
           onAddToBlacklist={handleAddToBlacklist}
           reservationId={selectedReservation?.id}
+        />
+      )}
+      {showCancelModal && (
+        <CancelReservationModal
+          isOpen={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          reservationData={selectedReservation}
+          onConfirm={handleConfirmCancellation}
         />
       )}
     </div>

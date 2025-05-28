@@ -268,32 +268,87 @@ const BlacklistModal = ({ isOpen, onClose, customer, onAddToBlacklist, reservati
             <div style={{
               marginBottom: '1.5rem',
               backgroundColor: '#fff3f4',
-              padding: '1rem',
-              borderRadius: '6px',
-              border: '1px solid #ffdee1'
+              padding: '1.2rem',
+              borderRadius: '8px',
+              border: '2px solid #ffdee1',
+              boxShadow: '0 2px 4px rgba(220, 53, 69, 0.1)'
             }}>
-              <label style={{
+              <div style={{
                 display: 'flex',
-                alignItems: 'flex-start',
-                gap: '0.5rem',
-                cursor: 'pointer'
-              }}>
+                alignItems: 'center',
+                gap: '1rem',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
+              onClick={() => !isSubmitting && setConfirmationChecked(!confirmationChecked)}
+              >
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  border: `3px solid ${confirmationChecked ? '#dc3545' : '#ccc'}`,
+                  borderRadius: '4px',
+                  backgroundColor: confirmationChecked ? '#dc3545' : 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s ease',
+                  flexShrink: 0,
+                  cursor: 'pointer'
+                }}>
+                  {confirmationChecked && (
+                    <span style={{
+                      color: 'white',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                      lineHeight: 1
+                    }}>
+                      ✓
+                    </span>
+                  )}
+                </div>
                 <input
                   type="checkbox"
                   checked={confirmationChecked}
                   onChange={(e) => setConfirmationChecked(e.target.checked)}
                   disabled={isSubmitting}
-                  style={{ marginTop: '0.25rem' }}
+                  style={{ display: 'none' }}
                 />
-                <span style={{
-                  fontSize: '0.9rem',
-                  color: '#333333',
-                  lineHeight: '1.4'
+                <div>
+                  <div style={{
+                    fontSize: '1rem',
+                    color: '#dc3545',
+                    fontWeight: 'bold',
+                    marginBottom: '0.3rem'
+                  }}>
+                    ⚠️ Confirmación Requerida
+                  </div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    color: '#333333',
+                    lineHeight: '1.4'
+                  }}>
+                    Confirmo que deseo añadir a este cliente a la lista negra. 
+                    Entiendo que esto impedirá que realice futuras reservas en el sistema.
+                  </div>
+                </div>
+              </div>
+              
+              {!confirmationChecked && (
+                <div style={{
+                  marginTop: '0.8rem',
+                  padding: '0.6rem',
+                  backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                  borderRadius: '4px',
+                  fontSize: '0.85rem',
+                  color: '#856404',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
                 }}>
-                  Confirmo que deseo añadir a este cliente a la lista negra. Entiendo que
-                  esto impedirá que realice futuras reservas.
-                </span>
-              </label>
+                  <span>💡</span>
+                  Marca la casilla de confirmación para continuar
+                </div>
+              )}
             </div>
 
             <div style={{
