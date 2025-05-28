@@ -84,6 +84,20 @@ exports.createReservation = async (req, res) => {
       }
     }
 
+    // CALCULAR CAMPOS REQUERIDOS PARA EL ESQUEMA
+    // Convertir tiempo a minutos desde medianoche
+    const [hours, minutes] = time.split(':').map(Number);
+    const timeInMinutes = hours * 60 + minutes;
+
+    // Duración por defecto de 90 minutos (1.5 horas)
+    const duration = 90;
+    const endTimeInMinutes = timeInMinutes + duration;
+    
+    // Calcular hora de finalización
+    const endHours = Math.floor(endTimeInMinutes / 60) % 24;
+    const endMins = endTimeInMinutes % 60;
+    const endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
+
     // Crear la reserva con la estructura correcta
     const reservation = new Reservation({
       customer: {
@@ -93,6 +107,10 @@ exports.createReservation = async (req, res) => {
       },
       date: new Date(date),
       time,
+      timeInMinutes, // Campo requerido
+      duration,
+      endTime, // Campo requerido  
+      endTimeInMinutes, // Campo requerido
       partySize: parseInt(partySize),
       table: tableId || null,
       specialRequests: specialRequests?.trim() || '',
