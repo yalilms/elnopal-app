@@ -72,9 +72,49 @@ exports.createReservation = async (req, res) => {
       return res.status(400).json({ message: 'Formato de email inválido' });
     }
 
-    // Validar que la mesa exista si se proporciona tableId
-    if (tableId) {
-      const table = await Table.findById(tableId);
+    // ⏰ VALIDACIÓN: Máximo 30 minutos antes de la hora solicitada
+    const reservationDateTime = new Date(`${date}T${time}:00`);
+    const now = new Date();
+    const timeDifferenceInMinutes = (reservationDateTime - now) / (1000 * 60);
+
+    if (timeDifferenceInMinutes < 30) {
+      return res.status(400).json({ 
+        message: 'Las reservas deben realizarse con al menos 30 minutos de anticipación. Para reservas inmediatas, por favor llama al restaurante.' 
+      });
+    }
+
+    let assignedTableId = tableId;
+
+    // 🔍 ASIGNACIÓN AUTOMÁTICA DE MESAS si no se proporciona tableId
+    if (!tableId) {
+      console.log(`🔍 Buscando mesa automática para ${partySize} personas...`);
+      
+      try {
+        // Buscar mesas disponibles según el tamaño del grupo
+        const availableTables = await Table.getAvailableTables(date, time, partySize);
+        
+        if (availableTables.length > 0) {
+          // Seleccionar la mesa más adecuada (la de menor capacidad que sea suficiente)
+          const bestTable = availableTables[0];
+          assignedTableId = bestTable._id;
+          console.log(`✅ Mesa asignada automáticamente: Mesa ${bestTable.number} (capacidad: ${bestTable.capacity})`);
+        } else {
+          console.log('❌ No hay mesas disponibles para asignación automática');
+          return res.status(409).json({ 
+            message: 'No hay mesas disponibles para el horario solicitado. Por favor, prueba con otro horario o llama al restaurante para consultar disponibilidad.'
+          });
+        }
+      } catch (error) {
+        console.error('Error en asignación automática de mesas:', error);
+        return res.status(500).json({ 
+          message: 'Error al verificar disponibilidad de mesas. Por favor, intenta de nuevo.'
+        });
+      }
+    }
+
+    // Validar que la mesa exista si se proporciona o se asignó automáticamente
+    if (assignedTableId) {
+      const table = await Table.findById(assignedTableId);
       if (!table) {
         return res.status(404).json({ message: 'Mesa no encontrada' });
       }
@@ -112,7 +152,7 @@ exports.createReservation = async (req, res) => {
       endTime, // Campo requerido  
       endTimeInMinutes, // Campo requerido
       partySize: parseInt(partySize),
-      table: tableId || null,
+      table: assignedTableId, // Usar la mesa asignada (manual o automática)
       specialRequests: specialRequests?.trim() || '',
       needsBabyCart: needsBabyCart || false,
       needsWheelchair: needsWheelchair || false,
@@ -123,8 +163,8 @@ exports.createReservation = async (req, res) => {
     await reservation.save();
 
     // Actualizar estado de la mesa si se asignó una
-    if (tableId) {
-      await Table.findByIdAndUpdate(tableId, { 
+    if (assignedTableId) {
+      await Table.findByIdAndUpdate(assignedTableId, { 
         status: 'reserved',
         currentReservation: reservation._id
       });
