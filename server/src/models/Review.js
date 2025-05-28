@@ -49,6 +49,17 @@ const reviewSchema = new mongoose.Schema({
   notificationEmailSentAt: {
     type: Date
   },
+  // Campos para respuesta del administrador
+  adminResponse: {
+    type: String,
+    trim: true
+  },
+  adminResponseDate: {
+    type: Date
+  },
+  adminResponseBy: {
+    type: String
+  },
   imagen: {
     type: String,
     default: function() {

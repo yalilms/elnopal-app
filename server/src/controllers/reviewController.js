@@ -263,4 +263,74 @@ exports.getReviewStats = async (req, res) => {
       error: error.message 
     });
   }
+};
+
+// Responder a una opinión
+exports.respondToReview = async (req, res) => {
+  try {
+    const { response } = req.body;
+    const reviewId = req.params.id;
+
+    if (!response || response.trim().length === 0) {
+      return res.status(400).json({ 
+        message: 'La respuesta es obligatoria' 
+      });
+    }
+
+    // Buscar la opinión
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: 'Opinión no encontrada' });
+    }
+
+    // Actualizar la opinión con la respuesta
+    review.adminResponse = response.trim();
+    review.adminResponseDate = new Date();
+    review.adminResponseBy = req.user?.id || req.user?._id || 'admin';
+    review.status = 'reviewed'; // Marcar como revisada
+    
+    await review.save();
+
+    // Enviar email de respuesta al cliente
+    try {
+      const emailService = require('../services/emailService');
+      
+      // Crear datos para el email de respuesta
+      const responseData = {
+        name: review.name,
+        email: review.email,
+        rating: review.rating,
+        originalComment: review.comment,
+        adminResponse: response.trim(),
+        restaurantName: 'El Nopal Restaurant'
+      };
+
+      // Aquí podrías crear una nueva función en emailService para respuestas
+      // Por ahora, usar el email de agradecimiento modificado
+      await emailService.sendReviewEmails({
+        name: review.name,
+        email: review.email,
+        rating: review.rating,
+        comment: review.comment,
+        adminResponse: response.trim()
+      });
+
+      console.log('Email de respuesta enviado exitosamente');
+    } catch (emailError) {
+      console.error('Error enviando email de respuesta:', emailError);
+      // No fallar la respuesta por error de correo
+    }
+
+    res.json({
+      success: true,
+      message: 'Respuesta enviada exitosamente al cliente',
+      review: review.toAdminJSON()
+    });
+  } catch (error) {
+    console.error('Error al responder opinión:', error);
+    res.status(500).json({ 
+      message: 'Error al enviar respuesta', 
+      error: error.message 
+    });
+  }
 }; 

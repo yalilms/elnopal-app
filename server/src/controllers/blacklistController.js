@@ -84,6 +84,8 @@ exports.checkBlacklist = async (req, res) => {
   try {
     const { email, phone } = req.query;
 
+    console.log('Verificando blacklist para:', { email, phone });
+
     if (!email && !phone) {
       return res.status(400).json({
         message: 'Se requiere email o teléfono para la verificación'
@@ -103,15 +105,22 @@ exports.checkBlacklist = async (req, res) => {
       query.customerPhone = phone;
     }
 
+    console.log('Query de búsqueda blacklist:', query);
+
     const blacklistEntry = await Blacklist.findOne(query);
+    
+    console.log('Resultado blacklist:', { isBlacklisted: !!blacklistEntry, entry: blacklistEntry });
 
     res.json({
       isBlacklisted: !!blacklistEntry,
-      entry: blacklistEntry
+      entry: blacklistEntry,
+      message: blacklistEntry ? 'Cliente en lista negra' : 'Cliente no está en lista negra'
     });
   } catch (error) {
+    console.error('Error al verificar lista negra:', error);
     res.status(500).json({
-      message: 'Error al verificar lista negra'
+      message: 'Error al verificar lista negra',
+      error: error.message
     });
   }
 };

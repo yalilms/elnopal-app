@@ -13,20 +13,16 @@ const blacklistValidation = [
   body('reservationId').notEmpty().withMessage('El ID de la reserva es requerido')
 ];
 
-// Aplicar middleware de autenticación y autorización a todas las rutas
+// Ruta pública para verificar lista negra (usada durante reservas)
+router.get('/check', blacklistController.checkBlacklist);
+
+// Aplicar middleware de autenticación y autorización a las demás rutas
 router.use(authenticateJWT);
 router.use(authorize(['admin']));
 
-// Añadir cliente a la lista negra
+// Rutas protegidas de administración
 router.post('/', blacklistValidation, blacklistController.addToBlacklist);
-
-// Verificar si un cliente está en la lista negra
-router.get('/check', blacklistController.checkBlacklist);
-
-// Obtener todas las entradas de la lista negra
 router.get('/', blacklistController.getBlacklist);
-
-// Remover cliente de la lista negra
 router.delete('/:id', blacklistController.removeFromBlacklist);
 
 module.exports = router; 
