@@ -55,6 +55,18 @@ const ReservationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Table'
   },
+  // Campo para reservas de grupo (múltiples mesas)
+  groupReservation: {
+    isGroup: {
+      type: Boolean,
+      default: false
+    },
+    tableIds: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Table'
+    }],
+    tableNumbers: [Number]
+  },
   specialRequests: {
     type: String,
     trim: true

@@ -119,29 +119,114 @@ TableSchema.statics.getAvailableTables = async function(date, time, partySize) {
 TableSchema.statics.initializeDefaultTables = async function() {
   const count = await this.countDocuments();
   if (count === 0) {
-    const defaultTables = [
-      // Mesas de 2 personas
-      { number: 1, capacity: 2, minGuests: 1, maxGuests: 3, location: 'window' },
-      { number: 2, capacity: 2, minGuests: 1, maxGuests: 3, location: 'window' },
-      { number: 3, capacity: 2, minGuests: 1, maxGuests: 3, location: 'center' },
-      { number: 4, capacity: 2, minGuests: 1, maxGuests: 3, location: 'center' },
-      
-      // Mesas de 4 personas
-      { number: 5, capacity: 4, minGuests: 3, maxGuests: 5, location: 'window' },
-      { number: 6, capacity: 4, minGuests: 3, maxGuests: 5, location: 'window' },
-      { number: 7, capacity: 4, minGuests: 3, maxGuests: 5, location: 'center' },
-      { number: 8, capacity: 4, minGuests: 3, maxGuests: 5, location: 'center' },
-      
-      // Mesas de 6 personas
-      { number: 9, capacity: 6, minGuests: 5, maxGuests: 7, location: 'corner' },
-      { number: 10, capacity: 6, minGuests: 5, maxGuests: 7, location: 'corner' },
-      
-      // Mesas de 8 personas
-      { number: 11, capacity: 8, minGuests: 6, maxGuests: 10, location: 'private' },
-      { number: 12, capacity: 8, minGuests: 6, maxGuests: 10, location: 'outdoor' }
-    ];
+    const defaultTables = [];
+    
+    // Mesa 1 - NO RESERVABLE (barra o uso especial)
+    defaultTables.push({ 
+      number: 1, 
+      capacity: 2, 
+      minGuests: 1, 
+      maxGuests: 2, 
+      location: 'bar', 
+      isActive: false, // No reservable
+      notes: 'Mesa no disponible para reservas' 
+    });
+
+    // Mesas 2-10: Para 1-3 personas (primera prioridad para grupos pequeños)
+    for (let i = 2; i <= 10; i++) {
+      defaultTables.push({
+        number: i,
+        capacity: i <= 6 ? 2 : 4, // 2-6 son mesas de 2, 7-10 son de 4
+        minGuests: 1,
+        maxGuests: 3,
+        location: i <= 4 ? 'window' : 'center'
+      });
+    }
+
+    // Mesas 11-18: Para 4-5 personas
+    for (let i = 11; i <= 18; i++) {
+      defaultTables.push({
+        number: i,
+        capacity: 4,
+        minGuests: 3,
+        maxGuests: 5,
+        location: i <= 14 ? 'center' : 'corner'
+      });
+    }
+
+    // Mesa 19 - NO RESERVABLE
+    defaultTables.push({ 
+      number: 19, 
+      capacity: 6, 
+      minGuests: 1, 
+      maxGuests: 6, 
+      location: 'private', 
+      isActive: false, // No reservable
+      notes: 'Mesa no disponible para reservas' 
+    });
+
+    // Mesas 20-29: Para grupos más grandes (4-8 personas)
+    // Mesas 20-21: Grupo para 6-7 personas
+    defaultTables.push({
+      number: 20,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'center'
+    });
+    defaultTables.push({
+      number: 21,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'center'
+    });
+
+    // Mesas 22-23: Grupo para 6-8 personas
+    defaultTables.push({
+      number: 22,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'corner'
+    });
+    defaultTables.push({
+      number: 23,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'corner'
+    });
+
+    // Mesas 24-25: Grupo para 6-8 personas
+    defaultTables.push({
+      number: 24,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'outdoor'
+    });
+    defaultTables.push({
+      number: 25,
+      capacity: 6,
+      minGuests: 4,
+      maxGuests: 8,
+      location: 'outdoor'
+    });
+
+    // Mesas 26-29: Para 4-5 personas (orden inverso según especificación)
+    for (let i = 26; i <= 29; i++) {
+      defaultTables.push({
+        number: i,
+        capacity: 4,
+        minGuests: 3,
+        maxGuests: 5,
+        location: 'window'
+      });
+    }
     
     await this.insertMany(defaultTables);
+    console.log('✅ 29 mesas inicializadas correctamente');
     return true;
   }
   return false;

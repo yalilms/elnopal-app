@@ -1,6 +1,7 @@
 const Reservation = require('../models/Reservation');
 const Table = require('../models/Table');
 const emailService = require('../services/emailService');
+const mongoose = require('mongoose');
 
 // Función para liberar mesas automáticamente
 const autoCompleteReservations = async () => {
@@ -43,6 +44,162 @@ const autoCompleteReservations = async () => {
 // Iniciar el proceso de liberación automática
 setInterval(autoCompleteReservations, 60000); // Ejecutar cada minuto
 
+// Función para asignar mesa automáticamente según las reglas del restaurante
+const getAutomaticTableAssignment = async (partySize, date, time) => {
+  const Reservation = mongoose.model('Reservation');
+  
+  // VALIDACIÓN: Más de 8 personas deben contactar directamente
+  if (partySize > 8) {
+    return {
+      success: false,
+      requiresCall: true,
+      message: 'Para grupos de más de 8 personas, por favor contáctanos directamente'
+    };
+  }
+  
+  // Convertir tiempo a minutos para verificar disponibilidad
+  const [hours, minutes] = time.split(':').map(Number);
+  const timeInMinutes = hours * 60 + minutes;
+  const duration = 90; // 1.5 horas
+  const endTimeInMinutes = timeInMinutes + duration;
+  
+  // Buscar reservas que se superpongan con el horario solicitado
+  const overlappingReservations = await Reservation.find({
+    date: new Date(date),
+    $or: [
+      {
+        timeInMinutes: { $lt: endTimeInMinutes },
+        endTimeInMinutes: { $gt: timeInMinutes }
+      }
+    ],
+    status: { $nin: ['cancelled', 'no-show', 'completed'] }
+  }).select('table');
+  
+  // Obtener IDs de mesas ocupadas
+  const occupiedTableIds = overlappingReservations.map(res => res.table?.toString()).filter(Boolean);
+  
+  let assignmentOrder = [];
+  
+  // REGLAS DE ASIGNACIÓN SEGÚN EL NÚMERO DE PERSONAS
+  if (partySize >= 1 && partySize <= 3) {
+    // Para 1-3 personas: mesas individuales 2,3,4,5,6,7,8,9,10
+    assignmentOrder = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+  } 
+  else if (partySize >= 4 && partySize <= 5) {
+    // Para 4-5 personas: mesas individuales 11,12,13,14,15,16,17,18,29,28,27,26,25,24,23,22,21,20
+    assignmentOrder = [11, 12, 13, 14, 15, 16, 17, 18, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20];
+  }
+  else if (partySize >= 6 && partySize <= 7) {
+    // Para 6-7 personas: mesas juntas [20,21], [22,23], [24,25]
+    const tableGroups = [
+      [20, 21], [22, 23], [24, 25]
+    ];
+    
+    // Buscar el primer grupo de mesas disponibles
+    for (const group of tableGroups) {
+      let groupAvailable = true;
+      
+      // Verificar cada mesa del grupo
+      for (const tableNum of group) {
+        const table = await Table.findOne({ number: tableNum, isActive: true });
+        if (!table || occupiedTableIds.includes(table._id.toString())) {
+          groupAvailable = false;
+          break;
+        }
+      }
+      
+      if (groupAvailable) {
+        // Retornar las mesas del grupo
+        const tables = await Table.find({ 
+          number: { $in: group }, 
+          isActive: true 
+        });
+        
+        return {
+          success: true,
+          tables: tables,
+          message: `Mesas ${group.join(' y ')} asignadas para ${partySize} personas`,
+          isGroupReservation: true
+        };
+      }
+    }
+    
+    // Si no hay grupos disponibles
+    return {
+      success: false,
+      message: 'No hay mesas disponibles para grupos de 6-7 personas en este horario'
+    };
+  }
+  else if (partySize === 8) {
+    // Para 8 personas: mesas juntas [22,23], [24,25]
+    const tableGroups = [
+      [22, 23], [24, 25]
+    ];
+    
+    // Buscar el primer grupo de mesas disponibles
+    for (const group of tableGroups) {
+      let groupAvailable = true;
+      
+      // Verificar cada mesa del grupo
+      for (const tableNum of group) {
+        const table = await Table.findOne({ number: tableNum, isActive: true });
+        if (!table || occupiedTableIds.includes(table._id.toString())) {
+          groupAvailable = false;
+          break;
+        }
+      }
+      
+      if (groupAvailable) {
+        // Retornar las mesas del grupo
+        const tables = await Table.find({ 
+          number: { $in: group }, 
+          isActive: true 
+        });
+        
+        return {
+          success: true,
+          tables: tables,
+          message: `Mesas ${group.join(' y ')} asignadas para ${partySize} personas`,
+          isGroupReservation: true
+        };
+      }
+    }
+    
+    // Si no hay grupos disponibles
+    return {
+      success: false,
+      message: 'No hay mesas disponibles para grupos de 8 personas en este horario'
+    };
+  }
+  
+  // Para mesas individuales (1-5 personas)
+  if (assignmentOrder.length > 0) {
+    for (const tableNumber of assignmentOrder) {
+      // Saltar mesas 1 y 19 (no reservables)
+      if (tableNumber === 1 || tableNumber === 19) continue;
+      
+      const table = await Table.findOne({ 
+        number: tableNumber, 
+        isActive: true 
+      });
+      
+      if (table && !occupiedTableIds.includes(table._id.toString())) {
+        return {
+          success: true,
+          tables: [table],
+          message: `Mesa ${tableNumber} asignada automáticamente`,
+          isGroupReservation: false
+        };
+      }
+    }
+  }
+  
+  return {
+    success: false,
+    message: 'No hay mesas disponibles en este horario'
+  };
+};
+
 // Crear una nueva reserva
 exports.createReservation = async (req, res) => {
   try {
@@ -83,25 +240,31 @@ exports.createReservation = async (req, res) => {
       });
     }
 
+    // 🤖 ASIGNACIÓN AUTOMÁTICA DE MESA si no se proporciona tableId
     let assignedTableId = tableId;
-
-    // 🔍 ASIGNACIÓN AUTOMÁTICA DE MESAS si no se proporciona tableId
+    let assignedTables = []; // Para mesas múltiples (grupos)
+    let isGroupReservation = false;
+    
     if (!tableId) {
       console.log(`🔍 Buscando mesa automática para ${partySize} personas...`);
       
       try {
-        // Buscar mesas disponibles según el tamaño del grupo
-        const availableTables = await Table.getAvailableTables(date, time, partySize);
+        const assignmentResult = await getAutomaticTableAssignment(partySize, date, time);
         
-        if (availableTables.length > 0) {
-          // Seleccionar la mesa más adecuada (la de menor capacidad que sea suficiente)
-          const bestTable = availableTables[0];
-          assignedTableId = bestTable._id;
-          console.log(`✅ Mesa asignada automáticamente: Mesa ${bestTable.number} (capacidad: ${bestTable.capacity})`);
+        if (assignmentResult.success) {
+          console.log(`✅ ${assignmentResult.message}`);
+          assignedTables = assignmentResult.tables;
+          assignedTableId = assignmentResult.tables[0]._id; // Mesa principal para la reserva
+          isGroupReservation = assignmentResult.isGroupReservation;
+        } else if (assignmentResult.requiresCall) {
+          return res.status(400).json({ 
+            message: assignmentResult.message,
+            requiresCall: true
+          });
         } else {
-          console.log('❌ No hay mesas disponibles para asignación automática');
+          console.log(`❌ ${assignmentResult.message}`);
           return res.status(409).json({ 
-            message: 'No hay mesas disponibles para el horario solicitado. Por favor, prueba con otro horario o llama al restaurante para consultar disponibilidad.'
+            message: assignmentResult.message + '. Por favor, prueba con otro horario o llama al restaurante para consultar disponibilidad.'
           });
         }
       } catch (error) {
@@ -109,6 +272,12 @@ exports.createReservation = async (req, res) => {
         return res.status(500).json({ 
           message: 'Error al verificar disponibilidad de mesas. Por favor, intenta de nuevo.'
         });
+      }
+    } else {
+      // Si se proporciona tableId, verificar que sea una mesa individual
+      const providedTable = await Table.findById(tableId);
+      if (providedTable) {
+        assignedTables = [providedTable];
       }
     }
 
@@ -152,22 +321,38 @@ exports.createReservation = async (req, res) => {
       endTime, // Campo requerido  
       endTimeInMinutes, // Campo requerido
       partySize: parseInt(partySize),
-      table: assignedTableId, // Usar la mesa asignada (manual o automática)
+      table: assignedTableId, // Mesa principal de la reserva
       specialRequests: specialRequests?.trim() || '',
       needsBabyCart: needsBabyCart || false,
       needsWheelchair: needsWheelchair || false,
       status: 'confirmed', // Confirmamos automáticamente
-      createdBy: req.user ? req.user.id : null
+      createdBy: req.user ? req.user.id : null,
+      // Información adicional para reservas de grupo
+      ...(isGroupReservation && {
+        groupReservation: {
+          isGroup: true,
+          tableIds: assignedTables.map(table => table._id),
+          tableNumbers: assignedTables.map(table => table.number)
+        }
+      })
     });
 
     await reservation.save();
 
-    // Actualizar estado de la mesa si se asignó una
-    if (assignedTableId) {
-      await Table.findByIdAndUpdate(assignedTableId, { 
-        status: 'reserved',
-        currentReservation: reservation._id
-      });
+    // Actualizar estado de TODAS las mesas asignadas
+    if (assignedTables.length > 0) {
+      for (const table of assignedTables) {
+        await Table.findByIdAndUpdate(table._id, { 
+          status: 'reserved',
+          currentReservation: reservation._id
+        });
+      }
+      
+      if (isGroupReservation) {
+        console.log(`✅ ${assignedTables.length} mesas actualizadas para reserva de grupo: ${assignedTables.map(t => t.number).join(', ')}`);
+      } else {
+        console.log(`✅ Mesa ${assignedTables[0].number} actualizada para reserva individual`);
+      }
     }
 
     // Enviar correos de confirmación

@@ -234,9 +234,19 @@ const ReservationForm = () => {
       return false;
     }
     
+    // Validación para grupos grandes
+    if (parseInt(partySize) > 8) {
+      setError(
+        'Para grupos de más de 8 personas, por favor contáctanos directamente. ' +
+        'Puedes llamarnos al +34 653 73 31 11 o enviar un mensaje através del formulario de contacto ' +
+        'para que podamos organizar la mejor experiencia para tu grupo.'
+      );
+      return false;
+    }
+    
     // Validar que la reserva sea al menos 1 hora antes
     if (!isValidReservationTime(date, time)) {
-      setError('La reserva debe realizarse con al menos 1 hora de anticipación');
+      setError('La reserva debe realizarse con al menos 30 minutos de anticipación. Para reservas inmediatas, por favor llama al restaurante.');
       return false;
     }
     
