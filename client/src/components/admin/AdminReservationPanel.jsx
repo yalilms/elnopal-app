@@ -2492,252 +2492,274 @@ const AdminReservationPanel = () => {
         </button>
       </div>
 
-      )}
-      
       <div className="panel-content">
         {viewMode === 'list' && (
           <div className="reservations-container">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '2rem', minHeight: '60vh' }}>
-              {/* Columna izquierda - Lista de reservas */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              padding: '0 2rem'
+            }}>
               <div style={{ 
-                backgroundColor: 'white', 
-                borderRadius: '12px', 
-                padding: '1.5rem',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
+                display: 'grid', 
+                gridTemplateColumns: '2fr 1fr', 
+                gap: '2rem', 
+                minHeight: '60vh',
+                maxWidth: '1400px',
+                width: '100%'
               }}>
-                {renderReservationsList()}
-              </div>
-              
-              {/* Columna derecha - Panel lateral */}
-              <div style={{ 
-                backgroundColor: 'white', 
-                borderRadius: '12px', 
-                padding: '1.5rem',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem'
-              }}>
-                {/* Selector de fecha más compacto */}
-                <div style={{
-                  backgroundColor: '#f8f9fa',
-                  padding: '1rem',
-                  borderRadius: '8px',
-                  border: '1px solid #e9ecef'
+                {/* Columna izquierda - Lista de reservas */}
+                <div style={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '12px', 
+                  padding: '1.5rem',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
+                  minHeight: '500px'
                 }}>
-                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#495057', fontSize: '0.9rem', fontWeight: '600' }}>
-                    📅 Seleccionar Fecha
-                  </h4>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    style={{
-                      width: '100%',
-                      padding: '0.5rem',
-                      border: '1px solid #ced4da',
-                      borderRadius: '4px',
-                      fontSize: '0.9rem'
-                    }}
-                  />
-                  <p style={{ 
-                    margin: '0.5rem 0 0 0', 
-                    fontSize: '0.8rem', 
-                    color: '#6c757d',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.3rem'
-                  }}>
-                    <FontAwesomeIcon icon={faList} />
-                    {dayStats.total} {dayStats.total === 1 ? 'reserva' : 'reservas'}
-                  </p>
+                  {renderReservationsList()}
                 </div>
-
-                {/* Estadísticas compactas */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '0.5rem'
+                
+                {/* Columna derecha - Panel lateral */}
+                <div style={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '12px', 
+                  padding: '1.5rem',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  minHeight: '500px',
+                  position: 'sticky',
+                  top: '2rem',
+                  alignSelf: 'flex-start'
                 }}>
+                  {/* Selector de fecha más compacto */}
                   <div style={{
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    padding: '0.75rem',
-                    borderRadius: '6px',
-                    textAlign: 'center',
-                    border: '1px solid rgba(40, 167, 69, 0.2)'
-                  }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#28a745' }}>
-                      {dayStats.confirmed}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#28a745', textTransform: 'uppercase' }}>
-                      Confirmadas
-                    </div>
-                  </div>
-                  
-                  <div style={{
-                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                    padding: '0.75rem',
-                    borderRadius: '6px',
-                    textAlign: 'center',
-                    border: '1px solid rgba(220, 53, 69, 0.2)'
-                  }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc3545' }}>
-                      {dayStats.cancelled}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#dc3545', textTransform: 'uppercase' }}>
-                      Canceladas
-                    </div>
-                  </div>
-                  
-                  <div style={{
-                    backgroundColor: 'rgba(0, 155, 155, 0.1)',
-                    padding: '0.75rem',
-                    borderRadius: '6px',
-                    textAlign: 'center',
-                    border: '1px solid rgba(0, 155, 155, 0.2)'
-                  }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#009B9B' }}>
-                      {dayStats.totalGuests}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#009B9B', textTransform: 'uppercase' }}>
-                      Comensales
-                    </div>
-                  </div>
-                  
-                  <div style={{
-                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                    padding: '0.75rem',
-                    borderRadius: '6px',
-                    textAlign: 'center',
-                    border: '1px solid rgba(255, 193, 7, 0.2)'
-                  }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffc107' }}>
-                      {dayStats.occupancyRate}%
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#ffc107', textTransform: 'uppercase' }}>
-                      Ocupación
-                    </div>
-                  </div>
-                </div>
-
-                {/* Acciones rápidas */}
-                <div style={{
-                  backgroundColor: '#fff3cd',
-                  padding: '1rem',
-                  borderRadius: '8px',
-                  border: '1px solid #ffeaa7'
-                }}>
-                  <h4 style={{ margin: '0 0 0.75rem 0', color: '#856404', fontSize: '0.9rem', fontWeight: '600' }}>
-                    ⚡ Acciones Rápidas
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <button
-                      onClick={handleNewReservationClick}
-                      style={{
-                        backgroundColor: '#009B9B',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.6rem 1rem',
-                        borderRadius: '4px',
-                        fontSize: '0.85rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                      Nueva Reserva Telefónica
-                    </button>
-                    
-                    <button
-                      onClick={() => setViewMode('blacklist')}
-                      style={{
-                        backgroundColor: '#dc3545',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.6rem 1rem',
-                        borderRadius: '4px',
-                        fontSize: '0.85rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faUserSlash} />
-                      Gestionar Lista Negra
-                    </button>
-                    
-                    <button
-                      onClick={handleNavigateToOpiniones}
-                      style={{
-                        backgroundColor: '#6f42c1',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.6rem 1rem',
-                        borderRadius: '4px',
-                        fontSize: '0.85rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faComments} />
-                      Ver Opiniones
-                    </button>
-                  </div>
-                </div>
-
-                {/* Información adicional si hay reserva seleccionada */}
-                {selectedReservation && (
-                  <div style={{
-                    backgroundColor: '#e7f3ff',
+                    backgroundColor: '#f8f9fa',
                     padding: '1rem',
                     borderRadius: '8px',
-                    border: '1px solid #b3d4fc'
+                    border: '1px solid #e9ecef'
                   }}>
-                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#0066cc', fontSize: '0.9rem', fontWeight: '600' }}>
-                      📋 Reserva Seleccionada
+                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#495057', fontSize: '0.9rem', fontWeight: '600' }}>
+                      📅 Seleccionar Fecha
                     </h4>
-                    <div style={{ fontSize: '0.8rem', color: '#495057' }}>
-                      <p style={{ margin: '0.2rem 0' }}><strong>{selectedReservation.name}</strong></p>
-                      <p style={{ margin: '0.2rem 0' }}>{selectedReservation.time} - {selectedReservation.partySize} personas</p>
-                      <p style={{ margin: '0.2rem 0' }}>Mesa: {selectedReservation.tableName || 'N/A'}</p>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #ced4da',
+                        borderRadius: '4px',
+                        fontSize: '0.9rem'
+                      }}
+                    />
+                    <p style={{ 
+                      margin: '0.5rem 0 0 0', 
+                      fontSize: '0.8rem', 
+                      color: '#6c757d',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem'
+                    }}>
+                      <FontAwesomeIcon icon={faList} />
+                      {dayStats.total} {dayStats.total === 1 ? 'reserva' : 'reservas'}
+                    </p>
+                  </div>
+
+                  {/* Estadísticas compactas */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{
+                      backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      textAlign: 'center',
+                      border: '1px solid rgba(40, 167, 69, 0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#28a745' }}>
+                        {dayStats.confirmed}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#28a745', textTransform: 'uppercase' }}>
+                        Confirmadas
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      textAlign: 'center',
+                      border: '1px solid rgba(220, 53, 69, 0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc3545' }}>
+                        {dayStats.cancelled}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#dc3545', textTransform: 'uppercase' }}>
+                        Canceladas
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      backgroundColor: 'rgba(0, 155, 155, 0.1)',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      textAlign: 'center',
+                      border: '1px solid rgba(0, 155, 155, 0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#009B9B' }}>
+                        {dayStats.totalGuests}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#009B9B', textTransform: 'uppercase' }}>
+                        Comensales
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      textAlign: 'center',
+                      border: '1px solid rgba(255, 193, 7, 0.2)'
+                    }}>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffc107' }}>
+                        {dayStats.occupancyRate}%
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#ffc107', textTransform: 'uppercase' }}>
+                        Ocupación
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Acciones rápidas */}
+                  <div style={{
+                    backgroundColor: '#fff3cd',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    border: '1px solid #ffeaa7'
+                  }}>
+                    <h4 style={{ margin: '0 0 0.75rem 0', color: '#856404', fontSize: '0.9rem', fontWeight: '600' }}>
+                      ⚡ Acciones Rápidas
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <button
-                        onClick={() => setShowDetailsModal(true)}
+                        onClick={handleNewReservationClick}
                         style={{
-                          backgroundColor: '#007bff',
+                          backgroundColor: '#009B9B',
                           color: 'white',
                           border: 'none',
-                          padding: '0.4rem 0.8rem',
+                          padding: '0.6rem 1rem',
                           borderRadius: '4px',
-                          fontSize: '0.75rem',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
                           cursor: 'pointer',
-                          marginTop: '0.5rem',
-                          width: '100%'
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
                         }}
                       >
-                        Ver Detalles Completos
+                        <FontAwesomeIcon icon={faPlus} />
+                        Nueva Reserva Telefónica
+                      </button>
+                      
+                      <button
+                        onClick={() => setViewMode('blacklist')}
+                        style={{
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.6rem 1rem',
+                          borderRadius: '4px',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faUserSlash} />
+                        Gestionar Lista Negra
+                      </button>
+                      
+                      <button
+                        onClick={handleNavigateToOpiniones}
+                        style={{
+                          backgroundColor: '#6f42c1',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.6rem 1rem',
+                          borderRadius: '4px',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faComments} />
+                        Ver Opiniones
                       </button>
                     </div>
                   </div>
-                )}
+
+                  {/* Información adicional si hay reserva seleccionada */}
+                  {selectedReservation && (
+                    <div style={{
+                      backgroundColor: '#e7f3ff',
+                      padding: '1rem',
+                      borderRadius: '8px',
+                      border: '1px solid #b3d4fc'
+                    }}>
+                      <h4 style={{ margin: '0 0 0.5rem 0', color: '#0066cc', fontSize: '0.9rem', fontWeight: '600' }}>
+                        📋 Reserva Seleccionada
+                      </h4>
+                      <div style={{ fontSize: '0.8rem', color: '#495057' }}>
+                        <p style={{ margin: '0.2rem 0' }}><strong>{selectedReservation.name}</strong></p>
+                        <p style={{ margin: '0.2rem 0' }}>{selectedReservation.time} - {selectedReservation.partySize} personas</p>
+                        <p style={{ margin: '0.2rem 0' }}>Mesa: {selectedReservation.tableName || 'N/A'}</p>
+                        <button
+                          onClick={() => setShowDetailsModal(true)}
+                          style={{
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.4rem 0.8rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            marginTop: '0.5rem',
+                            width: '100%'
+                          }}
+                        >
+                          Ver Detalles Completos
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         )}
         {viewMode === 'blacklist' && (
-          <div className="blacklist-container">
-            {renderBlacklistManagement()}
+          <div className="blacklist-container" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '0 2rem'
+          }}>
+            <div style={{ maxWidth: '1400px', width: '100%' }}>
+              {renderBlacklistManagement()}
+            </div>
           </div>
         )}
       </div>
