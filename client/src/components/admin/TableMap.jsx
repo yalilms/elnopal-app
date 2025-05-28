@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { tablesData } from '../../data/tablesData';
 import { useReservation } from '../../context/ReservationContext';
+import * as reservationService from '../../services/reservationService';
 
 const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => {
   const { reservations } = useReservation();
   const [tableReservationMap, setTableReservationMap] = useState({});
+  const [tables, setTables] = useState([]);
+  const [loading, setLoading] = useState(false);
   
-  // Verificar directamente el localStorage
+  // Cargar mesas desde la API
   useEffect(() => {
-    try {
-      const savedReservations = localStorage.getItem('reservations');
-      if (savedReservations) {
-        const parsedReservations = JSON.parse(savedReservations);
-        console.log('TableMap - Reservas desde localStorage:', parsedReservations);
-        
-        // Imprimir información detallada de tableIds en las reservas
-        parsedReservations.forEach((res, idx) => {
-          console.log(`Reserva ${idx + 1} - ID: ${res.id}, Fecha: ${res.date}, tableIds:`, res.tableIds);
-        });
-      } else {
-        console.log('TableMap - No hay reservas en localStorage');
+    const loadTables = async () => {
+      try {
+        setLoading(true);
+        const tablesData = await reservationService.getTables();
+        console.log('TableMap - Mesas cargadas desde API:', tablesData);
+        setTables(tablesData);
+      } catch (error) {
+        console.error('Error al cargar mesas:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error al leer reservas del localStorage:', error);
-    }
+    };
+
+    loadTables();
   }, []);
   
   // Log para depuración de la fecha recibida
@@ -38,7 +38,6 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
     
     const formatDateParts = (dateStr) => {
       if (!dateStr || typeof dateStr !== 'string') {
-        // console.warn('[TableMap] formatDateParts: Entrada no válida o no es string:', dateStr);
         return null;
       }
 
@@ -77,7 +76,6 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
         }
       }
       
-      // console.warn('[TableMap] formatDateParts: Formato no reconocido, devolviendo null:', dateStr);
       return null;
     };
     
@@ -109,20 +107,10 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
     // Crear mapa de mesas a reservas
     const tableMap = {};
     reservationsForDate.forEach(res => {
-      if (res.tableIds && res.tableIds.length > 0) {
-        res.tableIds.forEach(tableId => {
-          // Convertir el ID a número si es necesario
-          const id = typeof tableId === 'string' ? parseInt(tableId, 10) : tableId;
-          
-          if (!tableMap[id]) tableMap[id] = [];
-          tableMap[id].push(res);
-        });
-      } else if (res.tableId) {
-        // Caso alternativo si la reserva usa tableId en lugar de tableIds
-        const id = typeof res.tableId === 'string' ? parseInt(res.tableId, 10) : res.tableId;
-        
-        if (!tableMap[id]) tableMap[id] = [];
-        tableMap[id].push(res);
+      if (res.table && res.table._id) {
+        const tableId = res.table._id;
+        if (!tableMap[tableId]) tableMap[tableId] = [];
+        tableMap[tableId].push(res);
       }
     });
     
@@ -133,36 +121,27 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
   // Color según estado de la mesa
   const getTableColor = (table) => {
     // Si la mesa está seleccionada, usar un borde azul
-    if (selectedTableId === table.id) {
+    if (selectedTableId === table._id) {
       return 'bg-blue-500';
     }
     
     // Si hay reservas para esta mesa en la fecha seleccionada
-    if (tableReservationMap[table.id] && tableReservationMap[table.id].length > 0) {
+    if (tableReservationMap[table._id] && tableReservationMap[table._id].length > 0) {
       return 'bg-yellow-500'; // Reservada
     }
     
-    // Usar el estado existente de la mesa
-    switch (table.status) {
-      case 'free':
-        return 'bg-green-500';
-      case 'reserved':
-        return 'bg-yellow-500';
-      case 'occupied':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-300';
-    }
+    // Mesa libre
+    return 'bg-green-500';
   };
 
   const handleTableClick = (table) => {
     // Añadir las reservas asociadas a la mesa
     const tableWithReservations = {
       ...table,
-      reservations: tableReservationMap[table.id] || []
+      reservations: tableReservationMap[table._id] || []
     };
     
-    console.log('TableMap - Mesa seleccionada:', table.id, table.number);
+    console.log('TableMap - Mesa seleccionada:', table._id, table.number);
     console.log('TableMap - Reservas de la mesa:', tableWithReservations.reservations);
     
     // Mostrar las reservas asociadas con esta mesa
@@ -170,6 +149,15 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
       onSelectTable(tableWithReservations);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-4">
+        <h2 className="text-lg font-semibold mb-4">Plano del Restaurante</h2>
+        <div className="text-center py-8">Cargando mesas...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
@@ -205,11 +193,11 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
         className="relative border bg-gray-100 h-[500px] w-full overflow-hidden"
         style={{ minWidth: '900px' }}
       >
-        {tablesData.map((table) => (
+        {tables.map((table) => (
           <div
-            key={table.id}
+            key={table._id}
             className={`absolute rounded-md shadow cursor-pointer flex items-center justify-center border-2 ${
-              selectedTableId === table.id ? 'border-blue-600' : 'border-transparent'
+              selectedTableId === table._id ? 'border-blue-600' : 'border-transparent'
             } ${getTableColor(table)}`}
             style={{
               left: `${table.position.x}px`,
@@ -222,9 +210,9 @@ const TableMap = ({ onSelectTable, selectedTableId, selectedDate, isAdmin }) => 
             <div className="text-center">
               <div className="font-bold text-white">Mesa {table.number}</div>
               <div className="text-xs text-white">{table.capacity} pers.</div>
-              {tableReservationMap[table.id] && tableReservationMap[table.id].length > 0 && (
+              {tableReservationMap[table._id] && tableReservationMap[table._id].length > 0 && (
                 <div className="text-xs font-bold bg-white text-red-600 rounded px-1 mt-1">
-                  {tableReservationMap[table.id].length} reserva(s)
+                  {tableReservationMap[table._id].length} reserva(s)
                 </div>
               )}
             </div>

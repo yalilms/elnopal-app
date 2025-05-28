@@ -291,6 +291,24 @@ export const getAllTables = async () => {
   }
 };
 
+// Alias para compatibilidad
+export const getTables = getAllTables;
+
+// Inicializar mesas por defecto
+export const initializeDefaultTables = async () => {
+  try {
+    console.log('Inicializando mesas por defecto');
+    
+    const response = await axios.post('/api/tables/initialize');
+    
+    console.log('Mesas inicializadas:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al inicializar mesas:', error);
+    throw new Error(error.response?.data?.message || 'Error al inicializar mesas');
+  }
+};
+
 // Obtener mesa por ID
 export const getTableById = async (tableId) => {
   try {
