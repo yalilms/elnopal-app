@@ -3,6 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faPhone, faEnvelope, faClock, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import '../styles/ContactForm.css';
 
+// Configurar base URL para desarrollo y producción
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://elnopal.es' // En producción, usar HTTPS del dominio principal (nginx manejará el proxy)
+  : 'http://localhost:5000'; // En desarrollo, puerto del backend
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -12,6 +17,7 @@ const ContactForm = () => {
   });
   
   const [animateForm, setAnimateForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     // Efecto para las animaciones al hacer scroll
@@ -53,23 +59,61 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar el mensaje
-    console.log('Mensaje enviado:', formData);
     
-    // Animación de éxito
-    e.target.classList.add('form-submitted');
-    setTimeout(() => {
-      alert('Mensaje enviado con éxito. Gracias por contactar con El Nopal.');
-      setFormData({
-        nombre: '',
-        email: '',
-        asunto: '',
-        mensaje: ''
+    // Validaciones básicas
+    if (!formData.nombre || !formData.email || !formData.mensaje) {
+      alert('Por favor completa todos los campos obligatorios');
+      return;
+    }
+    
+    try {
+      setIsSubmitting(true);
+      
+      // Animación de envío
+      e.target.classList.add('form-submitted');
+      
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.nombre,
+          email: formData.email,
+          subject: formData.asunto,
+          message: formData.mensaje
+        })
       });
-      e.target.classList.remove('form-submitted');
-    }, 1000);
+      
+      if (!response.ok) {
+        throw new Error('Error al enviar el mensaje');
+      }
+      
+      const data = await response.json();
+      
+      // Éxito
+      setTimeout(() => {
+        alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+        setFormData({
+          nombre: '',
+          email: '',
+          asunto: '',
+          mensaje: ''
+        });
+        e.target.classList.remove('form-submitted');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      setTimeout(() => {
+        alert('Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo o contáctanos directamente.');
+        e.target.classList.remove('form-submitted');
+      }, 1000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -169,8 +213,8 @@ const ContactForm = () => {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary">
-            <span>Enviar Mensaje</span>
+          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+            <span>{isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}</span>
             <FontAwesomeIcon icon={faPaperPlane} className="send-icon" />
           </button>
         </div>

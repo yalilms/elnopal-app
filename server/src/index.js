@@ -15,6 +15,7 @@ const userRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const blacklistRoutes = require('./routes/blacklist');
 const reviewRoutes = require('./routes/reviewRoutes');
+const contactRoutes = require('./routes/contact');
 
 const app = express();
 const server = http.createServer(app);
@@ -162,6 +163,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/blacklist', blacklistRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
