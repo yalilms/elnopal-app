@@ -114,6 +114,8 @@ exports.createReservation = async (req, res) => {
 
     // Enviar correos de confirmación
     try {
+      console.log('📧 Preparando envío de correos para reserva:', reservation._id);
+      
       const reservationData = {
         name: reservation.customer.name,
         email: reservation.customer.email,
@@ -126,18 +128,33 @@ exports.createReservation = async (req, res) => {
         needsWheelchair: reservation.needsWheelchair
       };
 
+      console.log('📧 Datos de correo preparados:', {
+        email: reservationData.email,
+        name: reservationData.name,
+        date: reservationData.date,
+        time: reservationData.time
+      });
+
+      console.log('📧 Llamando a emailService.sendReservationEmails...');
       const emailResult = await emailService.sendReservationEmails(reservationData);
       
+      console.log('📧 Resultado del envío de correos:', emailResult);
+      
       if (emailResult.success) {
+        console.log('✅ Correos enviados exitosamente, marcando en BD...');
         // Marcar correos como enviados
         reservation.confirmationEmailSent = true;
         reservation.confirmationEmailSentAt = new Date();
         reservation.notificationEmailSent = true;
         reservation.notificationEmailSentAt = new Date();
         await reservation.save();
+        console.log('✅ Estado de correos actualizado en BD');
+      } else {
+        console.error('❌ Error en el envío de correos:', emailResult.message, emailResult.error);
       }
     } catch (emailError) {
-      console.error('Error enviando correos de reserva:', emailError);
+      console.error('❌ Excepción enviando correos de reserva:', emailError);
+      console.error('Stack trace:', emailError.stack);
       // No fallar la reserva por error de correo
     }
 
