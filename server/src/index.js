@@ -79,21 +79,37 @@ const authLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting para localhost en desarrollo
+    if (process.env.NODE_ENV !== 'production') {
+      return req.ip === '127.0.0.1' || req.ip === '::1';
+    }
+    return false;
+  }
 });
 
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP
+  max: 1000, // aumentado para evitar problemas en desarrollo
   message: {
     error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting para localhost en desarrollo
+    if (process.env.NODE_ENV !== 'production') {
+      return req.ip === '127.0.0.1' || req.ip === '::1';
+    }
+    return false;
+  }
 });
 
-// Aplicar rate limiting
-app.use('/api/auth/login', authLimiter);
-app.use('/api/', generalLimiter);
+// Aplicar rate limiting solo en producción o de forma más permisiva
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/auth/login', authLimiter);
+  app.use('/api/', generalLimiter);
+}
 
 // Middleware básico
 app.use(cors(corsOptions));
