@@ -64,6 +64,31 @@ const ContentWarning = ({ content }) => {
   );
 };
 
+// Función para normalizar datos de review para compatibilidad con ambos formatos de API
+const normalizeReview = (review) => {
+  if (!review) return null;
+  
+  return {
+    _id: review._id,
+    // Nombre - puede venir como 'name' o 'nombre'
+    nombre: review.nombre || review.name || 'Sin nombre',
+    // Email
+    email: review.email || 'No disponible',
+    // Calificación - puede venir como 'rating' o 'calificacion'
+    calificacion: review.calificacion || review.rating || 0,
+    // Comentario - puede venir como 'comment' o 'comentario'
+    comentario: review.comentario || review.comment || 'Sin comentario',
+    // Fecha
+    fecha: review.fecha || review.createdAt || 'No disponible',
+    // Estado
+    status: review.status || 'pending',
+    // Respuesta del admin
+    adminResponse: review.adminResponse,
+    adminResponseDate: review.adminResponseDate,
+    adminResponseBy: review.adminResponseBy
+  };
+};
+
 const AdminReviewsPanel = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +125,9 @@ const AdminReviewsPanel = () => {
       }
       
       const data = await response.json();
-      setReviews(data.reviews);
+      // Normalizar las reviews para compatibilidad
+      const normalizedReviews = (data.reviews || []).map(review => normalizeReview(review)).filter(review => review !== null);
+      setReviews(normalizedReviews);
       
     } catch (error) {
       toast.error('Error al cargar las reseñas: ' + (error.message || 'Error desconocido'));
@@ -261,6 +288,8 @@ const AdminReviewsPanel = () => {
   };
   
   const getFilteredReviews = () => {
+    if (!Array.isArray(reviews)) return [];
+    
     switch (filter) {
       case 'flagged':
         return reviews.filter(review => {
@@ -269,8 +298,9 @@ const AdminReviewsPanel = () => {
             'mierda', 'basura', 'puta', 'joder', 'coño', 'verga', 
             'pendejo', 'estafa', 'fraude', 'denuncia', 'demanda'
           ];
+          const comment = review.comentario || '';
           return badWords.some(word => 
-            review.comentario && review.comentario.toLowerCase().includes(word.toLowerCase())
+            comment.toLowerCase().includes(word.toLowerCase())
           );
         });
       case 'pending':
@@ -294,10 +324,10 @@ const AdminReviewsPanel = () => {
       'pendejo', 'estafa', 'fraude', 'denuncia', 'demanda'
     ];
     
-    if (!review.comentario) return false;
+    const comment = review.comentario || '';
     
     return badWords.some(word => 
-      review.comentario.toLowerCase().includes(word.toLowerCase())
+      comment.toLowerCase().includes(word.toLowerCase())
     );
   };
   
@@ -364,34 +394,40 @@ const AdminReviewsPanel = () => {
           ) : getFilteredReviews().length === 0 ? (
             <div className="empty-message">No hay opiniones que mostrar</div>
           ) : (
-            getFilteredReviews().map(review => (
-              <div 
-                key={review._id} 
-                className={`review-item ${selectedReview && selectedReview._id === review._id ? 'selected' : ''} ${isPotentiallyBad(review) ? 'potentially-bad' : ''}`}
-                onClick={() => setSelectedReview(review)}
-              >
-                <div className="review-item-header">
-                  <h4>{review.nombre || 'Sin nombre'}</h4>
-                  <div className="review-rating">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className={i < (review.calificacion || 0) ? 'star filled' : 'star'}>★</span>
-                    ))}
+            getFilteredReviews().map(review => {
+              // Asegurar que review esté normalizado
+              const normalizedReview = normalizeReview(review);
+              if (!normalizedReview) return null;
+              
+              return (
+                <div 
+                  key={normalizedReview._id} 
+                  className={`review-item ${selectedReview && selectedReview._id === normalizedReview._id ? 'selected' : ''} ${isPotentiallyBad(normalizedReview) ? 'potentially-bad' : ''}`}
+                  onClick={() => setSelectedReview(normalizedReview)}
+                >
+                  <div className="review-item-header">
+                    <h4>{normalizedReview.nombre}</h4>
+                    <div className="review-rating">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className={i < normalizedReview.calificacion ? 'star filled' : 'star'}>★</span>
+                      ))}
+                    </div>
                   </div>
+                  <p className="review-preview">
+                    {normalizedReview.comentario.length > 60 ? normalizedReview.comentario.substring(0, 60) + '...' : normalizedReview.comentario}
+                  </p>
+                  <div className="review-item-footer">
+                    <span className="review-date">{normalizedReview.fecha}</span>
+                    <span className={`review-status ${normalizedReview.status}`}>
+                      {normalizedReview.status === 'reviewed' ? 'Atendida' : 'Pendiente'}
+                    </span>
+                  </div>
+                  {isPotentiallyBad(normalizedReview) && (
+                    <div className="review-warning">⚠️</div>
+                  )}
                 </div>
-                <p className="review-preview">
-                  {review.comentario ? review.comentario.substring(0, 60) + '...' : 'Sin comentario'}
-                </p>
-                <div className="review-item-footer">
-                  <span className="review-date">{review.fecha || 'Sin fecha'}</span>
-                  <span className={`review-status ${review.status || 'pending'}`}>
-                    {(review.status === 'reviewed') ? 'Atendida' : 'Pendiente'}
-                  </span>
-                </div>
-                {isPotentiallyBad(review) && (
-                  <div className="review-warning">⚠️</div>
-                )}
-              </div>
-            ))
+              );
+            }).filter(item => item !== null)
           )}
         </div>
         
@@ -399,27 +435,27 @@ const AdminReviewsPanel = () => {
           {selectedReview ? (
             <>
               <div className="review-detail-header">
-                <h3>{selectedReview.nombre || 'Sin nombre'}</h3>
+                <h3>{selectedReview.nombre}</h3>
                 <div className="review-rating">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < (selectedReview.calificacion || 0) ? 'star filled' : 'star'}>★</span>
+                    <span key={i} className={i < selectedReview.calificacion ? 'star filled' : 'star'}>★</span>
                   ))}
                 </div>
               </div>
               
               <div className="review-contact">
-                <p><strong>Email:</strong> {selectedReview.email || 'No disponible'}</p>
-                <p><strong>Fecha:</strong> {selectedReview.fecha || 'No disponible'}</p>
-                <p><strong>Estado:</strong> <span className={`status ${selectedReview.status || 'pending'}`}>
-                  {(selectedReview.status === 'reviewed') ? 'Atendida' : 'Pendiente'}
+                <p><strong>Email:</strong> {selectedReview.email}</p>
+                <p><strong>Fecha:</strong> {selectedReview.fecha}</p>
+                <p><strong>Estado:</strong> <span className={`status ${selectedReview.status}`}>
+                  {selectedReview.status === 'reviewed' ? 'Atendida' : 'Pendiente'}
                 </span></p>
               </div>
               
               <div className="review-comment">
                 <h4>Comentario:</h4>
-                <p>{selectedReview.comentario || 'Sin comentario'}</p>
+                <p>{selectedReview.comentario}</p>
                 
-                <ContentWarning content={selectedReview.comentario || ''} />
+                <ContentWarning content={selectedReview.comentario} />
               </div>
               
               <div className="review-actions">
