@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-  nombre: {
+  name: {
     type: String,
     required: true,
     trim: true
@@ -12,13 +12,13 @@ const reviewSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
-  calificacion: {
+  rating: {
     type: Number,
     required: true,
     min: 1,
     max: 5
   },
-  comentario: {
+  comment: {
     type: String,
     required: true,
     trim: true
@@ -34,11 +34,26 @@ const reviewSchema = new mongoose.Schema({
     // Nota: Mantenemos 'reviewed' como valor para compatibilidad, 
     // pero ahora representa "atendida" en la interfaz
   },
+  // Nuevos campos para seguimiento de correos
+  thankYouEmailSent: {
+    type: Boolean,
+    default: false
+  },
+  thankYouEmailSentAt: {
+    type: Date
+  },
+  notificationEmailSent: {
+    type: Boolean,
+    default: false
+  },
+  notificationEmailSentAt: {
+    type: Date
+  },
   imagen: {
     type: String,
     default: function() {
       // Generar avatar basado en las iniciales del nombre
-      const initials = this.nombre
+      const initials = this.name
         .split(' ')
         .map(part => part[0])
         .join('')
@@ -53,7 +68,7 @@ const reviewSchema = new mongoose.Schema({
       ];
       
       // Seleccionar un color basado en el nombre
-      const colorIndex = this.nombre.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+      const colorIndex = this.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
       
       return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=${colors[colorIndex].substring(1)}&color=fff`;
     }

@@ -59,6 +59,15 @@ const ReservationSchema = new Schema({
     type: String,
     trim: true
   },
+  // Nuevos campos para accesibilidad
+  needsBabyCart: {
+    type: Boolean,
+    default: false
+  },
+  needsWheelchair: {
+    type: Boolean,
+    default: false
+  },
   status: {
     type: String,
     enum: ['pending', 'confirmed', 'seated', 'completed', 'no-show', 'cancelled'],
@@ -117,6 +126,21 @@ const ReservationSchema = new Schema({
   reminderSent: {
     type: Boolean,
     default: false
+  },
+  // Nuevos campos para seguimiento de correos
+  confirmationEmailSent: {
+    type: Boolean,
+    default: false
+  },
+  confirmationEmailSentAt: {
+    type: Date
+  },
+  notificationEmailSent: {
+    type: Boolean,
+    default: false
+  },
+  notificationEmailSentAt: {
+    type: Date
   },
   checkBlacklist: {
     type: Boolean,

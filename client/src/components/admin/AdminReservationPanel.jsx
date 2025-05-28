@@ -4,11 +4,11 @@ import { useHistory } from 'react-router-dom';
 import { getTimeSlotsForDay } from '../../data/tablesData';
 import { useAuth } from '../../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import '../../styles/admin/BlacklistModal.css';
-import { addToBlacklist } from '../../services/reservationService';
+import { addToBlacklist, getBlacklist, removeFromBlacklist } from '../../services/reservationService';
 import BlacklistManagement from './BlacklistManagement';
 import '../../styles/admin/BlacklistManagement.css';
 import '../reservation/ReservationForm.css';
@@ -16,11 +16,14 @@ import '../reservation/ReservationForm.css';
 const AdminReservationPanel = () => {
   const { 
     reservations, 
-    cancelReservation, 
-    makeReservation, 
-    tables,
+    loading: contextLoading,
+    error: contextError,
+    loadReservations,
     updateReservationStatus,
-    getReservations
+    cancelReservation,
+    refreshData,
+    makeReservation,
+    tables
   } = useReservation();
   
   const { logout } = useAuth();
@@ -34,6 +37,9 @@ const AdminReservationPanel = () => {
   const [showBlacklistModal, setShowBlacklistModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [adminFormAvailableSlots, setAdminFormAvailableSlots] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [blacklistEntries, setBlacklistEntries] = useState([]);
   
   const formatDateToDDMMYYYY = (dateString) => {
     if (!dateString || typeof dateString !== 'string') {
@@ -414,18 +420,41 @@ const AdminReservationPanel = () => {
     }
   };
   
-  // Cancelar reserva
-  const handleCancelReservation = () => {
-    if (!selectedReservation) return;
+  // Función para manejar no-show
+  const handleNoShow = (reservation) => {
+    const customerData = {
+      id: reservation.id,
+      name: reservation.name,
+      email: reservation.email,
+      phone: reservation.phone
+    };
     
-    if (window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
-      cancelReservation(selectedReservation.id);
-      setSelectedReservation(null);
-      alert('Reserva cancelada correctamente');
+    setSelectedCustomer(customerData);
+    setSelectedReservation(reservation);
+    setShowBlacklistModal(true);
+  };
+
+  // Función para cancelar una reservación
+  const handleCancelReservation = async (reservationId) => {
+    if (window.confirm('¿Estás seguro de que quieres cancelar esta reservación?')) {
+      try {
+        setLoading(true);
+        
+        await cancelReservation(reservationId, 'Cancelada por administrador');
+        
+        // Recargar datos
+        await loadData();
+        
+        toast.success('Reservación cancelada exitosamente');
+        setSelectedReservation(null);
+      } catch (error) {
+        console.error('Error al cancelar reservación:', error);
+        toast.error('Error al cancelar la reservación: ' + error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
-  
-
   
   // Manejar cierre de sesión
   const handleLogout = () => {
@@ -444,19 +473,6 @@ const AdminReservationPanel = () => {
     setIsEditing(false);
   };
   
-  const handleNoShow = (reservation) => {
-    const customerData = {
-      id: reservation.id,
-      name: reservation.name,
-      email: reservation.email,
-      phone: reservation.phone
-    };
-    
-    setSelectedCustomer(customerData);
-    setSelectedReservation(reservation);
-    setShowBlacklistModal(true);
-  };
-
   const handleAddToBlacklist = async (blacklistData) => {
     try {
 
@@ -470,7 +486,7 @@ const AdminReservationPanel = () => {
       await updateReservationStatus(selectedReservation.id, 'no-show');
       
       // Recargar las reservaciones
-      await fetchReservations();
+      await loadData();
       
       // Cerrar el modal
       setShowBlacklistModal(false);
@@ -487,19 +503,32 @@ const AdminReservationPanel = () => {
     }
   };
   
-  // Función para cargar las reservaciones
-  const fetchReservations = async () => {
+  // Función para cargar datos
+  const loadData = async () => {
     try {
-      await getReservations();
+      setLoading(true);
+      setError(null);
+      
+      if (viewMode === 'blacklist') {
+        await loadBlacklistData();
+      } else {
+        // Cargar reservas para la fecha seleccionada
+        await loadReservations({ date: selectedDate });
+        
+        // También refrescar las mesas
+        await refreshData();
+      }
     } catch (error) {
-      toast.error('Error al cargar las reservaciones');
-      console.error('Error:', error);
+      console.error('Error al cargar datos:', error);
+      setError('Error al cargar los datos: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Cargar reservaciones cuando cambie la fecha seleccionada
+  // Cargar datos al montar el componente y cuando cambie la fecha
   useEffect(() => {
-    fetchReservations();
+    loadData();
   }, [selectedDate]);
   
   // Renderizar formulario de nueva reserva telefónica
@@ -993,18 +1022,52 @@ const AdminReservationPanel = () => {
     
     return (
       <div className="reservations-list">
-        <div className="filters">
-          <div className="filter-item">
-            <label htmlFor="filter-status">Estado:</label>
-            <select 
-              id="filter-status" 
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+        <div className="filters-enhanced">
+          <div className="filter-header">
+            <h4>Filtrar reservas</h4>
+            <span className="results-count">
+              {sortedReservations.length} resultados
+            </span>
+          </div>
+          
+          <div className="filter-tabs-container">
+            <button 
+              className={`filter-tab ${filterStatus === 'all' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('all')}
             >
-              <option value="all">Todos</option>
-              <option value="confirmed">Confirmadas</option>
-              <option value="cancelled">Canceladas</option>
-            </select>
+              <FontAwesomeIcon icon={faList} />
+              <span>Todas</span>
+              <span className="filter-count">{dayStats.total}</span>
+            </button>
+            
+            <button 
+              className={`filter-tab confirmed ${filterStatus === 'confirmed' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('confirmed')}
+            >
+              <FontAwesomeIcon icon={faCheckCircle} />
+              <span>Confirmadas</span>
+              <span className="filter-count">{dayStats.confirmed}</span>
+            </button>
+            
+            <button 
+              className={`filter-tab cancelled ${filterStatus === 'cancelled' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('cancelled')}
+            >
+              <FontAwesomeIcon icon={faTimesCircle} />
+              <span>Canceladas</span>
+              <span className="filter-count">{dayStats.cancelled}</span>
+            </button>
+            
+            {dayStats.noShow > 0 && (
+              <button 
+                className={`filter-tab no-show ${filterStatus === 'no-show' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('no-show')}
+              >
+                <FontAwesomeIcon icon={faUserTimes} />
+                <span>No Show</span>
+                <span className="filter-count">{dayStats.noShow}</span>
+              </button>
+            )}
           </div>
         </div>
         
@@ -1612,7 +1675,7 @@ const AdminReservationPanel = () => {
             <span>Editar Reserva</span>
           </button>
           <button 
-            onClick={handleCancelReservation}
+            onClick={() => handleCancelReservation(selectedReservation.id)}
             style={{
               backgroundColor: '#E63946',
               color: 'white',
@@ -1677,12 +1740,101 @@ const AdminReservationPanel = () => {
     history.push('/admin/opiniones');
   };
   
+  // Calcular estadísticas del día seleccionado
+  const calculateDayStats = () => {
+    const dayReservations = reservations.filter(reservation => 
+      areDatesEqual(reservation.date, selectedDate)
+    );
+    
+    const confirmed = dayReservations.filter(res => res.status === 'confirmed').length;
+    const cancelled = dayReservations.filter(res => res.status === 'cancelled').length;
+    const noShow = dayReservations.filter(res => res.status === 'no-show').length;
+    const totalGuests = dayReservations
+      .filter(res => res.status === 'confirmed')
+      .reduce((sum, res) => sum + parseInt(res.partySize || 0), 0);
+    
+    // Calcular capacidad utilizada (asumiendo 50 personas como capacidad total del restaurante)
+    const totalCapacity = 50;
+    const occupancyRate = totalCapacity > 0 ? Math.round((totalGuests / totalCapacity) * 100) : 0;
+    
+    // Calcular horarios más populares
+    const timeSlots = {};
+    dayReservations
+      .filter(res => res.status === 'confirmed')
+      .forEach(res => {
+        timeSlots[res.time] = (timeSlots[res.time] || 0) + 1;
+      });
+    
+    const mostPopularTime = Object.keys(timeSlots).length > 0 
+      ? Object.keys(timeSlots).reduce((a, b) => timeSlots[a] > timeSlots[b] ? a : b)
+      : 'N/A';
+    
+    return {
+      total: dayReservations.length,
+      confirmed,
+      cancelled,
+      noShow,
+      totalGuests,
+      occupancyRate,
+      mostPopularTime,
+      averagePartySize: confirmed > 0 ? Math.round((totalGuests / confirmed) * 10) / 10 : 0
+    };
+  };
+
+  const dayStats = calculateDayStats();
+  
+  // Función para cargar datos de la lista negra
+  const loadBlacklistData = async () => {
+    try {
+      const blacklistData = await getBlacklist();
+      setBlacklistEntries(blacklistData.entries || blacklistData || []);
+    } catch (error) {
+      console.error('Error al cargar lista negra:', error);
+      toast.error('Error al cargar la lista negra: ' + error.message);
+      setBlacklistEntries([]);
+    }
+  };
+
+  // Función para remover de la lista negra
+  const handleRemoveFromBlacklist = async (entryId) => {
+    if (window.confirm('¿Estás seguro de que quieres remover este cliente de la lista negra?')) {
+      try {
+        setLoading(true);
+        
+        await removeFromBlacklist(entryId);
+        
+        // Recargar lista negra
+        await loadBlacklistData();
+        
+        toast.success('Cliente removido de la lista negra');
+      } catch (error) {
+        console.error('Error al remover de lista negra:', error);
+        toast.error('Error al remover cliente: ' + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="admin-reservation-panel">
       <div className="panel-header">
         {/* Fila del Título */}
         <div className="panel-header-title-row">
           <h2>Panel de Administración de Reservas</h2>
+          {viewMode !== 'blacklist' && (
+            <div className="selected-date-info">
+              <FontAwesomeIcon icon={faClock} />
+              <span>
+                {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es-ES', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Fila de Botones */}
@@ -1743,20 +1895,100 @@ const AdminReservationPanel = () => {
       </div>
 
       {viewMode !== 'blacklist' && (
-        <div className="date-selector">
-          <label htmlFor="reservation-date">Fecha:</label>
-          <input
-            type="date"
-            id="reservation-date"
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
-          {reservationCounts[selectedDateFormatted] !== undefined && (
+        <>
+          <div className="date-selector">
+            <label htmlFor="reservation-date">Fecha:</label>
+            <input
+              type="date"
+              id="reservation-date"
+              value={selectedDate}
+              onChange={handleDateChange}
+            />
             <span className="reservation-count">
-              ({reservationCounts[selectedDateFormatted]} {reservationCounts[selectedDateFormatted] === 1 ? 'reserva' : 'reservas'})
+              {dayStats.total} {dayStats.total === 1 ? 'reserva' : 'reservas'}
             </span>
-          )}
-        </div>
+          </div>
+          
+          {/* Panel de estadísticas mejorado */}
+          <div className="enhanced-stats-panel">
+            <div className="stats-grid">
+              <div className="stat-card confirmed">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.confirmed}</span>
+                  <span className="stat-label">Confirmadas</span>
+                </div>
+              </div>
+              
+              <div className="stat-card cancelled">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faTimesCircle} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.cancelled}</span>
+                  <span className="stat-label">Canceladas</span>
+                </div>
+              </div>
+              
+              <div className="stat-card no-show">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faUserTimes} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.noShow}</span>
+                  <span className="stat-label">No se presentaron</span>
+                </div>
+              </div>
+              
+              <div className="stat-card guests">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faUsers} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.totalGuests}</span>
+                  <span className="stat-label">Comensales</span>
+                </div>
+              </div>
+              
+              <div className="stat-card occupancy">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faChartBar} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.occupancyRate}%</span>
+                  <span className="stat-label">Ocupación</span>
+                </div>
+              </div>
+              
+              <div className="stat-card popular-time">
+                <div className="stat-icon">
+                  <FontAwesomeIcon icon={faClock} />
+                </div>
+                <div className="stat-content">
+                  <span className="stat-number">{dayStats.mostPopularTime}</span>
+                  <span className="stat-label">Hora popular</span>
+                </div>
+              </div>
+            </div>
+            
+            {dayStats.confirmed > 0 && (
+              <div className="stats-summary">
+                <div className="summary-item">
+                  <span className="summary-label">Promedio por mesa:</span>
+                  <span className="summary-value">{dayStats.averagePartySize} personas</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">Eficiencia:</span>
+                  <span className="summary-value">
+                    {Math.round((dayStats.confirmed / dayStats.total) * 100)}% confirmación
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
       )}
       
       <div className="panel-content">

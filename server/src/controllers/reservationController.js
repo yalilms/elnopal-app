@@ -1,18 +1,6 @@
 const Reservation = require('../models/Reservation');
 const Table = require('../models/Table');
-const nodemailer = require('nodemailer');
-
-// Configuración de transporte de correo
-let transporter;
-if (process.env.EMAIL_SERVICE && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-  transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
-}
+const emailService = require('../services/emailService');
 
 // Función para liberar mesas automáticamente
 const autoCompleteReservations = async () => {
@@ -58,7 +46,31 @@ setInterval(autoCompleteReservations, 60000); // Ejecutar cada minuto
 // Crear una nueva reserva
 exports.createReservation = async (req, res) => {
   try {
-    const { customer, date, time, partySize, tableId, specialRequests } = req.body;
+    const { 
+      name, 
+      email, 
+      phone, 
+      date, 
+      time, 
+      partySize, 
+      tableId, 
+      specialRequests,
+      needsBabyCart,
+      needsWheelchair
+    } = req.body;
+
+    // Validaciones básicas
+    if (!name || !email || !phone || !date || !time || !partySize) {
+      return res.status(400).json({ 
+        message: 'Faltan campos obligatorios: nombre, email, teléfono, fecha, hora y número de personas' 
+      });
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Formato de email inválido' });
+    }
 
     // Validar que la mesa exista si se proporciona tableId
     if (tableId) {
@@ -72,21 +84,22 @@ exports.createReservation = async (req, res) => {
       }
     }
 
-    // Convertir hora a minutos desde medianoche
-    const [hours, minutes] = time.split(':').map(Number);
-    const timeInMinutes = hours * 60 + minutes;
-
-    // Crear la reserva
+    // Crear la reserva con la estructura correcta
     const reservation = new Reservation({
-      customer,
-      date,
+      customer: {
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
+        phone: phone.trim()
+      },
+      date: new Date(date),
       time,
-      timeInMinutes,
-      partySize,
-      tableId,
-      specialRequests,
-      createdBy: req.user ? req.user.id : null,
-      status: 'pending'
+      partySize: parseInt(partySize),
+      table: tableId || null,
+      specialRequests: specialRequests?.trim() || '',
+      needsBabyCart: needsBabyCart || false,
+      needsWheelchair: needsWheelchair || false,
+      status: 'confirmed', // Confirmamos automáticamente
+      createdBy: req.user ? req.user.id : null
     });
 
     await reservation.save();
@@ -99,35 +112,60 @@ exports.createReservation = async (req, res) => {
       });
     }
 
-    // Enviar correo de confirmación si está configurado el transporte
-    if (transporter) {
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: customer.email,
-        subject: 'Confirmación de Reserva - El Nopal',
-        html: `
-          <h2>¡Gracias por tu reserva en El Nopal!</h2>
-          <p>Detalles de tu reserva:</p>
-          <ul>
-            <li>Fecha: ${new Date(date).toLocaleDateString('es-ES')}</li>
-            <li>Hora: ${time}</li>
-            <li>Personas: ${partySize}</li>
-          </ul>
-          <p>Si tienes alguna pregunta, por favor contáctanos.</p>
-        `
+    // Enviar correos de confirmación
+    try {
+      const reservationData = {
+        name: reservation.customer.name,
+        email: reservation.customer.email,
+        phone: reservation.customer.phone,
+        date: reservation.date,
+        time: reservation.time,
+        partySize: reservation.partySize,
+        specialRequests: reservation.specialRequests,
+        needsBabyCart: reservation.needsBabyCart,
+        needsWheelchair: reservation.needsWheelchair
       };
 
-      try {
-        await transporter.sendMail(mailOptions);
-      } catch (error) {
-        console.error('Error al enviar correo de confirmación:', error);
+      const emailResult = await emailService.sendReservationEmails(reservationData);
+      
+      if (emailResult.success) {
+        // Marcar correos como enviados
+        reservation.confirmationEmailSent = true;
+        reservation.confirmationEmailSentAt = new Date();
+        reservation.notificationEmailSent = true;
+        reservation.notificationEmailSentAt = new Date();
+        await reservation.save();
       }
+    } catch (emailError) {
+      console.error('Error enviando correos de reserva:', emailError);
+      // No fallar la reserva por error de correo
     }
 
-    res.status(201).json(reservation);
+    res.status(201).json({
+      success: true,
+      message: 'Reserva creada exitosamente',
+      reservation: {
+        id: reservation._id,
+        customer: reservation.customer,
+        date: reservation.date,
+        time: reservation.time,
+        partySize: reservation.partySize,
+        status: reservation.status
+      }
+    });
   } catch (error) {
     console.error('Error al crear reserva:', error);
-    res.status(500).json({ message: 'Error al crear la reserva', error: error.message });
+    
+    if (error.code === 'BLACKLISTED') {
+      return res.status(403).json({ 
+        message: 'No se puede realizar la reserva. Cliente en lista negra.' 
+      });
+    }
+    
+    res.status(500).json({ 
+      message: 'Error al crear la reserva', 
+      error: error.message 
+    });
   }
 };
 
@@ -140,7 +178,8 @@ exports.getAllReservations = async (req, res) => {
     // Filtros opcionales
     if (date) {
       const searchDate = new Date(date);
-      const nextDay = new Date(date);
+      searchDate.setHours(0, 0, 0, 0);
+      const nextDay = new Date(searchDate);
       nextDay.setDate(nextDay.getDate() + 1);
       query.date = { $gte: searchDate, $lt: nextDay };
     }
@@ -150,27 +189,39 @@ exports.getAllReservations = async (req, res) => {
     }
 
     const reservations = await Reservation.find(query)
-      .populate('tableId')
-      .sort({ date: 1, time: 1 });
+      .populate('table')
+      .sort({ date: 1, timeInMinutes: 1 });
 
-    res.json(reservations);
+    res.json({
+      success: true,
+      reservations
+    });
   } catch (error) {
     console.error('Error al obtener reservas:', error);
-    res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    res.status(500).json({ 
+      message: 'Error en el servidor', 
+      error: error.message 
+    });
   }
 };
 
 // Obtener una reserva por ID
 exports.getReservationById = async (req, res) => {
   try {
-    const reservation = await Reservation.findById(req.params.id).populate('tableId');
+    const reservation = await Reservation.findById(req.params.id).populate('table');
     if (!reservation) {
       return res.status(404).json({ message: 'Reserva no encontrada' });
     }
-    res.json(reservation);
+    res.json({
+      success: true,
+      reservation
+    });
   } catch (error) {
     console.error('Error al obtener reserva:', error);
-    res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    res.status(500).json({ 
+      message: 'Error en el servidor', 
+      error: error.message 
+    });
   }
 };
 
@@ -186,10 +237,10 @@ exports.updateReservation = async (req, res) => {
     }
 
     // Si se cambia la mesa, actualizar estados
-    if (tableId && tableId !== currentReservation.tableId?.toString()) {
+    if (tableId && tableId !== currentReservation.table?.toString()) {
       // Liberar mesa anterior si existía
-      if (currentReservation.tableId) {
-        await Table.findByIdAndUpdate(currentReservation.tableId, { 
+      if (currentReservation.table) {
+        await Table.findByIdAndUpdate(currentReservation.table, { 
           status: 'free',
           currentReservation: null
         });
@@ -201,8 +252,7 @@ exports.updateReservation = async (req, res) => {
         return res.status(404).json({ message: 'Mesa no encontrada' });
       }
       
-      // Verificar capacidad
-      if (newTable.capacity < (partySize || currentReservation.partySize)) {
+      if (newTable.capacity < partySize) {
         return res.status(400).json({ message: 'La mesa seleccionada no tiene capacidad suficiente' });
       }
       
@@ -215,91 +265,143 @@ exports.updateReservation = async (req, res) => {
     // Actualizar la reserva
     const updatedReservation = await Reservation.findByIdAndUpdate(
       req.params.id,
-      { 
-        customer: customer || currentReservation.customer,
-        date: date || currentReservation.date,
-        time: time || currentReservation.time,
-        partySize: partySize || currentReservation.partySize,
-        tableId: tableId || currentReservation.tableId,
-        status: status || currentReservation.status,
-        specialRequests: specialRequests !== undefined ? specialRequests : currentReservation.specialRequests,
-        updatedAt: Date.now()
+      {
+        customer,
+        date,
+        time,
+        partySize,
+        table: tableId,
+        status,
+        specialRequests,
+        updatedBy: req.user ? req.user.id : null
       },
       { new: true }
-    ).populate('tableId');
+    ).populate('table');
 
-    // Notificar al cliente si hay cambio de estado
-    if (status && status !== currentReservation.status && 
-        transporter && updatedReservation.customer.email) {
-      let subject, message;
-      
-      switch(status) {
-        case 'confirmed':
-          subject = 'Reserva Confirmada - El Nopal';
-          message = `
-            <h1>¡Tu reserva ha sido confirmada!</h1>
-            <p>Hola ${updatedReservation.customer.name},</p>
-            <p>Tenemos el placer de confirmar tu reserva para el ${new Date(updatedReservation.date).toLocaleDateString()} a las ${updatedReservation.time}.</p>
-            <p>¡Esperamos verte pronto!</p>
-            <p>El equipo de El Nopal</p>
-          `;
-          break;
-        case 'canceled':
-          subject = 'Reserva Cancelada - El Nopal';
-          message = `
-            <h1>Tu reserva ha sido cancelada</h1>
-            <p>Hola ${updatedReservation.customer.name},</p>
-            <p>Te informamos que tu reserva para el ${new Date(updatedReservation.date).toLocaleDateString()} a las ${updatedReservation.time} ha sido cancelada.</p>
-            <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-            <p>El equipo de El Nopal</p>
-          `;
-          break;
-      }
-      
-      if (subject && message) {
-        const mailOptions = {
-          from: process.env.EMAIL_FROM || 'El Nopal <reservas@elnopal.es>',
-          to: updatedReservation.customer.email,
-          subject,
-          html: message
-        };
-
-        transporter.sendMail(mailOptions, (error) => {
-          if (error) {
-            console.error('Error al enviar correo de actualización:', error);
-          }
-        });
-      }
-    }
-
-    res.json(updatedReservation);
+    res.json({
+      success: true,
+      message: 'Reserva actualizada exitosamente',
+      reservation: updatedReservation
+    });
   } catch (error) {
     console.error('Error al actualizar reserva:', error);
-    res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    res.status(500).json({ 
+      message: 'Error al actualizar la reserva', 
+      error: error.message 
+    });
   }
 };
 
-// Eliminar una reserva
-exports.deleteReservation = async (req, res) => {
+// Cancelar una reserva
+exports.cancelReservation = async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.id);
     if (!reservation) {
       return res.status(404).json({ message: 'Reserva no encontrada' });
     }
 
-    // Liberar mesa si estaba asignada
-    if (reservation.tableId) {
-      await Table.findByIdAndUpdate(reservation.tableId, { 
+    // Liberar la mesa si está asignada
+    if (reservation.table) {
+      await Table.findByIdAndUpdate(reservation.table, { 
         status: 'free',
         currentReservation: null
       });
     }
 
-    await Reservation.findByIdAndDelete(req.params.id);
-    
-    res.json({ message: 'Reserva eliminada correctamente' });
+    // Actualizar el estado de la reserva
+    reservation.status = 'cancelled';
+    reservation.cancelledAt = new Date();
+    reservation.updatedBy = req.user ? req.user.id : null;
+    await reservation.save();
+
+    res.json({
+      success: true,
+      message: 'Reserva cancelada exitosamente',
+      reservation
+    });
   } catch (error) {
-    console.error('Error al eliminar reserva:', error);
-    res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    console.error('Error al cancelar reserva:', error);
+    res.status(500).json({ 
+      message: 'Error al cancelar la reserva', 
+      error: error.message 
+    });
+  }
+};
+
+// Obtener reservas por fecha
+exports.getReservationsByDate = async (req, res) => {
+  try {
+    const { date } = req.params;
+    const reservations = await Reservation.findByDate(date);
+    
+    res.json({
+      success: true,
+      date,
+      reservations
+    });
+  } catch (error) {
+    console.error('Error al obtener reservas por fecha:', error);
+    res.status(500).json({ 
+      message: 'Error al obtener reservas', 
+      error: error.message 
+    });
+  }
+};
+
+// Verificar disponibilidad
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { date, time, partySize } = req.query;
+    
+    if (!date || !time || !partySize) {
+      return res.status(400).json({ 
+        message: 'Faltan parámetros: fecha, hora y número de personas' 
+      });
+    }
+
+    const availability = await Reservation.checkAvailability(date, time, parseInt(partySize));
+    
+    res.json({
+      success: true,
+      availability
+    });
+  } catch (error) {
+    console.error('Error al verificar disponibilidad:', error);
+    res.status(500).json({ 
+      message: 'Error al verificar disponibilidad', 
+      error: error.message 
+    });
+  }
+};
+
+// Marcar reserva como no-show
+exports.markNoShow = async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
+    if (!reservation) {
+      return res.status(404).json({ message: 'Reserva no encontrada' });
+    }
+
+    await reservation.markNoShow(req.user ? req.user.id : null);
+
+    // Liberar la mesa
+    if (reservation.table) {
+      await Table.findByIdAndUpdate(reservation.table, { 
+        status: 'free',
+        currentReservation: null
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Reserva marcada como no-show',
+      reservation
+    });
+  } catch (error) {
+    console.error('Error al marcar no-show:', error);
+    res.status(500).json({ 
+      message: 'Error al marcar no-show', 
+      error: error.message 
+    });
   }
 }; 
