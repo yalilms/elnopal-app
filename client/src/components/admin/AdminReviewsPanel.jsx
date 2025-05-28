@@ -66,6 +66,9 @@ const AdminReviewsPanel = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, flagged, pending
   const [selectedReview, setSelectedReview] = useState(null);
+  const [showResponseModal, setShowResponseModal] = useState(false);
+  const [responseText, setResponseText] = useState('');
+  const [sendingResponse, setSendingResponse] = useState(false);
   const { currentUser, logout } = useAuth();
   const history = useHistory();
   
@@ -183,6 +186,75 @@ const AdminReviewsPanel = () => {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+  
+  // Función para enviar respuesta al cliente
+  const sendResponseToClient = async () => {
+    if (!responseText.trim()) {
+      toast.error('Por favor, escriba una respuesta');
+      return;
+    }
+
+    setSendingResponse(true);
+    
+    try {
+      const token = currentUser ? currentUser.token : null;
+      
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch(`/api/reviews/admin/${selectedReview._id}/respond`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          response: responseText.trim(),
+          restaurantName: 'El Nopal Restaurant'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('No se pudo enviar la respuesta');
+      }
+
+      const data = await response.json();
+      
+      // Actualizar el estado de la reseña
+      setReviews(reviews.map(review => 
+        review._id === selectedReview._id 
+          ? { ...review, status: 'reviewed', restaurantResponse: responseText.trim() } 
+          : review
+      ));
+      
+      if (selectedReview) {
+        setSelectedReview({ 
+          ...selectedReview, 
+          status: 'reviewed', 
+          restaurantResponse: responseText.trim() 
+        });
+      }
+
+      // Cerrar modal y limpiar
+      setShowResponseModal(false);
+      setResponseText('');
+      
+      toast.success('Respuesta enviada al cliente correctamente');
+      
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setSendingResponse(false);
+    }
+  };
+
+  // Función para abrir modal de respuesta
+  const handleRespondToReview = (review) => {
+    setSelectedReview(review);
+    setResponseText('');
+    setShowResponseModal(true);
   };
   
   const getFilteredReviews = () => {
@@ -339,12 +411,36 @@ const AdminReviewsPanel = () => {
               
               <div className="review-actions">
                 {selectedReview.status === 'pending' && (
-                  <button 
-                    className="action-btn approve-btn"
-                    onClick={() => approveReview(selectedReview._id)}
-                  >
-                    Marcar como Atendida
-                  </button>
+                  <>
+                    <button 
+                      className="action-btn respond-btn"
+                      onClick={() => handleRespondToReview(selectedReview)}
+                      style={{
+                        backgroundColor: '#6f42c1',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '0.75rem 1rem',
+                        fontSize: '0.9rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
+                        marginRight: '0.5rem'
+                      }}
+                    >
+                      📧 Responder al Cliente
+                    </button>
+                    
+                    <button 
+                      className="action-btn approve-btn"
+                      onClick={() => approveReview(selectedReview._id)}
+                    >
+                      Marcar como Atendida
+                    </button>
+                  </>
                 )}
                 
                 <button 
@@ -362,6 +458,270 @@ const AdminReviewsPanel = () => {
           )}
         </div>
       </div>
+      
+      {/* Modal para responder a opiniones */}
+      {showResponseModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '600px',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            position: 'relative',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+            color: '#333333',
+            border: '2px solid #6f42c1'
+          }}>
+            {/* Crucecita para cerrar */}
+            <button 
+              onClick={() => setShowResponseModal(false)}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                color: '#666',
+                cursor: 'pointer',
+                padding: '5px',
+                borderRadius: '50%',
+                width: '35px',
+                height: '35px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                zIndex: 10001
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#f5f5f5';
+                e.target.style.color = '#333';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#666';
+              }}
+              title="Cerrar"
+            >
+              ×
+            </button>
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '2rem',
+              paddingBottom: '1rem',
+              borderBottom: '2px solid #e5e5e5'
+            }}>
+              <h3 style={{
+                margin: 0,
+                color: '#6f42c1',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.8rem',
+                fontSize: '1.6rem',
+                fontWeight: 'bold'
+              }}>
+                <div style={{
+                  backgroundColor: '#6f42c1',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white'
+                }}>
+                  📧
+                </div>
+                Responder al Cliente
+              </h3>
+            </div>
+
+            {selectedReview && (
+              <div style={{
+                backgroundColor: '#f8f9fa',
+                padding: '1rem',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                border: '1px solid #e9ecef'
+              }}>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#495057' }}>
+                  Opinión de {selectedReview.nombre}:
+                </h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <div>
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} style={{ 
+                        color: i < selectedReview.calificacion ? '#ffc107' : '#ddd',
+                        fontSize: '1.1rem'
+                      }}>★</span>
+                    ))}
+                  </div>
+                  <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                    ({selectedReview.calificacion}/5)
+                  </span>
+                </div>
+                <p style={{ 
+                  margin: '0.5rem 0 0 0', 
+                  fontStyle: 'italic', 
+                  color: '#6c757d',
+                  lineHeight: '1.4'
+                }}>
+                  "{selectedReview.comentario}"
+                </p>
+              </div>
+            )}
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '0.8rem',
+                color: '#495057',
+                fontWeight: '600',
+                fontSize: '1rem'
+              }}>
+                Su respuesta para {selectedReview?.nombre}:
+              </label>
+              <textarea
+                value={responseText}
+                onChange={(e) => setResponseText(e.target.value)}
+                placeholder="Escriba aquí su respuesta profesional al cliente. Este mensaje se enviará por email..."
+                style={{
+                  width: '100%',
+                  minHeight: '120px',
+                  padding: '1rem',
+                  border: '2px solid #e9ecef',
+                  borderRadius: '8px',
+                  fontSize: '0.95rem',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
+                  lineHeight: '1.5'
+                }}
+                maxLength={500}
+              />
+              <p style={{
+                margin: '0.5rem 0 0 0',
+                fontSize: '0.8rem',
+                color: '#6c757d',
+                textAlign: 'right'
+              }}>
+                {responseText.length}/500 caracteres
+              </p>
+            </div>
+
+            <div style={{
+              backgroundColor: '#fff3cd',
+              padding: '1rem',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              border: '1px solid #ffeaa7'
+            }}>
+              <p style={{
+                margin: 0,
+                fontSize: '0.9rem',
+                color: '#856404'
+              }}>
+                💡 <strong>Consejos para una buena respuesta:</strong>
+              </p>
+              <ul style={{
+                margin: '0.5rem 0 0 0',
+                paddingLeft: '1.2rem',
+                fontSize: '0.85rem',
+                color: '#856404'
+              }}>
+                <li>Sea profesional y cortés</li>
+                <li>Agradezca el feedback del cliente</li>
+                <li>Si es una queja, ofrezca una solución</li>
+                <li>Invite al cliente a volver</li>
+              </ul>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '1rem',
+              paddingTop: '1rem',
+              borderTop: '1px solid #e5e5e5'
+            }}>
+              <button
+                onClick={() => setShowResponseModal(false)}
+                disabled={sendingResponse}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontWeight: '500',
+                  cursor: sendingResponse ? 'not-allowed' : 'pointer',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #ddd',
+                  color: '#495057',
+                  opacity: sendingResponse ? 0.7 : 1
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={sendResponseToClient}
+                disabled={!responseText.trim() || sendingResponse}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontWeight: '500',
+                  cursor: (!responseText.trim() || sendingResponse) ? 'not-allowed' : 'pointer',
+                  backgroundColor: '#6f42c1',
+                  border: 'none',
+                  color: 'white',
+                  opacity: (!responseText.trim() || sendingResponse) ? 0.7 : 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                {sendingResponse ? (
+                  <>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid transparent',
+                      borderTop: '2px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    📧 Enviar Respuesta
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
