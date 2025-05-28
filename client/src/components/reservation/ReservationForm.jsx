@@ -875,9 +875,11 @@ const ReservationForm = () => {
               Progreso del formulario
             </span>
             <span style={{fontSize: '0.9rem', color: '#006B3C', fontWeight: '600'}}>
-              {Math.round((Object.keys(formData).filter(key => 
-                key !== 'specialRequests' && key !== 'needsBabyCart' && key !== 'needsWheelchair' && formData[key]
-              ).length / 5) * 100)}%
+              {Math.round((Object.keys(formData).filter(key => {
+                // Solo contar campos obligatorios: name, email, phone, date, time, partySize
+                const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'partySize'];
+                return requiredFields.includes(key) && formData[key] && formData[key].toString().trim() !== '';
+              }).length / 6) * 100)}%
             </span>
           </div>
           <div style={{
@@ -888,9 +890,11 @@ const ReservationForm = () => {
             overflow: 'hidden'
           }}>
             <div style={{
-              width: `${Math.round((Object.keys(formData).filter(key => 
-                key !== 'specialRequests' && key !== 'needsBabyCart' && key !== 'needsWheelchair' && formData[key]
-              ).length / 5) * 100)}%`,
+              width: `${Math.round((Object.keys(formData).filter(key => {
+                // Solo contar campos obligatorios: name, email, phone, date, time, partySize
+                const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'partySize'];
+                return requiredFields.includes(key) && formData[key] && formData[key].toString().trim() !== '';
+              }).length / 6) * 100)}%`,
               height: '100%',
               backgroundColor: '#006B3C',
               transition: 'width 0.3s ease',

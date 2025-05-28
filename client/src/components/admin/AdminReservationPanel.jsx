@@ -49,6 +49,10 @@ const AdminReservationPanel = () => {
   const [editFormErrors, setEditFormErrors] = useState({});
   const [editFormTouched, setEditFormTouched] = useState({});
   
+  // Nuevos estados para los modales
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showNewReservationModal, setShowNewReservationModal] = useState(false);
+  
   const formatDateToDDMMYYYY = (dateString) => {
     if (!dateString || typeof dateString !== 'string') {
 
@@ -269,11 +273,12 @@ const AdminReservationPanel = () => {
     setSelectedReservation(null);
   };
   
-  // Manejar selección de reserva
+  // Manejar selección de reserva con modal
   const handleSelectReservation = (reservation) => {
     setSelectedReservation(reservation);
     setIsEditing(false);
     setIsCreatingReservation(false);
+    setShowDetailsModal(true);
   };
   
   // Iniciar edición de reserva
@@ -298,11 +303,12 @@ const AdminReservationPanel = () => {
     setIsCreatingReservation(false);
   };
   
-  // Iniciar creación de reserva telefónica
+  // Iniciar creación de reserva telefónica con modal
   const handleNewReservationClick = () => {
-    setIsCreatingReservation(true);
+    setShowNewReservationModal(true);
     setSelectedReservation(null);
     setIsEditing(false);
+    setIsCreatingReservation(false);
     
     // Inicializar el formulario con la fecha actual
     setNewReservationForm({
@@ -497,7 +503,7 @@ const AdminReservationPanel = () => {
     
     if (id) {
       toast.success('Reserva telefónica creada correctamente');
-      setIsCreatingReservation(false);
+      setShowNewReservationModal(false);
       
       // Limpiar el formulario y estados de validación
       setNewReservationForm({
@@ -2058,6 +2064,251 @@ const AdminReservationPanel = () => {
     return error;
   };
   
+  // Modal para detalles de reserva
+  const renderDetailsModal = () => {
+    if (!showDetailsModal || !selectedReservation) return null;
+    
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10000
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '8px',
+          width: '90%',
+          maxWidth: '500px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          position: 'relative',
+          boxShadow: '0 5px 30px rgba(0,0,0,0.3)',
+          color: '#333333',
+          border: '2px solid #006B3C'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+            paddingBottom: '1rem',
+            borderBottom: '1px solid #e5e5e5'
+          }}>
+            <h3 style={{
+              margin: 0,
+              color: '#006B3C',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '1.5rem',
+              fontWeight: 'bold'
+            }}>
+              <FontAwesomeIcon icon={faList} /> Detalles de la Reserva
+            </h3>
+            <button 
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '1.25rem',
+                color: '#666',
+                cursor: 'pointer',
+                padding: '0.5rem',
+                borderRadius: '4px'
+              }}
+              onClick={() => setShowDetailsModal(false)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          </div>
+
+          <div style={{
+            backgroundColor: '#f8f9fa',
+            padding: '1rem',
+            borderRadius: '6px',
+            marginBottom: '1.5rem',
+            border: '1px solid #e5e5e5'
+          }}>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Cliente:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.name}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Email:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.email}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Teléfono:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.phone}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Fecha:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.date}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Hora:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.time}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Personas:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.partySize}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Mesa:</label>
+              <span style={{ flex: 1, color: '#333333' }}>{selectedReservation.tableName || 'N/A'}</span>
+            </div>
+            <div style={{ marginBottom: '0.8rem', display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>Estado:</label>
+              <span className={`status-badge ${selectedReservation.status}`} style={{ fontSize: '0.8rem' }}>
+                {selectedReservation.status === 'confirmed' ? 'Confirmada' : 
+                 selectedReservation.status === 'cancelled' ? 'Cancelada' : selectedReservation.status}
+              </span>
+            </div>
+            <div style={{ display: 'flex' }}>
+              <label style={{ flex: '0 0 120px', fontWeight: 600, color: '#333333' }}>ID Reserva:</label>
+              <span style={{ flex: 1, color: '#333333', fontSize: '0.9rem', fontFamily: 'monospace' }}>{selectedReservation.id}</span>
+            </div>
+          </div>
+          
+          {selectedReservation.specialRequests && (
+            <div style={{
+              backgroundColor: '#fff8e1',
+              padding: '1rem',
+              borderRadius: '6px',
+              marginBottom: '1.5rem',
+              border: '1px solid #ffe082'
+            }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', color: '#f57c00', fontSize: '1rem' }}>
+                Peticiones especiales:
+              </h4>
+              <p style={{ margin: 0, color: '#333333', lineHeight: '1.4' }}>
+                {selectedReservation.specialRequests}
+              </p>
+            </div>
+          )}
+          
+          {(selectedReservation.needsBabyCart || selectedReservation.needsWheelchair) && (
+            <div style={{
+              backgroundColor: 'rgba(248, 182, 18, 0.1)',
+              padding: '1rem',
+              borderRadius: '6px',
+              marginBottom: '1.5rem',
+              border: '1px solid rgba(248, 182, 18, 0.3)'
+            }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', color: '#F8B612', fontSize: '1rem' }}>
+                Necesidades de accesibilidad:
+              </h4>
+              <div>
+                {selectedReservation.needsBabyCart && (
+                  <p style={{ margin: '0.2rem 0', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ marginRight: '0.5rem' }}>🍼</span>
+                    Carrito de bebé
+                  </p>
+                )}
+                {selectedReservation.needsWheelchair && (
+                  <p style={{ margin: '0.2rem 0', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ marginRight: '0.5rem' }}>♿</span>
+                    Silla de ruedas
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            marginTop: '2rem',
+            paddingTop: '1rem',
+            borderTop: '1px solid #e5e5e5',
+            flexWrap: 'wrap'
+          }}>
+            <button 
+              onClick={() => {
+                setShowDetailsModal(false);
+                handleEditClick();
+              }}
+              style={{
+                backgroundColor: '#009B9B',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                flex: '1',
+                minWidth: '120px',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faEdit} /> Editar
+            </button>
+            <button 
+              onClick={() => {
+                setShowDetailsModal(false);
+                handleCancelReservation(selectedReservation.id);
+              }}
+              style={{
+                backgroundColor: '#E63946',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                flex: '1',
+                minWidth: '120px',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faTimes} /> Cancelar
+            </button>
+            <button 
+              onClick={() => {
+                setShowDetailsModal(false);
+                handleNoShow(selectedReservation);
+              }}
+              style={{
+                backgroundColor: '#DC3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                flex: '1',
+                minWidth: '120px',
+                justifyContent: 'center'
+              }}
+            >
+              <FontAwesomeIcon icon={faUserSlash} /> No Show
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
   // Función para obtener el estilo del campo según su estado
   return (
     <div className="admin-reservation-panel">
@@ -2225,12 +2476,6 @@ const AdminReservationPanel = () => {
             {renderBlacklistManagement()}
           </div>
         )}
-        
-        {viewMode !== 'blacklist' && (
-          <div className="details-container">
-            {renderReservationDetails()}
-          </div>
-        )}
       </div>
       
       {showBlacklistModal && (
@@ -2250,6 +2495,12 @@ const AdminReservationPanel = () => {
           onConfirm={handleConfirmCancellation}
         />
       )}
+      
+      {/* Modal para nueva reserva telefónica */}
+      {renderNewReservationModal()}
+      
+      {/* Modal para detalles de reserva */}
+      {renderDetailsModal()}
     </div>
   );
 };
