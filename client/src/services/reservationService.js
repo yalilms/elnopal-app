@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configurar base URL para desarrollo y producción
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'http://elnopal.es:5000' // En producción, usar puerto 5000 del backend
+  ? 'https://elnopal.es' // En producción, usar HTTPS del dominio principal (nginx manejará el proxy)
   : 'http://localhost:5000'; // En desarrollo, puerto del backend
 
 // Configurar axios

@@ -9,19 +9,18 @@ console.log('======================================\n');
 
 // Configuración de la API
 const API_BASE_URL = 'http://localhost:5000'; // URL del backend en el VPS
-// Si estás probando en producción, cambiar a: 'http://elnopal.es:5000'
 
 // Datos de prueba para reserva real
 const testReservationData = {
   customer: {
     name: 'Usuario Prueba Real',
-    email: 'tu-email-real@gmail.com', // ¡CAMBIAR POR TU EMAIL REAL!
+    email: 'yalilms@gmail.com', // ¡CAMBIAR POR TU EMAIL REAL!
     phone: '+34 666 123 456'
   },
   date: '2024-12-25',
   time: '20:30',
   partySize: 4,
-  specialRequests: 'Prueba de correos desde API',
+  specialRequests: 'Prueba de correos desde API - Test del sistema',
   needsBabyCart: false,
   needsWheelchair: false
 };
@@ -47,8 +46,9 @@ async function testRealReservation() {
 
     console.log('📋 Qué verificar ahora:');
     console.log('1. ¿Llegó correo de confirmación a:', testReservationData.customer.email, '?');
-    console.log('2. ¿Llegó correo de notificación al restaurante?');
+    console.log('2. ¿Llegó correo de notificación al restaurante (reservas@elnopal.es)?');
     console.log('3. Revisar logs del servidor para errores de email');
+    console.log('4. Verificar también la carpeta de SPAM');
     console.log('');
 
     // Verificar en la base de datos si se guardó correctamente
@@ -103,7 +103,8 @@ async function testBackendConnection() {
 }
 
 async function runTest() {
-  console.log('⚠️  IMPORTANTE: Cambiar el email en testReservationData por uno real!');
+  console.log('⚠️  Email configurado para: ' + testReservationData.customer.email);
+  console.log('🔧 Si necesitas cambiar el email, edita el archivo test-real-reservation.js');
   console.log('');
   
   const backendOK = await testBackendConnection();
@@ -119,9 +120,9 @@ async function runTest() {
   console.log('');
   console.log('🎯 Próximos pasos si no llegan correos:');
   console.log('1. Revisar logs del backend: pm2 logs elnopal-backend');
-  console.log('2. Verificar variables de entorno EMAIL_* en el VPS');
-  console.log('3. Verificar que el servicio emailService se esté cargando');
-  console.log('4. Comprobar que no haya errores en la consola del servidor');
+  console.log('2. Verificar carpeta de SPAM en el email');
+  console.log('3. Verificar variables de entorno EMAIL_* en el VPS');
+  console.log('4. Probar desde la web directamente: http://elnopal.es');
 }
 
 // Ejecutar el test
