@@ -196,10 +196,11 @@ ReservationSchema.pre('save', async function(next) {
       const Blacklist = mongoose.model('Blacklist');
       const blacklistEntry = await Blacklist.findOne({ 
         $or: [
-          { email: this.customer.email },
-          { phone: this.customer.phone }
+          { customerEmail: this.customer.email },
+          { customerPhone: this.customer.phone }
         ],
-        active: true
+        isActive: true,
+        expiresAt: { $gt: new Date() }
       });
       
       if (blacklistEntry) {
