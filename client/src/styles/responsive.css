@@ -29,6 +29,17 @@
   --font-3xl: clamp(2rem, 6vw, 3rem);
   --font-4xl: clamp(2.5rem, 7vw, 4rem);
   --font-hero: clamp(3rem, 8vw, 6rem);
+
+  /* Variables globales responsive */
+  --mobile-padding: 1rem;
+  --tablet-padding: 1.5rem;
+  --desktop-padding: 2rem;
+  --mobile-gap: 0.75rem;
+  --tablet-gap: 1rem;
+  --desktop-gap: 1.5rem;
+  --mobile-font-size: 0.9rem;
+  --tablet-font-size: 1rem;
+  --desktop-font-size: 1.1rem;
 }
 
 /* ===============================
@@ -50,6 +61,13 @@ body {
   overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
+  line-height: 1.6;
+}
+
+/* Imágenes responsive */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Contenedor principal responsive */
@@ -57,7 +75,7 @@ body {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--mobile-padding);
 }
 
 /* ===============================
@@ -731,6 +749,11 @@ body {
   .hero-parallax .parallax-bg {
     background-size: cover;
     background-attachment: scroll; /* Mejor rendimiento en retina */
+    background-position: center center;
+    /* Evitar bordes blancos en pantallas de alta densidad */
+    transform: scale(1.01);
+    min-width: 100%;
+    min-height: 100%;
   }
 }
 
@@ -787,4 +810,584 @@ body {
     --shadow: rgba(255, 255, 255, 0.1);
   }
 }
-*/ 
+*/
+
+/* 
+ * MEJORAS RESPONSIVE GLOBALES
+ * Aplicables a toda la aplicación El Nopal
+ */
+
+/* Reset para mejor responsive */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Imágenes responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Contenedores responsive */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--mobile-padding);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--tablet-padding);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 var(--desktop-padding);
+  }
+}
+
+/* Grid responsive mejorado */
+.grid {
+  display: grid;
+  gap: var(--mobile-gap);
+  width: 100%;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: 1fr;
+}
+
+.grid-4 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    gap: var(--tablet-gap);
+  }
+  
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    gap: var(--desktop-gap);
+  }
+  
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Flex utilities responsive */
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.gap-1 {
+  gap: var(--mobile-gap);
+}
+
+.gap-2 {
+  gap: calc(var(--mobile-gap) * 2);
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
+  
+  .md\:justify-start {
+    justify-content: flex-start;
+  }
+  
+  .gap-1 {
+    gap: var(--tablet-gap);
+  }
+  
+  .gap-2 {
+    gap: calc(var(--tablet-gap) * 2);
+  }
+}
+
+/* Typography responsive */
+.text-sm {
+  font-size: 0.8rem;
+}
+
+.text-base {
+  font-size: var(--mobile-font-size);
+}
+
+.text-lg {
+  font-size: 1.1rem;
+}
+
+.text-xl {
+  font-size: 1.2rem;
+}
+
+.text-2xl {
+  font-size: 1.4rem;
+}
+
+.text-3xl {
+  font-size: 1.6rem;
+}
+
+@media (min-width: 768px) {
+  .text-base {
+    font-size: var(--tablet-font-size);
+  }
+  
+  .text-lg {
+    font-size: 1.2rem;
+  }
+  
+  .text-xl {
+    font-size: 1.4rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.8rem;
+  }
+  
+  .text-3xl {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-base {
+    font-size: var(--desktop-font-size);
+  }
+  
+  .text-lg {
+    font-size: 1.3rem;
+  }
+  
+  .text-xl {
+    font-size: 1.6rem;
+  }
+  
+  .text-2xl {
+    font-size: 2rem;
+  }
+  
+  .text-3xl {
+    font-size: 2.4rem;
+  }
+}
+
+/* Spacing responsive */
+.p-1 {
+  padding: var(--mobile-padding);
+}
+
+.p-2 {
+  padding: calc(var(--mobile-padding) * 2);
+}
+
+.px-1 {
+  padding-left: var(--mobile-padding);
+  padding-right: var(--mobile-padding);
+}
+
+.py-1 {
+  padding-top: var(--mobile-padding);
+  padding-bottom: var(--mobile-padding);
+}
+
+.m-1 {
+  margin: var(--mobile-padding);
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .md\:p-2 {
+    padding: calc(var(--tablet-padding) * 2);
+  }
+  
+  .md\:px-2 {
+    padding-left: calc(var(--tablet-padding) * 2);
+    padding-right: calc(var(--tablet-padding) * 2);
+  }
+}
+
+/* Buttons responsive */
+.btn-responsive {
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px; /* Mínimo para touch targets */
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .btn-responsive {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+}
+
+/* Cards responsive */
+.card-responsive {
+  background: white;
+  border-radius: 12px;
+  padding: var(--mobile-padding);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.card-responsive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 768px) {
+  .card-responsive {
+    padding: var(--tablet-padding);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-responsive {
+    padding: var(--desktop-padding);
+  }
+}
+
+/* Forms responsive */
+.form-responsive {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-group-responsive {
+  margin-bottom: 1.5rem;
+}
+
+.form-group-responsive label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.form-group-responsive input,
+.form-group-responsive select,
+.form-group-responsive textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  min-height: 48px;
+}
+
+.form-group-responsive input:focus,
+.form-group-responsive select:focus,
+.form-group-responsive textarea:focus {
+  border-color: #009B9B;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 155, 155, 0.15);
+}
+
+@media (max-width: 480px) {
+  .form-group-responsive input,
+  .form-group-responsive select,
+  .form-group-responsive textarea {
+    font-size: 16px; /* Evita zoom en iOS */
+    padding: 1.2rem;
+  }
+}
+
+/* Navigation responsive */
+.nav-responsive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem var(--mobile-padding);
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.nav-menu.active {
+  display: flex;
+}
+
+.nav-toggle {
+  display: block;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #009B9B;
+}
+
+@media (min-width: 768px) {
+  .nav-responsive {
+    padding: 1rem var(--tablet-padding);
+  }
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    box-shadow: none;
+    padding: 0;
+    background: transparent;
+  }
+  
+  .nav-toggle {
+    display: none;
+  }
+}
+
+/* Tables responsive */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-responsive table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.table-responsive th,
+.table-responsive td {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table-responsive th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    display: none;
+  }
+  
+  .table-cards {
+    display: block;
+  }
+}
+
+.table-cards {
+  display: none;
+}
+
+.table-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #009B9B;
+}
+
+/* Modal responsive */
+.modal-responsive {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--mobile-padding);
+}
+
+.modal-content-responsive {
+  background: white;
+  border-radius: 12px;
+  padding: var(--mobile-padding);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .modal-content-responsive {
+    padding: var(--tablet-padding);
+  }
+}
+
+/* Utility classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hidden-mobile {
+  display: none;
+}
+
+.hidden-desktop {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hidden-mobile {
+    display: block;
+  }
+  
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+/* Focus visible global mejorado */
+*:focus-visible {
+  outline: 3px solid #FFB703;
+  outline-offset: 2px;
+}
+
+/* Mejoras para touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .card-responsive:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-responsive:hover {
+    transform: none;
+  }
+}
+
+/* Dark mode support (preparado para futuro) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --border-color: #404040;
+  }
+}
+
+/* Print styles */
+@media print {
+  .nav-responsive,
+  .btn-responsive,
+  .modal-responsive {
+    display: none !important;
+  }
+  
+  .card-responsive {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+} 

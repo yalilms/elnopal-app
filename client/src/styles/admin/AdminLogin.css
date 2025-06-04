@@ -166,4 +166,124 @@
   border-radius: 3px;
   font-family: monospace;
   color: #c74237;
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .admin-login-container {
+    padding: 15px;
+    align-items: flex-start;
+    padding-top: 5vh;
+  }
+  
+  .admin-login-content {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .admin-login-form {
+    padding: 30px 20px;
+  }
+  
+  .admin-login-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .admin-login-logo {
+    font-size: 2.5rem;
+  }
+  
+  .admin-login-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .back-to-site {
+    top: 15px;
+    left: 15px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-login-container {
+    padding: 10px;
+    padding-top: 2vh;
+  }
+  
+  .admin-login-content {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 8px;
+  }
+  
+  .admin-login-form {
+    padding: 25px 15px;
+  }
+  
+  .admin-login-header {
+    margin-bottom: 25px;
+  }
+  
+  .admin-login-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .admin-login-logo {
+    font-size: 2rem;
+  }
+  
+  .admin-login-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .admin-login-field {
+    margin-bottom: 20px;
+  }
+  
+  .admin-login-field input {
+    padding: 14px 15px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  .admin-login-button {
+    padding: 16px;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
+  .demo-credentials {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+  
+  .back-to-site {
+    top: 10px;
+    left: 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mejoras para touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .admin-login-button:hover {
+    background: #20aa6e;
+  }
+  
+  .password-toggle:hover {
+    color: #777;
+  }
+  
+  .back-to-site:hover {
+    color: #0d4a33;
+  }
+}
+
+/* Focus visible mejorado */
+.admin-login-field input:focus-visible,
+.admin-login-button:focus-visible,
+.password-toggle:focus-visible,
+.back-to-site:focus-visible {
+  outline: 3px solid #FFB703;
+  outline-offset: 2px;
 } 

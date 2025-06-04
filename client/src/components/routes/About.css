@@ -73,10 +73,15 @@ body:has(.about-page) {
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   z-index: -1;
   transition: background-image 1s ease-in-out;
+  /* Asegurar cobertura completa */
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
 }
 
 .about-hero .parallax-overlay {
