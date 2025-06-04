@@ -154,7 +154,7 @@ const AdminReviewsPanel = () => {
         throw new Error('No hay token de autenticación');
       }
       
-      const response = await fetch(`/api/reviews/admin/${reviewId}`, {
+      const response = await fetch(`/api/reviews/${reviewId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -188,12 +188,15 @@ const AdminReviewsPanel = () => {
         throw new Error('No hay token de autenticación');
       }
       
-      const response = await fetch(`/api/reviews/admin/${reviewId}/approve`, {
-        method: 'PUT',
+      const response = await fetch(`/api/reviews/${reviewId}/status`, {
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          status: 'reviewed'
+        })
       });
       
       if (!response.ok) {
