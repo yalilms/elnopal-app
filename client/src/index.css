@@ -1,6 +1,23 @@
-/* Importar variables y fuentes */
+/* Importar fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-@import './styles/variables.css';
+
+/* Variables CSS definidas inline */
+:root {
+  --font-family: 'Poppins', sans-serif;
+  --primary-color: #d4a574;
+  --secondary-color: #8b4513;
+  --accent-color: #ff6b35;
+  --bg-light: #faf8f5;
+  --bg-dark: #2c1810;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-light: #fff;
+  --border-color: #ddd;
+  --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+  --shadow-medium: 0 4px 20px rgba(0,0,0,0.15);
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+}
 
 /* Reset y estilos base */
 * {
@@ -16,14 +33,10 @@ body {
   background-color: var(--bg-light);
 }
 
-/* Asegurarnos que los estilos del login tengan prioridad sobre otros estilos */
-@import './styles/auth/Login.css';
-
-/* Importar estilos de componentes */
-@import './styles/forms.css';
-@import './styles/ContactForm.css';
-@import './styles/admin/AdminForms.css';
-@import './styles/admin/AdminPanel.css';
+/* Importar estilos que realmente existen */
+@import './styles/responsive.css';
+@import './styles/media-queries.css';
+@import './styles/performance.css';
 
 /* Estilos para elementos de código */
 code {
