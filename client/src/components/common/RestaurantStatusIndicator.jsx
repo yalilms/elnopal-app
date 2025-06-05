@@ -1,6 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { getRestaurantOpeningStatus } from '../../data/tablesData'; // Ajusta la ruta si es necesario
-import './RestaurantStatusIndicator.css'; // Crearemos este archivo CSS
+
+// Función para obtener el estado de apertura del restaurante
+const getRestaurantOpeningStatus = (currentDate = new Date()) => {
+  const now = new Date(currentDate);
+  const currentHour = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const currentTime = currentHour * 60 + currentMinutes; // Tiempo en minutos desde medianoche
+  
+  // Horarios del restaurante (en minutos desde medianoche)
+  const openTime = 12 * 60; // 12:00 PM
+  const closeTime = 22 * 60; // 10:00 PM
+  
+  const isOpen = currentTime >= openTime && currentTime < closeTime;
+  
+  let closesAt = null;
+  let opensNext = null;
+  
+  if (isOpen) {
+    // Si está abierto, calcular cuándo cierra
+    closesAt = "10:00 PM";
+  } else {
+    // Si está cerrado, calcular cuándo abre
+    if (currentTime < openTime) {
+      // Antes de la hora de apertura del mismo día
+      opensNext = "hoy a las 12:00 PM";
+    } else {
+      // Después de la hora de cierre, abre mañana
+      opensNext = "mañana a las 12:00 PM";
+    }
+  }
+  
+  return {
+    isOpen,
+    closesAt,
+    opensNext
+  };
+};
 
 const RestaurantStatusIndicator = () => {
   const [status, setStatus] = useState({ isOpen: false, closesAt: null, opensNext: null });

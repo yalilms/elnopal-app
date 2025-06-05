@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
-import { getTimeSlotsForDay } from '../../data/tablesData';
 import { useAuth } from '../../context/AuthContext';
+
+// Función para obtener slots de tiempo disponibles
+const getTimeSlotsForDay = (date) => {
+  const timeSlots = [];
+  const startHour = 12; // 12:00 PM
+  const endHour = 22; // 10:00 PM
+  
+  for (let hour = startHour; hour < endHour; hour++) {
+    // Hora en punto
+    const hourString = hour <= 12 ? `${hour}:00` : `${hour}:00`;
+    timeSlots.push(hourString);
+    
+    // Media hora
+    const halfHourString = hour <= 12 ? `${hour}:30` : `${hour}:30`;
+    timeSlots.push(halfHourString);
+  }
+  
+  return timeSlots;
+};
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes, faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
