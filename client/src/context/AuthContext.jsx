@@ -13,13 +13,13 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
+  const [authTokenState, setAuthTokenState] = useState(null);
 
-  // Manejar eventos de logout automático
+  // Manejar eventos de logout automático - solo se ejecuta una vez
   useEffect(() => {
     const handleAuthLogout = () => {
       setCurrentUser(null);
-      setAuthToken(null);
+      setAuthTokenState(null);
       setError(null);
       toast.error('Sesión expirada. Por favor, inicia sesión nuevamente.');
     };
@@ -29,19 +29,19 @@ export const AuthProvider = ({ children }) => {
     return () => {
       window.removeEventListener('auth:logout', handleAuthLogout);
     };
-  }, []);
+  }, []); // Solo se ejecuta una vez al montar el componente
 
   // Actualizar token en la configuración de API cuando cambie
   useEffect(() => {
-    setAuthToken(authToken);
-  }, [authToken]);
+    setAuthToken(authTokenState); // setAuthToken es la función del servicio API
+  }, [authTokenState]);
 
   // Verificar autenticación al cargar la aplicación
   useEffect(() => {
     const checkAuth = async () => {
       try {
         // Intentar obtener el usuario actual si hay un token en memoria
-        if (authToken) {
+        if (authTokenState) {
           const response = await api.get('/api/auth/me');
           if (response.data) {
             setCurrentUser(response.data);
@@ -49,19 +49,19 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.log('No hay sesión activa o token inválido');
-        setAuthToken(null);
+        setAuthTokenState(null);
         setCurrentUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    if (authToken) {
+    if (authTokenState) {
       checkAuth();
     } else {
       setLoading(false);
     }
-  }, [authToken]);
+  }, [authTokenState]);
 
   // Función para iniciar sesión
   const login = async (email, password) => {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         console.log("Login exitoso:", userData);
         
         // Establecer token y usuario en el estado
-        setAuthToken(token);
+        setAuthTokenState(token);
         setCurrentUser(userData);
         
         toast.success(`¡Bienvenido ${userData.name || userData.email}!`);
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       toast.error(errorMessage);
       
       // Limpiar estado en caso de error
-      setAuthToken(null);
+      setAuthTokenState(null);
       setCurrentUser(null);
       
       return false;
@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }) => {
         console.log("Registro exitoso:", userData);
         
         // Establecer token y usuario en el estado
-        setAuthToken(token);
+        setAuthTokenState(token);
         setCurrentUser(userData);
         
         toast.success(`¡Bienvenido ${userData.name}! Tu cuenta ha sido creada.`);
@@ -160,7 +160,7 @@ export const AuthProvider = ({ children }) => {
   // Función para cerrar sesión
   const logout = () => {
     setCurrentUser(null);
-    setAuthToken(null);
+    setAuthTokenState(null);
     setError(null);
     
     toast.info('Sesión cerrada correctamente');
@@ -178,12 +178,12 @@ export const AuthProvider = ({ children }) => {
 
   // Obtener el token actual
   const getToken = () => {
-    return authToken;
+    return authTokenState;
   };
 
   // Refrescar datos del usuario
   const refreshUser = async () => {
-    if (!authToken) return false;
+    if (!authTokenState) return false;
     
     try {
       const response = await api.get('/api/auth/me');
@@ -209,7 +209,7 @@ export const AuthProvider = ({ children }) => {
     hasRole,
     getToken,
     refreshUser,
-    isAuthenticated: !!currentUser && !!authToken
+    isAuthenticated: !!currentUser && !!authTokenState
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
