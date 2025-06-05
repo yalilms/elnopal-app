@@ -11,7 +11,6 @@ import {
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import CancelReservationModal from './CancelReservationModal';
-import Modal from '../ui/Modal';
 
 // Estilos CSS completos para el panel de administración
 const adminPanelStyles = `
