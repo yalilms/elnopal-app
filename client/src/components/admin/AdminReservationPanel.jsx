@@ -6,11 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faCalendarAlt, faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
   faClock, faUsers, faUtensils, faCheck, faList, faUserSlash, faEye,
-  faComments, faHome, faSignOutAlt, faFilter, faArrowLeft, faArrowRight
+  faComments, faHome, faSignOutAlt, faFilter, faArrowLeft, faArrowRight,
+  faCheckCircle, faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import CancelReservationModal from './CancelReservationModal';
+import BlacklistManagement from './BlacklistManagement';
 
 // Estilos CSS completos para el panel de administración
 const adminPanelStyles = `
@@ -1457,6 +1459,59 @@ const AdminReservationPanel = () => {
   const handleCloseDetails = () => {
     setSelectedReservation(null);
     setIsEditing(false);
+  };
+
+  // Funciones para manejo de blacklist
+  const addToBlacklist = async (blacklistData) => {
+    // Simular API call - en producción sería una llamada real al backend
+    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(blacklistData)
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al agregar a blacklist');
+    }
+    
+    return await response.json();
+  };
+
+  const getBlacklist = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener blacklist');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error loading blacklist:', error);
+      return [];
+    }
+  };
+
+  const removeFromBlacklist = async (entryId) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist/${entryId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al remover de blacklist');
+    }
+    
+    return await response.json();
   };
   
   const handleAddToBlacklist = async (blacklistData) => {
