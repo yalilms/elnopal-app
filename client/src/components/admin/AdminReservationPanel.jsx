@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes, faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+import BlacklistModal from './BlacklistModal';
+import CancelReservationModal from './CancelReservationModal';
+import { addToBlacklist, getBlacklist, removeFromBlacklist } from '../../services/reservationService';
+import BlacklistManagement from './BlacklistManagement';
 
 // Función para obtener slots de tiempo disponibles
 const getTimeSlotsForDay = (date) => {
@@ -21,13 +28,6 @@ const getTimeSlotsForDay = (date) => {
   
   return timeSlots;
 };
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faComments, faUsers, faChartBar, faClock, faCheckCircle, faTimesCircle, faUserTimes, faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-toastify';
-import BlacklistModal from './BlacklistModal';
-import CancelReservationModal from './CancelReservationModal';
-import { addToBlacklist, getBlacklist, removeFromBlacklist } from '../../services/reservationService';
-import BlacklistManagement from './BlacklistManagement';
 
 const AdminReservationPanel = () => {
   const { 

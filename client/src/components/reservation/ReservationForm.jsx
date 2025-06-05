@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
-
 import { FaCheckCircle, FaExclamationCircle, FaCheck, FaTimes } from 'react-icons/fa';
+import { handleHashScroll } from '../../utils/scrollUtils';
+
 // Función para obtener slots de tiempo (movida aquí desde tablesData eliminado)
 const getTimeSlotsForDay = (date) => {
   // Slots básicos para todos los días
@@ -38,7 +39,6 @@ const getTimeSlotsForDay = (date) => {
   
   return baseSlots;
 };
-import { handleHashScroll } from '../../utils/scrollUtils';
 
 
 // Estilos inline para asegurar visibilidad
