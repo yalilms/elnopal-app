@@ -1,52 +1,4 @@
-import axios from 'axios';
-
-// Configurar base URL para desarrollo y producción
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://elnopal.es' // En producción, usar HTTPS del dominio principal (nginx manejará el proxy)
-  : 'http://localhost:5000'; // En desarrollo, puerto del backend
-
-// Configurar axios
-axios.defaults.baseURL = API_BASE_URL;
-
-// Función para obtener el token del localStorage
-const getAuthToken = () => {
-  try {
-    const user = localStorage.getItem('currentUser');
-    if (!user) {
-      console.warn('No se encontró usuario en localStorage');
-      return null;
-    }
-    
-    const parsedUser = JSON.parse(user);
-    if (!parsedUser.token) {
-      console.warn('Usuario encontrado pero no tiene token');
-      return null;
-    }
-    
-    return parsedUser.token;
-  } catch (error) {
-    console.error('Error al obtener token:', error);
-    return null;
-  }
-};
-
-// Configurar interceptor para incluir el token en todas las solicitudes
-axios.interceptors.request.use(
-  (config) => {
-    const token = getAuthToken();
-    if (token) {
-      config.headers['x-auth-token'] = token;
-      console.log('Token incluido en la solicitud:', token);
-    } else {
-      console.warn('No se encontró token para la solicitud');
-    }
-    return config;
-  },
-  (error) => {
-    console.error('Error en el interceptor de solicitud:', error);
-    return Promise.reject(error);
-  }
-);
+import api from './api';
 
 // ============= SERVICIOS DE RESERVAS =============
 
@@ -55,7 +7,7 @@ export const createReservation = async (reservationData) => {
   try {
     console.log('Creando reserva:', reservationData);
     
-    const response = await axios.post('/api/reservations', {
+    const response = await api.post('/api/reservations', {
       name: reservationData.name,
       email: reservationData.email,
       phone: reservationData.phone,
@@ -94,18 +46,13 @@ export const createReservation = async (reservationData) => {
 // Obtener todas las reservas (solo para administradores)
 export const getAllReservations = async (filters = {}) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Obteniendo todas las reservas con filtros:', filters);
     
     const params = new URLSearchParams();
     if (filters.date) params.append('date', filters.date);
     if (filters.status) params.append('status', filters.status);
     
-    const response = await axios.get(`/api/reservations?${params.toString()}`);
+    const response = await api.get(`/api/reservations?${params.toString()}`);
     
     console.log('Reservas obtenidas:', response.data);
     return response.data.reservations || [];
@@ -125,14 +72,9 @@ export const getAllReservations = async (filters = {}) => {
 // Obtener reservas por fecha específica
 export const getReservationsByDate = async (date) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Obteniendo reservas para la fecha:', date);
     
-    const response = await axios.get(`/api/reservations/date/${date}`);
+    const response = await api.get(`/api/reservations/date/${date}`);
     
     console.log('Reservas obtenidas para la fecha:', response.data);
     return response.data.reservations || [];
@@ -150,14 +92,9 @@ export const getReservationsByDate = async (date) => {
 // Obtener una reserva específica por ID
 export const getReservationById = async (reservationId) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Obteniendo reserva por ID:', reservationId);
     
-    const response = await axios.get(`/api/reservations/${reservationId}`);
+    const response = await api.get(`/api/reservations/${reservationId}`);
     
     console.log('Reserva obtenida:', response.data);
     return response.data.reservation;
@@ -177,14 +114,9 @@ export const getReservationById = async (reservationId) => {
 // Actualizar una reserva
 export const updateReservation = async (reservationId, updateData) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Actualizando reserva:', reservationId, updateData);
     
-    const response = await axios.put(`/api/reservations/${reservationId}`, updateData);
+    const response = await api.put(`/api/reservations/${reservationId}`, updateData);
     
     console.log('Reserva actualizada:', response.data);
     return response.data.reservation;
@@ -206,14 +138,9 @@ export const updateReservation = async (reservationId, updateData) => {
 // Cancelar una reserva
 export const cancelReservation = async (reservationId, reason = '') => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Cancelando reserva:', reservationId, 'Motivo:', reason);
     
-    const response = await axios.patch(`/api/reservations/${reservationId}/cancel`, { reason });
+    const response = await api.patch(`/api/reservations/${reservationId}/cancel`, { reason });
     
     console.log('Reserva cancelada:', response.data);
     return response.data.reservation;
@@ -233,14 +160,9 @@ export const cancelReservation = async (reservationId, reason = '') => {
 // Marcar reserva como no-show
 export const markReservationNoShow = async (reservationId) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Marcando reserva como no-show:', reservationId);
     
-    const response = await axios.patch(`/api/reservations/${reservationId}/no-show`);
+    const response = await api.patch(`/api/reservations/${reservationId}/no-show`);
     
     console.log('Reserva marcada como no-show:', response.data);
     return response.data.reservation;
@@ -262,7 +184,7 @@ export const checkAvailability = async (date, time, partySize) => {
   try {
     console.log('Verificando disponibilidad para:', { date, time, partySize });
     
-    const response = await axios.get('/api/reservations/availability', {
+    const response = await api.get('/api/reservations/availability', {
       params: { date, time, partySize }
     });
     
@@ -281,7 +203,7 @@ export const getAllTables = async () => {
   try {
     console.log('Obteniendo todas las mesas');
     
-    const response = await axios.get('/api/tables');
+    const response = await api.get('/api/tables');
     
     console.log('Mesas obtenidas:', response.data);
     return response.data.tables || [];
@@ -299,7 +221,7 @@ export const initializeDefaultTables = async () => {
   try {
     console.log('Inicializando mesas por defecto');
     
-    const response = await axios.post('/api/tables/initialize');
+    const response = await api.post('/api/tables/initialize');
     
     console.log('Mesas inicializadas:', response.data);
     return response.data;
@@ -314,7 +236,7 @@ export const getTableById = async (tableId) => {
   try {
     console.log('Obteniendo mesa por ID:', tableId);
     
-    const response = await axios.get(`/api/tables/${tableId}`);
+    const response = await api.get(`/api/tables/${tableId}`);
     
     console.log('Mesa obtenida:', response.data);
     return response.data.table;
@@ -347,15 +269,9 @@ export const addToBlacklist = async (blacklistData) => {
       throw new Error('El ID de la reserva es requerido');
     }
 
-    // Verificar autenticación
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Intentando añadir cliente a la lista negra:', blacklistData);
     
-    const response = await axios.post('/api/blacklist', blacklistData);
+    const response = await api.post('/api/blacklist', blacklistData);
     
     console.log('Respuesta del servidor:', response.data);
     return response.data;
@@ -384,13 +300,8 @@ export const addToBlacklist = async (blacklistData) => {
 // Verificar si un cliente está en la lista negra
 export const checkBlacklist = async (email, phone) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Verificando cliente en lista negra:', { email, phone });
-    const response = await axios.get(`/api/blacklist/check?email=${email}&phone=${phone}`);
+    const response = await api.get(`/api/blacklist/check?email=${email}&phone=${phone}`);
     console.log('Respuesta de verificación:', response.data);
     return response.data;
   } catch (error) {
@@ -402,14 +313,9 @@ export const checkBlacklist = async (email, phone) => {
 // Obtener toda la lista negra
 export const getBlacklist = async () => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Obteniendo lista negra');
     
-    const response = await axios.get('/api/blacklist');
+    const response = await api.get('/api/blacklist');
     
     console.log('Lista negra obtenida:', response.data);
     return response.data;
@@ -434,14 +340,9 @@ export const getBlacklist = async () => {
 // Remover cliente de la lista negra
 export const removeFromBlacklist = async (id) => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
-    }
-
     console.log('Removiendo cliente de la lista negra:', id);
     
-    const response = await axios.delete(`/api/blacklist/${id}`);
+    const response = await api.delete(`/api/blacklist/${id}`);
     
     console.log('Cliente removido:', response.data);
     return response.data;
@@ -492,4 +393,4 @@ const calculateEndTime = (startTime, duration = 90) => {
   const endMinutes = totalMinutes % 60;
   
   return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
-}; 
+};

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import AuthContext from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Forbidden from './Forbidden';
 
 const AdminRoute = ({ component: Component, ...rest }) => {
-  const { isAuthenticated, isAdmin, loading } = useContext(AuthContext);
+  const { isAuthenticated, isAdmin, loading } = useAuth();
   
   if (loading) {
     return <div className="loading">Cargando...</div>;

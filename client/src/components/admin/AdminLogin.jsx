@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faChevronLeft, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import AuthContext from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import '../../styles/auth/Login.css';
 import logo from '../../images/logo_elnopal.png';
@@ -152,7 +152,7 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isAuthenticated } = useContext(AuthContext);
+  const { login, isAuthenticated, error: authError } = useAuth();
   const history = useHistory();
 
   useEffect(() => {
@@ -183,10 +183,9 @@ const AdminLogin = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        toast.success('Inicio de sesión exitoso');
         history.push('/admin/reservaciones');
       } else {
-        setError(error || 'Email o contraseña incorrectos');
+        setError(authError || 'Email o contraseña incorrectos');
       }
     } catch (err) {
       setError('Error al iniciar sesión. Inténtalo de nuevo.');

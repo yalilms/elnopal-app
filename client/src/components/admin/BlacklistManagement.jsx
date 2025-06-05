@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserSlash, faTrash, faSearch, faExclamationTriangle, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { getBlacklist, removeFromBlacklist } from '../../services/reservationService';
-import AuthContext from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const BlacklistManagement = () => {
   const [blacklistedCustomers, setBlacklistedCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const { user } = useContext(AuthContext);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     fetchBlacklist();
@@ -64,8 +64,8 @@ const BlacklistManagement = () => {
         <h3>Error al cargar la lista negra</h3>
         <p>{error}</p>
         <div className="debug-info">
-          <p><strong>Usuario actual:</strong> {user ? `${user.username} (Roles: ${JSON.stringify(user.roles)})` : 'No autenticado'}</p>
-          <p><strong>Token:</strong> {user?.token ? `${user.token.substring(0, 20)}...` : 'No disponible'}</p>
+          <p><strong>Usuario actual:</strong> {currentUser ? `${currentUser.name || currentUser.email} (Rol: ${currentUser.role})` : 'No autenticado'}</p>
+          <p><strong>Estado de autenticación:</strong> {currentUser ? 'Autenticado' : 'No autenticado'}</p>
         </div>
         <button className="retry-button" onClick={fetchBlacklist}>
           <FontAwesomeIcon icon={faRefresh} /> Intentar de nuevo

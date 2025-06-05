@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import jwt from 'jsonwebtoken';
+import api, { setAuthToken } from '../services/api';
 
 // Crear el contexto
 const AuthContext = createContext();
@@ -8,99 +8,161 @@ const AuthContext = createContext();
 // Hook personalizado para usar el contexto
 export const useAuth = () => useContext(AuthContext);
 
-// Función para generar un token simulado
-const generateSimulatedToken = (user) => {
-  const payload = {
-    user: {
-      id: user.id || '1',
-      username: user.username,
-      role: user.role
-    },
-    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
-  };
-
-  // En un entorno real, esto sería un JWT firmado por el servidor
-  return Buffer.from(JSON.stringify(payload)).toString('base64');
-};
-
-// Función para verificar si un token ha expirado
-const isTokenExpired = (token) => {
-  try {
-    const payload = JSON.parse(Buffer.from(token, 'base64').toString());
-    return payload.exp < Math.floor(Date.now() / 1000);
-  } catch (e) {
-    return true;
-  }
-};
-
 // Proveedor del contexto
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authToken, setAuthToken] = useState(null);
 
-  // Usuarios disponibles (en un caso real, esto vendría de una base de datos)
-  const availableUsers = [
-    { id: '1', username: 'admin', password: 'admin123', role: 'admin' },
-    { id: '2', username: 'gerente', password: 'gerente123', role: 'admin' },
-    { id: '3', username: 'staff', password: 'staff123', role: 'staff' }
-  ];
-
-  // Verificar si hay un usuario guardado en localStorage al cargar
+  // Manejar eventos de logout automático
   useEffect(() => {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        if (parsedUser.token && !isTokenExpired(parsedUser.token)) {
-          setCurrentUser(parsedUser);
-        } else {
-          console.log('Token expirado, cerrando sesión');
-          localStorage.removeItem('currentUser');
-        }
-      } catch (e) {
-        console.error("Error al procesar usuario guardado:", e);
-        localStorage.removeItem('currentUser');
-      }
-    }
-    setLoading(false);
+    const handleAuthLogout = () => {
+      setCurrentUser(null);
+      setAuthToken(null);
+      setError(null);
+      toast.error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+    };
+
+    window.addEventListener('auth:logout', handleAuthLogout);
+    
+    return () => {
+      window.removeEventListener('auth:logout', handleAuthLogout);
+    };
   }, []);
 
-  // Función para iniciar sesión
-  const login = (username, password) => {
-    setError(null);
-    
-    // Verificar credenciales
-    const user = availableUsers.find(
-      user => user.username === username && user.password === password
-    );
+  // Actualizar token en la configuración de API cuando cambie
+  useEffect(() => {
+    setAuthToken(authToken);
+  }, [authToken]);
 
-    if (user) {
-      // Generar token simulado
-      const token = generateSimulatedToken(user);
-      
-      // No guardar la contraseña en el estado o localStorage
-      const { password: _, ...userWithoutPassword } = user;
-      const userWithToken = {
-        ...userWithoutPassword,
-        token
-      };
-      
-      setCurrentUser(userWithToken);
-      localStorage.setItem('currentUser', JSON.stringify(userWithToken));
-      toast.success(`¡Bienvenido ${user.username}!`);
-      return true;
+  // Verificar autenticación al cargar la aplicación
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Intentar obtener el usuario actual si hay un token en memoria
+        if (authToken) {
+          const response = await api.get('/api/auth/me');
+          if (response.data) {
+            setCurrentUser(response.data);
+          }
+        }
+      } catch (error) {
+        console.log('No hay sesión activa o token inválido');
+        setAuthToken(null);
+        setCurrentUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (authToken) {
+      checkAuth();
     } else {
-      setError('Credenciales incorrectas');
-      toast.error('Credenciales incorrectas');
+      setLoading(false);
+    }
+  }, [authToken]);
+
+  // Función para iniciar sesión
+  const login = async (email, password) => {
+    setError(null);
+    setLoading(true);
+    
+    try {
+      console.log("Intentando login con email:", email);
+      
+      const response = await api.post('/api/auth/login', { 
+        email: email.trim(), 
+        password: password.trim() 
+      });
+      
+      if (response.data && response.data.token && response.data.user) {
+        const { token, user: userData } = response.data;
+        
+        console.log("Login exitoso:", userData);
+        
+        // Establecer token y usuario en el estado
+        setAuthToken(token);
+        setCurrentUser(userData);
+        
+        toast.success(`¡Bienvenido ${userData.name || userData.email}!`);
+        return true;
+      } else {
+        throw new Error('Respuesta inválida del servidor');
+      }
+
+    } catch (error) {
+      console.error("Error en la autenticación:", error);
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error al iniciar sesión. Verifique sus credenciales.';
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
+      
+      // Limpiar estado en caso de error
+      setAuthToken(null);
+      setCurrentUser(null);
+      
       return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para registrar usuario
+  const register = async (name, email, password, role = 'host') => {
+    setError(null);
+    setLoading(true);
+    
+    try {
+      console.log("Intentando registro con email:", email);
+      
+      const response = await api.post('/api/auth/register', {
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
+        role
+      });
+      
+      if (response.data && response.data.token && response.data.user) {
+        const { token, user: userData } = response.data;
+        
+        console.log("Registro exitoso:", userData);
+        
+        // Establecer token y usuario en el estado
+        setAuthToken(token);
+        setCurrentUser(userData);
+        
+        toast.success(`¡Bienvenido ${userData.name}! Tu cuenta ha sido creada.`);
+        return true;
+      } else {
+        throw new Error('Respuesta inválida del servidor');
+      }
+
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error al crear la cuenta.';
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
+      
+      return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   // Función para cerrar sesión
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('currentUser');
+    setAuthToken(null);
+    setError(null);
+    
     toast.info('Sesión cerrada correctamente');
   };
 
@@ -109,9 +171,31 @@ export const AuthProvider = ({ children }) => {
     return currentUser?.role === 'admin';
   };
 
+  // Verificar si el usuario tiene un rol específico
+  const hasRole = (role) => {
+    return currentUser?.role === role;
+  };
+
   // Obtener el token actual
   const getToken = () => {
-    return currentUser?.token;
+    return authToken;
+  };
+
+  // Refrescar datos del usuario
+  const refreshUser = async () => {
+    if (!authToken) return false;
+    
+    try {
+      const response = await api.get('/api/auth/me');
+      if (response.data) {
+        setCurrentUser(response.data);
+        return true;
+      }
+    } catch (error) {
+      console.error('Error al refrescar usuario:', error);
+      logout();
+    }
+    return false;
   };
 
   const value = {
@@ -119,10 +203,13 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     login,
+    register,
     logout,
     isAdmin,
+    hasRole,
     getToken,
-    isAuthenticated: !!currentUser
+    refreshUser,
+    isAuthenticated: !!currentUser && !!authToken
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
