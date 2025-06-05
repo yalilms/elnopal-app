@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/admin/AdminForms.css';
+
 
 const AdminForm = ({ title, onSubmit, initialData = {}, fields }) => {
   const [formData, setFormData] = useState(initialData);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faPhone, faEnvelope, faClock, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import '../styles/ContactForm.css';
 
 // Configurar base URL para desarrollo y producción
 const API_BASE_URL = process.env.NODE_ENV === 'production' 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
-import '../../styles/admin/CancelReservationModal.css';
+
 
 const CancelReservationModal = ({ isOpen, onClose, onConfirm, reservationData }) => {
   const [reason, setReason] = useState('');

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faChevronLeft, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
-import '../../styles/auth/Login.css';
+
 import logo from '../../images/logo_elnopal.png';
 
 // Estilos inline directos para garantizar visibilidad

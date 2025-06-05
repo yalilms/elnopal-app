@@ -8,7 +8,7 @@ import {
   faBaby, 
   faSmoking 
 } from '@fortawesome/free-solid-svg-icons';
-import './ReservationForm.css';
+
 
 const ReservationPreferenceForm = ({ preferences, onChange }) => {
   const handlePreferenceChange = (e) => {

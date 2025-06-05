@@ -1,9 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
-import './ReservationForm.css';
+
 import { FaCheckCircle, FaExclamationCircle, FaCheck, FaTimes } from 'react-icons/fa';
-import { getTimeSlotsForDay } from '../../data/tablesData';
+// Función para obtener slots de tiempo (movida aquí desde tablesData eliminado)
+const getTimeSlotsForDay = (date) => {
+  // Slots básicos para todos los días
+  const baseSlots = [
+    '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+    '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00'
+  ];
+  
+  const dayOfWeek = new Date(date).getDay();
+  
+  // Domingo (0) - Solo comida
+  if (dayOfWeek === 0) {
+    return ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'];
+  }
+  
+  // Lunes (1) - Cerrado
+  if (dayOfWeek === 1) {
+    return [];
+  }
+  
+  // Martes a Jueves (2-4) - Horario normal
+  if (dayOfWeek >= 2 && dayOfWeek <= 4) {
+    return baseSlots;
+  }
+  
+  // Viernes y Sábado (5-6) - Horario extendido
+  if (dayOfWeek === 5 || dayOfWeek === 6) {
+    return [
+      '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00',
+      '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
+    ];
+  }
+  
+  return baseSlots;
+};
 import { handleHashScroll } from '../../utils/scrollUtils';
 
 

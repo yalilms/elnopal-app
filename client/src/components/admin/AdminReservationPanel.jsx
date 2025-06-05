@@ -8,11 +8,8 @@ import { faSignOutAlt, faTimes, faUserSlash, faPlus, faHome, faList, faEdit, faC
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import CancelReservationModal from './CancelReservationModal';
-import '../../styles/admin/BlacklistModal.css';
 import { addToBlacklist, getBlacklist, removeFromBlacklist } from '../../services/reservationService';
 import BlacklistManagement from './BlacklistManagement';
-import '../../styles/admin/BlacklistManagement.css';
-import '../reservation/ReservationForm.css';
 
 const AdminReservationPanel = () => {
   const { 

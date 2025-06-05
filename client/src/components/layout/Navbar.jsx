@@ -5,7 +5,7 @@ import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
 import { navigateAndScroll } from '../../utils/scrollUtils';
 import logo from '../../images/logo_elnopal.png';
-import '../../styles/Navbar.css';
+
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
