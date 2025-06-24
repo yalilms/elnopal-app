@@ -68,13 +68,12 @@ const Navbar = () => {
             </a>
           </li>
           <li className="nav-item">
-            <a 
-              href="#about" 
-              className={`nav-link ${location.hash === '#about' ? 'active' : ''}`}
-              onClick={(e) => handleNavigationClick(e, '/', 'about')}
+            <Link 
+              to="/nosotros" 
+              className={`nav-link ${location.pathname === '/nosotros' ? 'active' : ''}`}
             >
               Sobre Nosotros
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
             <Link 
@@ -86,23 +85,13 @@ const Navbar = () => {
           </li>
           <li className="nav-item">
             <Link 
-              to="/contact" 
-              className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}
+              to="/contacto" 
+              className={`nav-link ${location.pathname === '/contacto' ? 'active' : ''}`}
             >
               Contacto
             </Link>
           </li>
-          {user && user.role === 'admin' && (
-            <li className="nav-item">
-              <Link 
-                to="/admin" 
-                className={`nav-link ${location.pathname.includes('/admin') ? 'active' : ''}`}
-              >
-                Admin
-              </Link>
-            </li>
-          )}
-          {user ? (
+          {user && (
             <li className="nav-item">
               <button 
                 className="nav-link logout-btn" 
@@ -110,15 +99,6 @@ const Navbar = () => {
               >
                 Cerrar Sesión
               </button>
-            </li>
-          ) : (
-            <li className="nav-item">
-              <Link 
-                to="/admin/login" 
-                className={`nav-link ${location.pathname === '/admin/login' ? 'active' : ''}`}
-              >
-                Admin
-              </Link>
             </li>
           )}
         </ul>
@@ -152,14 +132,14 @@ const Navbar = () => {
               </a>
             </li>
             <li className="mobile-nav-item">
-              <a 
-                href="#about" 
+              <Link 
+                to="/nosotros" 
                 className="mobile-nav-link"
-                onClick={(e) => handleNavigationClick(e, '/', 'about')}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 <i className="fas fa-info-circle"></i>
                 Sobre Nosotros
-              </a>
+              </Link>
             </li>
             <li className="mobile-nav-item">
               <Link 
@@ -173,7 +153,7 @@ const Navbar = () => {
             </li>
             <li className="mobile-nav-item">
               <Link 
-                to="/contact" 
+                to="/contacto" 
                 className="mobile-nav-link"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -181,35 +161,12 @@ const Navbar = () => {
                 Contacto
               </Link>
             </li>
-            {user && user.role === 'admin' && (
-              <li className="mobile-nav-item">
-                <Link 
-                  to="/admin" 
-                  className="mobile-nav-link"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <i className="fas fa-cogs"></i>
-                  Admin
-                </Link>
-              </li>
-            )}
-            {user ? (
+            {user && (
               <li className="mobile-nav-item">
                 <button className="mobile-nav-link logout-btn" onClick={handleLogout}>
                   <i className="fas fa-sign-out-alt"></i>
                   Cerrar Sesión
                 </button>
-              </li>
-            ) : (
-              <li className="mobile-nav-item">
-                <Link 
-                  to="/admin/login" 
-                  className="mobile-nav-link"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <i className="fas fa-user-shield"></i>
-                  Admin
-                </Link>
               </li>
             )}
             <li className="mobile-nav-item">

@@ -273,15 +273,17 @@ const footerStyles = `
   .admin-link-improved {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    padding: 0.8rem 1.5rem;
+    gap: 0.7rem;
+    font-size: 0.8rem;
+    padding: 1rem 2rem;
     background: rgba(255, 183, 3, 0.1);
     border: 1px solid rgba(255, 183, 3, 0.3);
-    border-radius: 15px;
+    border-radius: 20px;
     transition: all 0.3s ease;
     text-decoration: none;
     color: #D4B895;
+    min-width: 140px;
+    justify-content: center;
   }
 
   .admin-link-improved:hover {
@@ -675,7 +677,7 @@ const Footer = () => {
         <div className="footer-bottom-improved">
           <div className="footer-bottom-links-improved">
             <Link to="/privacidad">Política de privacidad</Link>
-            <Link to="/terminos">Términos y condiciones</Link>
+            
             <a href="#" onClick={handleAdminClick} className="admin-link-improved">
               <FontAwesomeIcon icon={faLock} className="admin-icon-improved" /> Administración
             </a>
