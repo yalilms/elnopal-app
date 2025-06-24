@@ -821,17 +821,21 @@ const AdminReservationPanel = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [viewMode, setViewMode] = useState('list'); // 'list', 'blacklist'
+  const [filterStatus, setFilterStatus] = useState('all');
   const [isCreatingReservation, setIsCreatingReservation] = useState(false);
   const [showBlacklistModal, setShowBlacklistModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [adminFormAvailableSlots, setAdminFormAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [blacklistEntries, setBlacklistEntries] = useState([]);
   
   // Estados de validación utilizados
   const [newFormErrors, setNewFormErrors] = useState({});
+  const [newFormTouched, setNewFormTouched] = useState({});
   const [editFormErrors, setEditFormErrors] = useState({});
+  const [editFormTouched, setEditFormTouched] = useState({});
   
   // Estados de modales utilizados
   const [showDetailsModal, setShowDetailsModal] = useState(false);
