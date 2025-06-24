@@ -40,13 +40,9 @@ const corsOptions = {
       'http://127.0.0.1:3000'
     ];
     
-    // En producción, ser más estricto con los orígenes
-    if (process.env.NODE_ENV === 'production' && !origin) {
-      return callback(new Error('No se permite acceso sin origen en producción'));
-    }
-    
-    // Permitir requests sin origin solo en desarrollo
-    if (!origin && process.env.NODE_ENV !== 'production') {
+    // Permitir requests sin origin cuando vienen del mismo servidor
+    // Esto es normal cuando frontend y backend están en el mismo dominio
+    if (!origin) {
       return callback(null, true);
     }
     
