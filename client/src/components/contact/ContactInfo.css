@@ -1,0 +1,581 @@
+:root {
+  /* Reutilizar variables de AdminPanel.css si es posible o definir unas nuevas para la parte pública */
+  --contact-primary-color: var(--color-primary, #006847); /* Tomado de la paleta general */
+  --contact-accent-color: var(--color-accent, #f5a623);
+  --contact-text-color: var(--text-primary, #333);
+  --contact-bg-light: var(--bg-light, #f9f9f9); /* Fondo general de la página de contacto */
+  --contact-card-bg: white;
+  --contact-card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --contact-card-radius: var(--border-radius-lg, 16px);
+  --contact-icon-color: var(--contact-primary-color);
+  
+  /* Colores para los stamps mexicanos */
+  --stamp-teal: #2a9d8f;
+  --stamp-red: #e63946;
+  --stamp-yellow: #f5a623;
+  --stamp-green: #006847;
+}
+
+.contact-info-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1rem; /* Padding para móviles, se ajustará en queries */
+  background-color: var(--contact-bg-light);
+  font-family: var(--font-family, 'Poppins', sans-serif); /* Asegurar consistencia de fuente */
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 1rem 0;
+  transition: transform 0.5s ease;
+}
+
+.logo-section.animate-in {
+  animation: fadeInDown 1s ease forwards;
+}
+
+.contact-logo {
+  width: 220px; /* Ligeramente más pequeño para un look más refinado */
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
+  transition: transform 0.3s ease;
+}
+
+.contact-logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15));
+}
+
+.contact-section {
+  background-color: var(--contact-card-bg);
+  border-radius: var(--contact-card-radius);
+  box-shadow: var(--contact-card-shadow);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-align: center;
+}
+
+.contact-section.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-title.floating-title {
+  color: var(--contact-primary-color);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  text-align: center;
+  padding-bottom: 0.8rem;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  left: auto;
+  transform: none;
+  animation: float 3s ease-in-out infinite;
+}
+
+.section-title.floating-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--contact-primary-color), var(--contact-accent-color));
+  border-radius: 2px;
+}
+
+/* Indicador de Abierto/Cerrado */
+.contact-section .status-indicator {
+  margin: -1rem auto 2rem auto; /* Ajustar posición relativa al título */
+  max-width: 350px; /* Limitar ancho */
+  justify-content: center;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Horarios */
+.schedule-container.detailed-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.schedule-item {
+  background-color: var(--contact-bg-light);
+  border-radius: var(--border-radius-md, 10px);
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.schedule-item:hover {
+  transform: translateY(-8px) rotateY(10deg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-item.card-3d {
+  position: relative;
+  height: 150px;
+}
+
+.schedule-item-inner {
+  padding: 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transition: all 0.4s ease;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.schedule-item:hover .schedule-item-inner {
+  transform: translateZ(20px);
+}
+
+.schedule-item h3 {
+  color: var(--contact-primary-color);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.schedule-item:hover h3 {
+  color: var(--contact-accent-color);
+  transform: scale(1.1);
+}
+
+.schedule-item p {
+  color: var(--contact-text-color);
+  margin: 0.25rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: transform 0.3s ease;
+}
+
+.schedule-item:hover p {
+  transform: translateY(2px);
+}
+
+.schedule-item-closed h3 {
+  color: var(--admin-danger, #c62828); /* Un rojo más oscuro para cerrado */
+}
+
+.schedule-item-closed p {
+  font-style: italic;
+  color: var(--admin-danger, #c62828);
+  font-weight: 500;
+}
+
+/* Ubicación */
+.location-container {
+  margin-top: 2rem;
+}
+
+.location-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.location-card {
+  background-color: var(--contact-bg-light);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.location-icon {
+  font-size: 2rem;
+  color: var(--contact-primary-color);
+  margin-right: 1.2rem;
+}
+
+.pulse-icon {
+  animation: pulse 2s infinite;
+}
+
+.location-text {
+  flex: 1;
+}
+
+.location-text p, 
+.location-text a {
+  margin: 0.3rem 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.location-text p strong {
+  color: var(--contact-primary-color);
+}
+
+.phone-link {
+  color: var(--contact-accent-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 1.1rem;
+  display: inline-block;
+}
+
+.phone-link:hover {
+  color: var(--contact-primary-color);
+  transform: scale(1.05);
+}
+
+/* Mapa con efecto de cortina */
+.video-curtain {
+  position: relative;
+  width: 100%;
+  margin: 3rem 0;
+  overflow: hidden;
+}
+
+.curtain-left,
+.curtain-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--contact-primary-color);
+  transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 2;
+}
+
+.curtain-left {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.curtain-right {
+  right: 0;
+  transform: translateX(100%);
+}
+
+.animate-on-scroll.animate-in .curtain-left {
+  transform: translateX(-100%);
+}
+
+.animate-on-scroll.animate-in .curtain-right {
+  transform: translateX(100%);
+}
+
+.animate-on-scroll:not(.animate-in) .curtain-left {
+  transform: translateX(0);
+}
+
+.animate-on-scroll:not(.animate-in) .curtain-right {
+  transform: translateX(0);
+}
+
+.map-container {
+  width: 100%;
+  height: 450px;
+  border-radius: var(--border-radius-md, 10px);
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  position: relative;
+  z-index: 1;
+}
+
+.map-container.glow-effect {
+  box-shadow: 0 0 25px rgba(0, 104, 71, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.animate-in .map-container.glow-effect {
+  box-shadow: 0 0 35px rgba(0, 104, 71, 0.4);
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Estampas mexicanas */
+.mexican-stamps {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0 1rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stamp {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: rotateStamp 10s linear infinite;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stamp.teal {
+  background-color: var(--stamp-teal);
+}
+
+.stamp.red {
+  background-color: var(--stamp-red);
+}
+
+.stamp.yellow {
+  background-color: var(--stamp-yellow);
+}
+
+.stamp.green {
+  background-color: var(--stamp-green);
+}
+
+.stamp-snowflake,
+.stamp-star {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.stamp-snowflake::before,
+.stamp-snowflake::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+}
+
+.stamp-snowflake::before {
+  width: 40px;
+  height: 4px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.stamp-snowflake::after {
+  width: 4px;
+  height: 40px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stamp-star {
+  position: relative;
+}
+
+.stamp-star::before,
+.stamp-star::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+}
+
+.stamp-star::before {
+  width: 40px;
+  height: 4px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.stamp-star::after {
+  width: 4px;
+  height: 40px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stamp-star::before {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.stamp-star::after {
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Texto con efectos de aparición */
+.location-description {
+  padding: 0.5rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.text-appear {
+  opacity: 0;
+  transform: translateY(20px);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  color: var(--contact-text-color);
+}
+
+.animate-in .text-appear {
+  animation: fadeInUp 0.8s forwards;
+  animation-delay: 0.3s;
+}
+
+.animate-in .text-appear:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotateStamp {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .contact-section {
+    padding: 2.5rem;
+  }
+  
+  .contact-info-container {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .contact-info-container {
+    padding: 2rem;
+  }
+  
+  .schedule-container.detailed-schedule {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .mexican-stamps {
+    gap: 2rem;
+  }
+  
+  .stamp {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-title.floating-title {
+    font-size: 1.8rem;
+  }
+  
+  .schedule-item h3 {
+    font-size: 1.1rem;
+  }
+  
+  .schedule-item p {
+    font-size: 0.9rem;
+  }
+  
+  .location-icon {
+    font-size: 1.6rem;
+  }
+  
+  .map-container {
+    height: 350px;
+  }
+  
+  .stamp {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .stamp-snowflake,
+  .stamp-star {
+    width: 30px;
+    height: 30px;
+  }
+} 
