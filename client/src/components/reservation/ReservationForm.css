@@ -1,31 +1,16 @@
-/* Importar estilos globales de formularios */
-@import '../../styles/forms.css';
-
-/* Variables de colores mexicanos (reutilizadas de App.css) */
-:root {
-  --primary: #D62828; /* Rojo mexicano */
-  --secondary: #006B3C; /* Verde mexicano */
-  --accent: #F8B612; /* Amarillo mexicano */
-  --dark: #421f16; /* Marrón oscuro */
-  --light: #FEF9EF; /* Crema */
-  --text-dark: #2a1f1d;
-  --text-light: #FEF9EF;
-  --shadow: rgba(66, 31, 22, 0.1);
-}
+/* FORMULARIO DE RESERVAS SIMPLIFICADO */
 
 .reservation-form-container {
   max-width: 800px;
-  margin: 2rem auto;
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px var(--shadow);
-  font-family: 'Montserrat', sans-serif;
+  margin: var(--space-8) auto;
+  padding: var(--space-10);
+  border-radius: var(--border-radius-2xl);
+  box-shadow: var(--shadow-xl);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color-light);
   position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(66, 31, 22, 0.08);
 }
 
-/* Decoración mexicana del contenedor */
 .reservation-form-container::before {
   content: "";
   position: absolute;
@@ -33,2225 +18,267 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+  background: var(--gradient-mexican);
+  border-radius: var(--border-radius-2xl) var(--border-radius-2xl) 0 0;
 }
 
-/* Sobrescribir cualquier estilo conflictivo para el título */
-.reservation-form-container h2.form-title {
-  color: var(--primary) !important;
-  font-size: 2.2rem !important;
-  text-align: center !important;
-  margin-bottom: 2rem !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
-  position: relative !important;
-  padding-bottom: 0.8rem !important;
-}
-
-.form-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: 2px;
-}
-
-/* Estilo del formulario */
-.reservation-form {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-/* Filas del formulario */
-.form-row {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.2rem;
-}
-
-/* Responsive Design - Pantallas Medianas */
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .reservation-form-container {
-    margin: 1rem auto;
-    padding: 1.5rem;
-  }
-  
-  .reservation-form {
-    padding: 1.5rem;
-  }
-  
-  .form-title {
-    font-size: 1.8rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-}
-
-/* Responsive Design - Pantallas Pequeñas */
-@media (max-width: 576px) {
-  .reservation-form-container {
-    margin: 0.5rem;
-    padding: 1rem;
-    border-radius: 10px;
-  }
-  
-  .reservation-form {
-    padding: 1rem;
-  }
-  
-  .form-title {
-    font-size: 1.6rem !important;
-    margin-bottom: 1rem !important;
-    line-height: 1.3 !important;
-  }
-  
-  .form-subtitle {
-    font-size: 0.9rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-  
-  .form-row {
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 0.8rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    font-size: 0.9rem !important;
-    margin-bottom: 0.5rem !important;
-  }
-  
-  .label-hint {
-    font-size: 0.75rem !important;
-    display: block !important;
-    margin-top: 0.2rem !important;
-    color: #666 !important;
-    font-weight: 400 !important;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.8rem !important;
-    font-size: 0.95rem !important;
-    border-radius: 6px !important;
-  }
-  
-  .form-group textarea {
-    min-height: 100px !important;
-  }
-  
-  .btn-primary {
-    width: 100% !important;
-    padding: 1rem !important;
-    font-size: 1rem !important;
-    border-radius: 8px !important;
-    margin-top: 1rem !important;
-  }
-  
-  .form-actions {
-    margin-top: 1rem !important;
-  }
-}
-
-/* Responsive Design - Pantallas Extra Pequeñas */
-@media (max-width: 480px) {
-  .reservation-form-container {
-    margin: 0.25rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-  }
-  
-  .reservation-form {
-    padding: 0.75rem;
-  }
-  
-  .form-title {
-    font-size: 1.4rem !important;
-    margin-bottom: 0.8rem !important;
-    text-align: center !important;
-  }
-  
-  .form-subtitle {
-    font-size: 0.85rem !important;
-    margin-bottom: 1rem !important;
-    text-align: center !important;
-  }
-  
-  .form-group {
-    margin-bottom: 0.8rem;
-  }
-  
-  .form-group label {
-    font-size: 0.85rem !important;
-    margin-bottom: 0.4rem !important;
-  }
-  
-  .label-hint {
-    font-size: 0.7rem !important;
-    margin-top: 0.1rem !important;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.7rem !important;
-    font-size: 0.9rem !important;
-    border-radius: 5px !important;
-  }
-  
-  .form-group textarea {
-    min-height: 80px !important;
-  }
-  
-  .btn-primary {
-    width: 100% !important;
-    padding: 0.9rem !important;
-    font-size: 0.95rem !important;
-    border-radius: 6px !important;
-  }
-  
-  .required {
-    font-size: 0.9rem !important;
-  }
-  
-  .form-row {
-    margin-bottom: 0.6rem;
-  }
-  
-  /* Mejorar visibilidad de campos de fecha y hora */
-  input[type="date"],
-  select {
-    min-height: 44px !important; /* Tamaño mínimo táctil */
-  }
-  
-  /* Asegurar que los placeholders sean visibles */
-  .form-group input::placeholder,
-  .form-group textarea::placeholder {
-    color: #999 !important;
-    font-size: 0.85rem !important;
-  }
-  
-  /* Mejorar elementos específicos para móvil */
-  .checkbox-item {
-    padding: 0.8rem !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 0.6rem !important;
-  }
-  
-  .checkbox-item label {
-    font-size: 0.85rem !important;
-    line-height: 1.3 !important;
-  }
-  
-  .checkbox-item .emoji {
-    font-size: 1.2rem !important;
-  }
-  
-  .accessibility-needs h4 {
-    font-size: 1rem !important;
-    margin-bottom: 0.8rem !important;
-  }
-  
-  .no-slots-warning,
-  .time-warning,
-  .party-size-warning {
-    padding: 0.6rem !important;
-    font-size: 0.8rem !important;
-    flex-direction: column !important;
-    text-align: center !important;
-    gap: 0.3rem !important;
-  }
-  
-  .warning-icon {
-    font-size: 0.9rem !important;
-  }
-}
-
-/* Mejoras adicionales para formulario responsive */
-.progress-indicator {
+.form-title {
+  color: var(--color-primary);
+  font-size: var(--text-3xl);
   text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-bold);
 }
 
-.character-counter {
-  text-align: right;
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 0.3rem;
+.form-subtitle {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-8);
+  font-size: var(--text-lg);
 }
 
-.field-error {
-  color: var(--primary);
-  font-size: 0.8rem;
-  margin-top: 0.3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
-.field-indicator {
-  position: absolute;
-  right: 0.8rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1rem;
-  pointer-events: none;
-}
-
-.field-indicator.success {
-  color: var(--secondary);
-}
-
-.field-indicator.error {
-  color: var(--primary);
-}
-
-/* Mejorar el spacing en móviles */
-@media (max-width: 576px) {
-  .progress-indicator {
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
-  }
-  
-  .character-counter {
-    font-size: 0.75rem;
-  }
-  
-  .field-error {
-    font-size: 0.75rem;
-  }
-}
-
-/* Grupos de formulario */
 .form-group {
-  flex: 1;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-5);
 }
 
-.form-group label {
-  display: block !important;
-  margin-bottom: 0.6rem !important;
-  color: #421f16 !important; /* Color oscuro fijo */
-  font-weight: 500 !important;
-  font-size: 0.95rem !important;
-  line-height: 1.4 !important;
-}
-
-/* Mejorar visibilidad de etiquetas en móvil */
 .form-label {
   display: block;
-  margin-bottom: 0.6rem;
-  color: #421f16;
-  font-weight: 600;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.label-hint {
-  display: block;
-  font-size: 0.8rem;
-  color: #666;
-  font-weight: 400;
-  margin-top: 0.2rem;
-  line-height: 1.3;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
 .required {
-  color: var(--primary);
-  font-weight: 700;
-  margin-left: 2px;
+  color: var(--color-error);
 }
 
-/* Mejorar contenedores de input */
-.input-container {
-  position: relative;
+.form-input,
+.form-textarea {
   width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--transition-all);
 }
 
-.form-input {
-  width: 100%;
-  padding: 0.9rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #421f16;
-  background-color: #ffffff;
-  transition: all 0.3s ease;
-  font-family: 'Montserrat', sans-serif;
-  box-sizing: border-box;
-}
-
-.form-input:focus {
-  border-color: var(--accent);
+.form-input:focus,
+.form-textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(248, 182, 18, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-10);
 }
 
-.form-input.error {
-  border-color: var(--primary);
-  background-color: rgba(214, 40, 40, 0.05);
+.form-input.error,
+.form-textarea.error {
+  border-color: var(--color-error);
+  background: rgba(220, 38, 38, 0.05);
 }
 
-.form-input.success {
-  border-color: var(--secondary);
-  background-color: rgba(0, 107, 60, 0.05);
+.form-input.success,
+.form-textarea.success {
+  border-color: var(--color-success);
+  background: rgba(64, 145, 108, 0.05);
 }
 
-.form-group label.required::after {
-  content: "*";
-  color: var(--primary);
-  margin-left: 4px;
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100% !important;
-  padding: 0.9rem !important;
-  border: 2px solid #e0e0e0 !important;
-  border-radius: 8px !important;
-  font-size: 1rem !important;
-  color: #421f16 !important; /* Color oscuro fijo */
-  background-color: #ffffff !important; /* Blanco puro */
-  transition: all 0.3s ease !important;
-  font-family: 'Montserrat', sans-serif !important;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--accent) !important;
-  outline: none !important;
-  box-shadow: 0 0 0 3px rgba(248, 182, 18, 0.1) !important;
-}
-
-.form-group textarea {
-  min-height: 120px !important;
-  resize: vertical !important;
-}
-
-/* Asegurar que las opciones del select sean visibles */
-.form-group select option {
-  color: #421f16 !important; /* Color oscuro fijo */
-  background-color: #ffffff !important; /* Blanco puro */
-}
-
-/* Mejoras específicas para elementos del formulario */
-.form-subtitle {
-  text-align: center;
-  color: #666;
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  line-height: 1.5;
-}
-
-.form-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-/* Estilos para avisos y warnings */
-.no-slots-warning,
-.time-warning,
-.party-size-warning {
-  background-color: rgba(255, 152, 0, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.3);
-  border-radius: 6px;
-  padding: 0.8rem;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #e65100;
+.field-error-message {
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-1);
 }
 
-.warning-icon {
-  color: #ff9800;
-  font-size: 1rem;
+.char-counter {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: var(--space-1);
 }
 
-/* Mejorar accesibilidad checkboxes */
-.accessibility-needs {
-  margin-top: 1.5rem;
-}
-
-.accessibility-needs h4 {
-  color: #421f16;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
+.char-counter.near-limit {
+  color: var(--color-warning);
 }
 
 .accessibility-checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
-.checkbox-item {
+.checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #fff;
-  transition: all 0.3s ease;
+  gap: var(--space-2);
   cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-all);
 }
 
-.checkbox-item:hover {
-  border-color: var(--accent);
-  background-color: rgba(248, 182, 18, 0.05);
+.checkbox-label:hover {
+  background: var(--color-primary-10);
 }
 
-.checkbox-item input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin: 0;
+.checkbox-label input[type="checkbox"] {
+  accent-color: var(--color-primary);
+}
+
+.submit-button {
+  background: var(--gradient-mexican);
+  color: var(--color-white);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--border-radius-full);
+  font-weight: var(--font-bold);
+  font-size: var(--text-lg);
+  border: none;
   cursor: pointer;
-}
-
-.checkbox-item label {
-  margin: 0;
-  cursor: pointer;
-  flex: 1;
-  font-size: 0.95rem;
-  color: #421f16;
-  line-height: 1.4;
-}
-
-.checkbox-item .emoji {
-  font-size: 1.4rem;
-  margin-left: auto;
-}
-
-/* Mensaje de error */
-.error-message {
-  color: var(--primary) !important;
-  background-color: rgba(214, 40, 40, 0.1) !important;
-  padding: 0.8rem 1rem !important;
-  border-radius: 8px !important;
-  margin-bottom: 1.5rem !important;
-  font-size: 0.95rem !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-.error-message::before {
-  content: "⚠️";
-  margin-right: 10px;
-  font-size: 1.2rem;
-}
-
-/* Botón de envío */
-.form-actions {
-  text-align: center !important;
-  margin-top: 1.5rem !important;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary), #ad1457) !important;
-  color: white !important;
-  border: none !important;
-  padding: 1rem 2.5rem !important;
-  border-radius: 50px !important;
-  font-size: 1.1rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3) !important;
-  display: inline-block !important;
-  letter-spacing: 0.5px !important;
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 25px rgba(214, 40, 40, 0.4) !important;
-  background: linear-gradient(135deg, #ad1457, var(--primary)) !important;
-}
-
-.btn-primary:disabled {
-  background: #cccccc !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* Estilos para la pantalla de éxito */
-.reservation-success {
-  text-align: center !important;
-  padding: 3rem 2rem !important;
-  background-color: white !important;
-  border-radius: 12px !important;
-  box-shadow: 0 5px 20px var(--shadow) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-.reservation-success::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+  transition: var(--transition-all);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   width: 100%;
-  height: 6px;
-  background: linear-gradient(90deg, var(--secondary), var(--accent));
+  margin-top: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.submit-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-error {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-error);
+  padding: var(--space-3);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-4);
+  border-left: 4px solid var(--color-error);
+}
+
+.success-message-container {
+  text-align: center;
+  padding: var(--space-8);
 }
 
 .success-icon {
-  color: var(--secondary) !important;
-  font-size: 5rem !important;
-  margin-bottom: 1.5rem !important;
-  animation: pulseSuccess 2s infinite !important;
+  font-size: var(--text-6xl);
+  color: var(--color-success);
+  margin-bottom: var(--space-4);
 }
 
-@keyframes pulseSuccess {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+.success-title {
+  color: var(--color-success);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-4);
 }
 
-.confirmation-heading {
-  color: var(--secondary) !important;
-  font-size: 2.2rem !important;
-  margin-bottom: 1.5rem !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
+.reservation-details-container {
+  background: var(--color-success-10, rgba(64, 145, 108, 0.1));
+  padding: var(--space-6);
+  border-radius: var(--border-radius-lg);
+  margin: var(--space-6) 0;
 }
 
-.divider {
-  width: 80px !important;
-  height: 4px !important;
-  background: linear-gradient(90deg, var(--secondary), var(--accent)) !important;
-  margin: 0 auto 2rem !important;
-  border-radius: 2px !important;
+.details-title {
+  color: var(--color-success);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-4);
 }
 
-.table-assignment-info {
-  background-color: rgba(0, 107, 60, 0.05) !important;
-  padding: 1.5rem 2rem !important;
-  border-radius: 12px !important;
-  margin-bottom: 2rem !important;
-  border-left: 4px solid var(--secondary) !important;
-}
-
-.details-heading {
-  color: #421f16 !important;
-  font-size: 1.3rem !important;
-  margin-bottom: 1.2rem !important;
-  font-weight: 600 !important;
-}
-
-.info-item {
-  margin-bottom: 0.8rem !important;
-  font-size: 1.1rem !important;
-  color: #421f16 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-}
-
-.info-item strong {
-  color: var(--secondary) !important;
-  font-weight: 600 !important;
-}
-
-.success-message {
-  color: #421f16 !important;
-  font-size: 1.1rem !important;
-  margin-bottom: 2rem !important;
-  line-height: 1.6 !important;
-}
-
-.confirmation-buttons {
-  display: flex !important;
-  gap: 1.5rem !important;
-  margin-top: 1rem !important;
-}
-
-@media (max-width: 576px) {
-  .confirmation-buttons {
-    flex-direction: column !important;
-    gap: 1rem !important;
-    width: 100% !important;
-  }
-}
-
-.confirm-button {
-  background: linear-gradient(135deg, var(--secondary), var(--accent)) !important;
-  color: white !important;
-  border: none !important;
-  padding: 1rem 1.5rem !important;
-  border-radius: 50px !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 4px 15px rgba(0, 107, 60, 0.3) !important;
-}
-
-.confirm-button:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 25px rgba(0, 107, 60, 0.4) !important;
-}
-
-.secondary-button {
-  background-color: #f5f5f5 !important;
-  color: #421f16 !important;
-  border: 2px solid #e0e0e0 !important;
-  padding: 1rem 1.5rem !important;
-  border-radius: 50px !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-}
-
-.secondary-button:hover {
-  background-color: #e9e9e9 !important;
-  transform: translateY(-3px) !important;
-}
-
-.info-item strong.missing-data {
-  color: #999 !important;
-  font-style: italic !important;
-}
-
-/* Decoración mexicana adicional */
-.reservation-form-container::after {
-  content: "";
-  position: absolute;
-  bottom: -70px;
-  right: -70px;
-  width: 150px;
-  height: 150px;
-  background-color: rgba(248, 182, 18, 0.1);
-  border-radius: 50%;
-  z-index: -1;
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Mantener el resto de los estilos que ya existen en el archivo pero que no hemos modificado */
-.reservation-form-container h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #8b4513;
-}
-
-.reservation-form h2 {
-  color: #45322E;
-  margin-bottom: 25px;
-  text-align: center;
-  font-weight: 700;
-}
-
-.reservation-step h3 {
-  color: #6B4A3E;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ede7e3;
-  padding-bottom: 10px;
-  font-weight: 600;
-}
-
-/* Estilos para el indicador de progreso */
-.form-progress {
+.detail-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
-  position: relative;
+  margin-bottom: var(--space-2);
 }
 
-.form-progress::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #e0e0e0;
-  z-index: 1;
+.detail-value {
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
-.form-progress .step {
-  background-color: #e0e0e0;
-  color: #777;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
-  position: relative;
-  z-index: 2;
-  background-color: #fff;
-  border: 2px solid #e0e0e0;
-  transition: all 0.3s ease;
-}
-
-.form-progress .step.active {
-  background-color: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
-}
-
-/* Estilos para los pasos del formulario */
-.form-step {
-  animation: fadeIn 0.5s ease;
-}
-
-.step-title {
-  margin-bottom: 20px;
-  color: #333;
-  font-size: 1.5rem;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
-}
-
-/* Estilos para los grupos de formulario */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #45322E;
-  font-weight: 500;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #8D6E63;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(139, 110, 99, 0.1);
-}
-
-.form-group textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.error {
-  border-color: #d32f2f !important;
-}
-
-.error-text {
-  color: #d32f2f;
-  font-size: 14px;
-  margin-top: 5px;
-  display: block;
-}
-
-.checkbox-group {
+.success-buttons {
   display: flex;
-  align-items: flex-start;
+  gap: var(--space-4);
+  justify-content: center;
+  margin-top: var(--space-6);
 }
 
-.checkbox-group input[type="checkbox"] {
-  width: auto;
-  margin-right: 10px;
-  margin-top: 4px;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.btn-continue,
-.btn-submit,
-.btn-back {
-  padding: 12px 24px;
+.success-primary-btn {
+  background: var(--gradient-mexican);
+  color: var(--color-white);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: var(--transition-all);
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.btn-continue,
-.btn-submit {
-  background-color: #8D6E63;
-  color: white;
-}
-
-.btn-continue:hover,
-.btn-submit:hover {
-  background-color: #6B4A3E;
-}
-
-.btn-continue:disabled,
-.btn-submit:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.btn-back {
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-.btn-back:hover {
-  background-color: #e0e0e0;
-}
-
-.table-selector-container {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  border-top: 1px solid #ede7e3;
-  padding-top: 20px;
-}
-
-.table-availability-warning {
-  background-color: #fff8e1;
-  border-left: 4px solid #ffc107;
-  color: #856404;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.table-availability-warning p {
-  margin-bottom: 10px;
-}
-
-.table-availability-warning p:last-child {
-  margin-bottom: 0;
-}
-
-/* Estilos para el resumen de la reserva */
-.reservation-summary {
-  background-color: #f9f7f6;
-  padding: 20px;
-  border-radius: 4px;
-  margin-top: 30px;
-  border-left: 4px solid #8D6E63;
-}
-
-.reservation-summary h4 {
-  color: #45322E;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.reservation-summary p {
-  margin-bottom: 8px;
-  font-size: 15px;
-}
-
-/* Estilos para el selector de mesas */
-.table-selector {
-  margin: 20px 0;
-}
-
-.table-selector-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.view-toggle {
-  display: flex;
-  gap: 10px;
-}
-
-.view-toggle button {
-  padding: 8px 12px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #45322E;
-}
-
-.view-toggle button.active {
-  background-color: #8D6E63;
-  color: white;
-  border-color: #8D6E63;
-}
-
-.tables-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.table-item {
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.table-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
-.table-item.selected {
-  border-color: #8D6E63;
-  background-color: rgba(141, 110, 99, 0.1);
-  position: relative;
-}
-
-.table-item.selected::after {
-  content: '✓';
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: #8D6E63;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.table-item .table-number {
-  font-weight: 600;
-  font-size: 18px;
-  color: #45322E;
-  margin-bottom: 5px;
-}
-
-.table-item .table-info {
-  font-size: 14px;
-  color: #666;
-}
-
-.table-item .table-capacity {
-  color: #8D6E63;
-  font-weight: 500;
-  margin-top: 5px;
-}
-
-.table-item.unavailable {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.table-item.unavailable:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.table-map {
-  background-color: #f9f7f6;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  height: 500px;
-  position: relative;
-  margin-top: 20px;
-  overflow: hidden;
-}
-
-.map-table {
-  position: absolute;
-  border: 2px solid #8D6E63;
-  background-color: #f5f0ee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #45322E;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.map-table:hover {
-  background-color: #ede7e3;
-  transform: scale(1.02);
-}
-
-.map-table.round {
-  border-radius: 50%;
-}
-
-.map-table.rectangle {
-  border-radius: 4px;
-}
-
-.map-table.selected {
-  background-color: rgba(141, 110, 99, 0.3);
-  box-shadow: 0 0 0 4px rgba(141, 110, 99, 0.2);
-}
-
-.map-table.unavailable {
-  background-color: #e0e0e0;
-  border-color: #aaa;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.map-zone {
-  position: absolute;
-  background-color: rgba(224, 224, 224, 0.3);
-  border: 1px dashed #bbb;
-  border-radius: 8px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  z-index: 0;
-}
-
-.zone-label {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  padding: 3px 8px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
-  font-size: 14px;
-  color: #666;
-  z-index: 1;
-}
-
-.map-legend {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 8px 12px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
-  z-index: 10;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  margin-right: 8px;
-  border-radius: 2px;
-}
-
-.loading-indicator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  flex-direction: column;
-}
-
-.loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid #8D6E63;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: #666;
-}
-
-.empty-state p {
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-@media (max-width: 768px) {
-  .reservation-form {
-    padding: 20px;
-  }
-  
-  .tables-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-  
-  .table-map {
-    height: 350px;
-  }
-  
-  .form-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .btn-back {
-    order: 2;
-  }
-  
-  .btn-submit {
-    order: 1;
-  }
-}
-
-/* Estilos para iconos en labels */
-.icon {
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-/* Estilos para mensajes de advertencia */
-.table-availability-warning {
-  background-color: #fff8e1;
-  border-left: 4px solid #ffc107;
-  color: #856404;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.table-availability-warning .warning-icon {
-  margin-right: 10px;
-  color: #ffc107;
-}
-
-.table-availability-warning p {
-  margin-bottom: 10px;
-}
-
-.table-availability-warning p:last-child {
-  margin-bottom: 0;
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Indicador de pasos */
-.step-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-bottom: 8px;
-  transition: all 0.3s ease;
-}
-
-.step.active .step-number {
-  background-color: #8b4513;
-  color: white;
-}
-
-.step.completed .step-number {
-  background-color: #4caf50;
-  color: white;
-}
-
-.step-text {
-  font-size: 0.9rem;
-  color: #666;
-  text-align: center;
-}
-
-.step.active .step-text {
-  color: #8b4513;
-  font-weight: bold;
-}
-
-.step-line {
-  flex-grow: 1;
-  height: 3px;
-  background-color: #e0e0e0;
-  margin: 0 8px;
-  position: relative;
-  top: -20px;
-  z-index: 0;
-}
-
-.step-line.active {
-  background-color: #4caf50;
-}
-
-/* Formulario */
-.form-section {
-  animation: fadeIn 0.5s ease-out;
-}
-
-.form-section h3 {
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #eee;
-  color: #8b4513;
-}
-
-.table-error {
-  text-align: center;
-  margin: 1rem 0;
-}
-
-/* Confirmación de reserva */
-.reservation-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2rem 1rem;
-}
-
-.success-icon {
-  font-size: 4rem;
-  color: #28a745;
-  margin-bottom: 1rem;
-}
-
-.confirmation-heading {
-  font-size: 2.2rem;
-  color: #00796b;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.divider {
-  width: 80px;
-  height: 4px;
-  background-color: #f8b612;
-  border-radius: 2px;
-  margin-bottom: 1.5rem;
-}
-
-.details-heading {
-  font-size: 1.4rem;
-  color: #333;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.table-assignment-info {
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.info-item {
-  font-size: 1.1rem;
-  color: #555;
-  margin: 0.5rem 0;
-}
-
-.info-item strong {
-  color: #333;
-  font-weight: 600;
-}
-
-.success-message {
-  font-size: 1rem;
-  color: #005a4f;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  font-style: italic;
-}
-
-/* Contenedor para los botones de confirmación */
-.confirmation-buttons {
-  display: flex;
-  gap: 1rem; /* Espacio entre botones */
-  margin-top: 2rem; /* Espacio sobre los botones */
-  justify-content: center; /* Centra los botones */
-  flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
-}
-
-/* Botón principal (Hacer otra reserva) */
-.confirm-button {
-  background-color: #00796b; /* Color principal (teal) */
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem; 
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  min-width: 180px; /* Ancho mínimo */
-  text-align: center;
-}
-
-.confirm-button:hover {
-  background-color: #005a4f; /* Teal más oscuro */
+.success-primary-btn:hover {
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Botón secundario (Volver al Inicio) */
-.secondary-button {
-  background-color: transparent;
-  color: #00796b; /* Color principal (teal) */
-  padding: 12px 25px;
-  border: 2px solid #00796b; /* Borde con color principal */
-  border-radius: 5px;
+.success-secondary-btn {
+  background: var(--color-white);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: var(--transition-all);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-  min-width: 180px; /* Ancho mínimo */
-  text-align: center;
 }
 
-.secondary-button:hover {
-  background-color: #e0f2f1; /* Fondo teal claro al pasar el mouse */
-  color: #005a4f; /* Texto teal oscuro */
-  border-color: #005a4f; /* Borde teal oscuro */
-  transform: translateY(-2px);
+.success-secondary-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-white);
 }
 
-/* Estilo para datos faltantes */
-.info-item strong.missing-data {
-  color: #dc3545; /* Color rojo para indicar error o dato faltante */
-  font-style: italic;
-  font-weight: normal; /* Opcional: quitar negrita si es N/A */
-}
-
-/* Selección de Mesa */
-.table-selection-prompt {
-  text-align: center;
-  padding: 2rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
-/* Resumen de la reserva */
-.reservation-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.summary-section {
-  background-color: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.summary-section h4 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #8b4513;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-}
-
-.summary-section p {
-  margin-bottom: 0.75rem;
-}
-
-.terms-agreement {
-  font-size: 0.9rem;
-  color: #666;
-  text-align: center;
-  margin: 1.5rem 0;
-}
-
-.terms-agreement a {
-  color: #8b4513;
-  text-decoration: underline;
-}
-
-/* Responsive */
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .reservation-form-container {
-    padding: 1.5rem;
+    margin: var(--space-4);
+    padding: var(--space-6);
   }
   
-  .step-text {
-    font-size: 0.75rem;
+  .form-row {
+    grid-template-columns: 1fr;
   }
   
-  .summary-section {
-    padding: 1rem;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .prev-btn, .next-btn, .submit-btn {
-    width: 100%;
-  }
-}
-
-/* Estilos para el formulario de preferencias */
-.preference-form-container {
-  margin-bottom: 30px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.preference-intro {
-  margin-bottom: 20px;
-  color: #666;
-  font-size: 14px;
-}
-
-.preference-form .icon {
-  margin-right: 8px;
-  vertical-align: middle;
-  color: #5b7b2c;
-}
-
-.form-check-group {
-  margin-bottom: 15px;
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-weight: normal;
-}
-
-.checkbox-container input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.preference-info {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  font-size: 13px;
-}
-
-.preference-info p {
-  margin-bottom: 0;
-  color: #666;
-}
-
-/* Animación para el formulario de preferencias */
-@keyframes fadeInPrefs {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.preference-form-container {
-  animation: fadeInPrefs 0.4s ease-out;
-}
-
-/* Estilos para el componente ReservationPreferenceForm */
-.preference-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
-}
-
-.preference-form .form-group {
-  margin-bottom: 20px;
-}
-
-.preference-form label {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #333;
-}
-
-.preference-form .icon {
-  margin-right: 8px;
-  color: #8d6e63;
-}
-
-.preference-form select,
-.preference-form input[type="text"],
-.preference-form textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.3s;
-}
-
-.preference-form select:focus,
-.preference-form input[type="text"]:focus,
-.preference-form textarea:focus {
-  border-color: #8d6e63;
-  outline: none;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.checkbox-item {
-  flex: 1 0 45%;
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.checkbox-item input[type="checkbox"] {
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-.checkbox-item label {
-  font-weight: 400;
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .checkbox-item {
-    flex: 1 0 100%;
-  }
-}
-
-/* Resumen de preferencias en la confirmación */
-.preference-summary {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 6px;
-  margin-top: 15px;
-}
-
-.preference-summary h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: #5d4037;
-}
-
-.preference-summary ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.preference-summary li {
-  display: flex;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px dashed #e0e0e0;
-}
-
-.preference-summary li:last-child {
-  border-bottom: none;
-}
-
-.preference-summary .preference-label {
-  width: 140px;
-  font-weight: 500;
-  color: #666;
-}
-
-.preference-summary .preference-value {
-  flex: 1;
-}
-
-.preference-summary .empty-value {
-  color: #999;
-  font-style: italic;
-}
-
-/* Formulario de preferencias */
-.preference-form {
-  margin-bottom: 25px;
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.preference-form h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #495057;
-  font-size: 18px;
-}
-
-.preference-description {
-  color: #6c757d;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.checkbox-group {
-  margin-top: 15px;
-}
-
-.checkbox-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  min-width: 200px;
-}
-
-.checkbox-item input[type="checkbox"] {
-  margin-right: 8px;
-}
-
-.checkbox-item label {
-  display: flex;
-  align-items: center;
-  font-weight: normal;
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-.checkbox-item .icon {
-  margin-right: 5px;
-  color: #6c757d;
-}
-
-/* Estilos para los pasos del formulario */
-.form-steps {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 25px;
-  position: relative;
-}
-
-.form-steps::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #e9ecef;
-  z-index: 1;
-}
-
-.step {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  flex: 1;
-}
-
-.step-circle {
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  display: inline-block;
-  text-align: center;
-  margin-bottom: 5px;
-  transition: all 0.3s ease;
-}
-
-.step.active .step-circle {
-  background: #8D6E63;
-  border-color: #8D6E63;
-  color: white;
-}
-
-.step.completed .step-circle {
-  background: #4CAF50;
-  border-color: #4CAF50;
-  color: white;
-}
-
-.step-title {
-  font-size: 14px;
-  color: #666;
-}
-
-.step.active .step-title {
-  color: #8D6E63;
-  font-weight: 600;
-}
-
-/* Resumen de reserva */
-.reservation-summary {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 25px;
-}
-
-.summary-header {
-  font-size: 18px;
-  color: #343a40;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.summary-header .icon {
-  margin-right: 8px;
-  color: #28a745;
-}
-
-.summary-section {
-  margin-bottom: 15px;
-}
-
-.summary-section h5 {
-  font-size: 16px;
-  color: #495057;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.summary-section h5 .icon {
-  margin-right: 8px;
-  color: #6c757d;
-}
-
-.summary-item {
-  display: flex;
-  margin-bottom: 8px;
-}
-
-.summary-label {
-  font-weight: 600;
-  width: 150px;
-  color: #6c757d;
-}
-
-.summary-value {
-  color: #212529;
-  flex: 1;
-}
-
-.form-navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
-}
-
-.form-navigation button {
-  min-width: 120px;
-}
-
-/* Estilos específicos para el formulario de reservas */
-.reservation-steps {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.reservation-steps::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #e0e0e0;
-  z-index: 1;
-}
-
-.step {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  flex: 1;
-}
-
-.step-circle {
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  display: inline-block;
-  text-align: center;
-  margin-bottom: 5px;
-  transition: all 0.3s ease;
-}
-
-.step.active .step-circle {
-  background: #8D6E63;
-  border-color: #8D6E63;
-  color: white;
-}
-
-.step.completed .step-circle {
-  background: #4CAF50;
-  border-color: #4CAF50;
-  color: white;
-}
-
-.step-title {
-  font-size: 14px;
-  color: #666;
-}
-
-.step.active .step-title {
-  color: #8D6E63;
-  font-weight: 600;
-}
-
-/* Estilos para la selección de mesa */
-.table-selector {
-  margin: 2rem 0;
-}
-
-.table-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-}
-
-.table-item {
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.table-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.table-item.selected {
-  border-color: #8D6E63;
-  background-color: rgba(141, 110, 99, 0.1);
-}
-
-.table-item.unavailable {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.table-number {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #45322E;
-  margin-bottom: 0.5rem;
-}
-
-.table-capacity {
-  color: #666;
-  font-size: 0.875rem;
-}
-
-/* Estilos para la confirmación */
-.reservation-confirmed {
-  text-align: center;
-  padding: 2rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-}
-
-.confirmation-details {
-  max-width: 600px;
-  margin: 2rem auto;
-  text-align: left;
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.confirmation-details p {
-  margin: 0.5rem 0;
-  color: #45322E;
-}
-
-.confirmation-details strong {
-  color: #8D6E63;
-}
-
-.confirmation-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-/* Estilos responsivos específicos */
-@media (max-width: 768px) {
-  .table-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-
-  .confirmation-buttons {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .step-title {
-    font-size: 12px;
-  }
-}
-
-/* Animaciones específicas */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.form-step {
-  animation: slideIn 0.3s ease-out;
-}
-
-/* Estilos mejorados para checkboxes de accesibilidad */
-.accessibility-checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding: 1.2rem;
-  background-color: rgba(66, 31, 22, 0.02);
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.accessibility-checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem;
-  border-radius: 6px;
-  background-color: white;
-  border: 1px solid #f0f0f0;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-}
-
-.accessibility-checkbox-item:hover {
-  border-color: #D62828;
-  box-shadow: 0 2px 8px rgba(214, 40, 40, 0.1);
-  background-color: rgba(214, 40, 40, 0.02);
-}
-
-.accessibility-checkbox-item input[type="checkbox"] {
-  width: 20px !important;
-  height: 20px !important;
-  accent-color: #D62828 !important;
-  cursor: pointer !important;
-  flex-shrink: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 2px solid #ddd !important;
-  border-radius: 4px !important;
-  background-color: white !important;
-  position: relative !important;
-  z-index: 10 !important;
-}
-
-.accessibility-checkbox-item input[type="checkbox"]:checked {
-  background-color: #D62828 !important;
-  border-color: #D62828 !important;
-}
-
-.accessibility-checkbox-item input[type="checkbox"]:focus {
-  outline: 2px solid rgba(214, 40, 40, 0.3) !important;
-  outline-offset: 2px !important;
-}
-
-.accessibility-checkbox-item label {
-  cursor: pointer !important;
-  font-weight: 500 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  flex: 1 !important;
-  margin: 0 !important;
-  color: #421f16 !important;
-  font-size: 0.95rem !important;
-  padding: 0 !important;
-  user-select: none !important;
-}
-
-.accessibility-checkbox-item .emoji {
-  font-size: 1.2rem;
-  margin-right: 0.3rem;
-  pointer-events: none;
-}
-
-/* Hacer que toda el área sea clickeable */
-.accessibility-checkbox-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  cursor: pointer;
-  z-index: 1;
-}
-
-/* Asegurar que el checkbox esté por encima del overlay */
-.accessibility-checkbox-item input[type="checkbox"] {
-  z-index: 10 !important;
-  position: relative !important;
-}
-
-/* Estilos responsivos para checkboxes */
-@media (max-width: 768px) {
   .accessibility-checkboxes {
-    padding: 1rem;
-    gap: 0.8rem;
+    grid-template-columns: 1fr;
   }
   
-  .accessibility-checkbox-item {
-    padding: 1rem;
-    gap: 1rem;
+  .success-buttons {
+    flex-direction: column;
   }
-  
-  .accessibility-checkbox-item input[type="checkbox"] {
-    width: 22px !important;
-    height: 22px !important;
-  }
-  
-  .accessibility-checkbox-item label {
-    font-size: 1rem !important;
-    line-height: 1.4;
-  }
-  
-  .accessibility-checkbox-item .emoji {
-    font-size: 1.4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .accessibility-checkboxes {
-    padding: 0.8rem;
-  }
-  
-  .accessibility-checkbox-item {
-    padding: 0.8rem;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 0.8rem;
-  }
-  
-  .accessibility-checkbox-item input[type="checkbox"] {
-    margin-top: 0.2rem;
-  }
-}
-
+} 
