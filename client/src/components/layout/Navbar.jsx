@@ -51,151 +51,187 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`} ref={navRef}>
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo" onClick={(e) => handleNavigationClick(e, '/')}>
+        {/* Logo */}
+        <Link to="/" className="navbar-brand" onClick={(e) => handleNavigationClick(e, '/')}>
           <img src={logo} alt="El Nopal" />
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="navbar-desktop">
-          <div className="navbar-links">
-            <ul>
-              <li>
-                <a 
-                  href="#hero" 
-                  onClick={(e) => handleNavigationClick(e, '/', 'hero')}
-                  className={location.pathname === '/' && location.hash === '' ? 'active' : ''}
-                >
-                  Inicio
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#about" 
-                  onClick={(e) => handleNavigationClick(e, '/', 'about')}
-                  className={location.hash === '#about' ? 'active' : ''}
-                >
-                  Nosotros
-                </a>
-              </li>
+        <ul className="navbar-nav">
+          <li className="nav-item">
+            <a 
+              href="#hero" 
+              className={`nav-link ${location.pathname === '/' && location.hash === '' ? 'active' : ''}`}
+              onClick={(e) => handleNavigationClick(e, '/', 'hero')}
+            >
+              Inicio
+            </a>
+          </li>
+          <li className="nav-item">
+            <a 
+              href="#about" 
+              className={`nav-link ${location.hash === '#about' ? 'active' : ''}`}
+              onClick={(e) => handleNavigationClick(e, '/', 'about')}
+            >
+              Sobre Nosotros
+            </a>
+          </li>
+          <li className="nav-item">
+            <Link 
+              to="/blog" 
+              className={`nav-link ${location.pathname.includes('/blog') ? 'active' : ''}`}
+            >
+              Blog
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link 
+              to="/contact" 
+              className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}
+            >
+              Contacto
+            </Link>
+          </li>
+          {user && user.role === 'admin' && (
+            <li className="nav-item">
+              <Link 
+                to="/admin" 
+                className={`nav-link ${location.pathname.includes('/admin') ? 'active' : ''}`}
+              >
+                Admin
+              </Link>
+            </li>
+          )}
+          {user ? (
+            <li className="nav-item">
+              <button 
+                className="nav-link logout-btn" 
+                onClick={handleLogout}
+              >
+                Cerrar Sesión
+              </button>
+            </li>
+          ) : (
+            <li className="nav-item">
+              <Link 
+                to="/admin/login" 
+                className={`nav-link ${location.pathname === '/admin/login' ? 'active' : ''}`}
+              >
+                Admin
+              </Link>
+            </li>
+          )}
+        </ul>
 
-              <li>
-                <Link 
-                  to="/blog" 
-                  className={location.pathname.includes('/blog') ? 'active' : ''}
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/contact" 
-                  className={location.pathname === '/contact' ? 'active' : ''}
-                >
-                  Contacto
-                </Link>
-              </li>
-              {user && user.role === 'admin' && (
-                <li>
-                  <Link 
-                    to="/admin" 
-                    className={location.pathname.includes('/admin') ? 'active' : ''}
-                  >
-                    Admin
-                  </Link>
-                </li>
-              )}
-              {user ? (
-                <li>
-                  <button 
-                    className="navbar-button" 
-                    onClick={handleLogout}
-                  >
-                    Cerrar Sesión
-                  </button>
-                </li>
-              ) : (
-                <li>
-                  <Link 
-                    to="/admin/login" 
-                    className={location.pathname === '/admin/login' ? 'active' : ''}
-                  >
-                    Admin
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </div>
-          <Link to="/reservaciones" className="reserva-btn reserva-btn-desktop">
-            Reservar Mesa
-          </Link>
-        </div>
+        {/* Reserva Button */}
+        <Link to="/reservaciones" className="reservar-btn">
+          <i className="fas fa-calendar-alt"></i>
+          Reservar Mesa
+        </Link>
 
-        {/* Mobile Menu Icon */}
-        <button className="mobile-menu-icon" onClick={toggleMobileMenu}>
-          <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+        {/* Mobile Menu Toggle */}
+        <button className="mobile-menu-toggle" onClick={toggleMobileMenu} aria-label="Toggle menu">
+          <span className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
         </button>
 
         {/* Mobile Navigation */}
-        <div className={`navbar-mobile ${isMobileMenuOpen ? 'active' : ''}`}>
-          <div className="navbar-links">
-            <ul>
-              <li>
-                <a 
-                  href="#hero" 
-                  onClick={(e) => handleNavigationClick(e, '/', 'hero')}
+        <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+          <ul className="mobile-nav">
+            <li className="mobile-nav-item">
+              <a 
+                href="#hero" 
+                className="mobile-nav-link"
+                onClick={(e) => handleNavigationClick(e, '/', 'hero')}
+              >
+                <i className="fas fa-home"></i>
+                Inicio
+              </a>
+            </li>
+            <li className="mobile-nav-item">
+              <a 
+                href="#about" 
+                className="mobile-nav-link"
+                onClick={(e) => handleNavigationClick(e, '/', 'about')}
+              >
+                <i className="fas fa-info-circle"></i>
+                Sobre Nosotros
+              </a>
+            </li>
+            <li className="mobile-nav-item">
+              <Link 
+                to="/blog" 
+                className="mobile-nav-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className="fas fa-blog"></i>
+                Blog
+              </Link>
+            </li>
+            <li className="mobile-nav-item">
+              <Link 
+                to="/contact" 
+                className="mobile-nav-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className="fas fa-envelope"></i>
+                Contacto
+              </Link>
+            </li>
+            {user && user.role === 'admin' && (
+              <li className="mobile-nav-item">
+                <Link 
+                  to="/admin" 
+                  className="mobile-nav-link"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Inicio
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#about" 
-                  onClick={(e) => handleNavigationClick(e, '/', 'about')}
-                >
-                  Nosotros
-                </a>
-              </li>
-
-              <li>
-                <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>
-                  Blog
+                  <i className="fas fa-cogs"></i>
+                  Admin
                 </Link>
               </li>
-              <li>
-                <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                  Contacto
+            )}
+            {user ? (
+              <li className="mobile-nav-item">
+                <button className="mobile-nav-link logout-btn" onClick={handleLogout}>
+                  <i className="fas fa-sign-out-alt"></i>
+                  Cerrar Sesión
+                </button>
+              </li>
+            ) : (
+              <li className="mobile-nav-item">
+                <Link 
+                  to="/admin/login" 
+                  className="mobile-nav-link"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="fas fa-user-shield"></i>
+                  Admin
                 </Link>
               </li>
-              {user && user.role === 'admin' && (
-                <li>
-                  <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                    Admin
-                  </Link>
-                </li>
-              )}
-              {user ? (
-                <li>
-                  <button className="navbar-button" onClick={handleLogout}>
-                    Cerrar Sesión
-                  </button>
-                </li>
-              ) : (
-                <li>
-                  <Link to="/admin/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    Admin
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </div>
-          <Link 
-            to="/reservaciones" 
-            className="reserva-btn"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Reservar Mesa
-          </Link>
+            )}
+            <li className="mobile-nav-item">
+              <Link 
+                to="/reservaciones" 
+                className="mobile-reservar-btn"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <i className="fas fa-calendar-alt"></i>
+                Reservar Mesa
+              </Link>
+            </li>
+          </ul>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="mobile-menu-overlay" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+        )}
       </div>
     </nav>
   );
