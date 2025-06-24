@@ -36,7 +36,7 @@ import { navigateAndScroll, handleHashScroll } from './utils/scrollUtils';
 
 // Datos
 import { menuData } from './data/menuData';
-import { reviewsData } from './data/reviewsData';
+// reviewsData no se usa, se elimina
 
 // Importar el video
 import videoEjemplo from './images/ejemplo_video.mp4';
@@ -169,7 +169,7 @@ const Home = () => {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  }, [animationTriggered]);
+  }, [animationTriggered, heroImages.length, sectionRefs, showVideo]);
 
   // Efecto para manejar la tecla Escape en el modal
   useEffect(() => {
@@ -190,7 +190,7 @@ const Home = () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
-  }, [showModal]);
+  }, [showModal, closeModal]);
   
   const handleReservaClick = () => {
     history.push('/reservaciones');
@@ -466,6 +466,8 @@ const Home = () => {
   );
 };
 
+// Menu component - temporalmente comentado ya que no se usa en las rutas
+/*
 const Menu = () => {
   const [categoria, setCategoria] = useState('Entradas');
   
@@ -500,6 +502,7 @@ const Menu = () => {
     </div>
   );
 };
+*/
 
 const Contact = () => {
   // Manejar scroll automático al cargar la página con hash

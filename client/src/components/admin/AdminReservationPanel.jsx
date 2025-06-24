@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -6,16 +6,13 @@ import { markAsNoShow as apiMarkNoShow } from '../../services/reservationService
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faCalendarAlt, faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
-  faClock, faUsers, faUtensils, faCheck, faList, faUserSlash, faEye,
-  faComments, faHome, faSignOutAlt, faFilter, faArrowLeft, faArrowRight,
-  faCheckCircle, faTimesCircle,
-  faUserCheck, faUserTimes, faExclamationTriangle, faExclamationCircle
+  faClock, faUsers, faUtensils, faCheck, faList, faUserSlash,
+  faComments, faHome, faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import CancelReservationModal from './CancelReservationModal';
 import BlacklistManagement from './BlacklistManagement';
-import TableMap from './TableMap';
 
 // Estilos CSS completos para el panel de administración
 const adminPanelStyles = `
