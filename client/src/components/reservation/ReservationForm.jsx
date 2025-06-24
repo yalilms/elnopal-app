@@ -40,47 +40,7 @@ const getTimeSlotsForDay = (date) => {
   return baseSlots;
 };
 
-
-// Estilos inline para asegurar visibilidad
-const formContainerStyle = {
-  backgroundColor: 'white',
-  color: '#421f16',
-  padding: '2.5rem',
-  maxWidth: '800px',
-  margin: '2rem auto',
-  borderRadius: '15px',
-  boxShadow: '0 10px 30px rgba(66, 31, 22, 0.1)',
-  position: 'relative',
-  overflow: 'hidden',
-  border: '1px solid rgba(66, 31, 22, 0.08)'
-};
-
-const formTitleStyle = {
-  color: '#D62828',
-  fontSize: '2.2rem',
-  textAlign: 'center',
-  marginBottom: '2rem',
-  fontFamily: 'Poppins, sans-serif',
-  fontWeight: '700',
-  position: 'relative',
-  paddingBottom: '0.8rem'
-};
-
-const formStyle = {
-  backgroundColor: 'white',
-  padding: '2rem',
-  borderRadius: '12px',
-  boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)'
-};
-
-const labelStyle = {
-  display: 'block',
-  marginBottom: '0.6rem',
-  color: '#421f16',
-  fontWeight: '500',
-  fontSize: '0.95rem'
-};
-
+// Estilos inline para asegurar visibilidad (solo los utilizados)
 const inputStyle = {
   width: '100%',
   padding: '0.9rem',
@@ -89,31 +49,6 @@ const inputStyle = {
   fontSize: '1rem',
   color: '#421f16',
   backgroundColor: 'white'
-};
-
-const formRowStyle = {
-  display: 'flex',
-  gap: '1.5rem',
-  marginBottom: '1.2rem'
-};
-
-const formGroupStyle = {
-  flex: '1',
-  marginBottom: '1.5rem'
-};
-
-const buttonStyle = {
-  background: 'linear-gradient(135deg, #D62828, #ad1457)',
-  color: 'white',
-  border: 'none',
-  padding: '1rem 2.5rem',
-  borderRadius: '50px',
-  fontSize: '1.1rem',
-  fontWeight: '600',
-  cursor: 'pointer',
-  boxShadow: '0 4px 15px rgba(214, 40, 40, 0.3)',
-  display: 'inline-block',
-  letterSpacing: '0.5px'
 };
 
 const errorMessageStyle = {
@@ -126,8 +61,6 @@ const errorMessageStyle = {
   display: 'flex',
   alignItems: 'center'
 };
-
-
 
 const ReservationForm = () => {
   const { makeReservation } = useReservation();
@@ -259,7 +192,8 @@ const ReservationForm = () => {
   
   // Validar formulario cuando cambie formData
   useEffect(() => {
-    validateFormComplete();
+    const isValid = validateFormComplete();
+    setIsFormValid(isValid);
   }, [formData]);
   
   // Función para validar que la reserva sea al menos 30 minutos antes
@@ -298,7 +232,7 @@ const ReservationForm = () => {
     } else {
       setAvailableSlotsForDate([]);
     }
-  }, [formData.date]);
+  }, [formData.date, formData.time]);
   
   // Manejar cuando un campo pierde el foco
   const handleBlur = (e) => {

@@ -1,4 +1,4 @@
-import api, { makeRequest, formatApiError } from './api';
+import api, { makeRequest } from './api';
 
 // ============= SERVICIOS DE RESERVAS =============
 
