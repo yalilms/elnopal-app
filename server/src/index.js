@@ -30,7 +30,7 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
-// Configuración de CORS segura
+// Configuración de CORS segura y completa
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
@@ -52,10 +52,12 @@ const corsOptions = {
       callback(new Error('No permitido por CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
+  exposedHeaders: ['X-Total-Count', 'Content-Range'],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  maxAge: 86400 // Cache preflight por 24 horas
 };
 
 // Socket.io con CORS seguro
@@ -155,6 +157,33 @@ if (process.env.NODE_ENV === 'production') {
 
 // Middleware básico
 app.use(cors(corsOptions));
+
+// Middleware adicional para asegurar headers CORS en todas las respuestas
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.CORS_ORIGIN || 'http://elnopal.es',
+    'https://elnopal.es',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+  ];
+
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  
+  // Manejar preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 // Middleware para sanitizar entrada XSS
 app.use((req, res, next) => {
@@ -278,19 +307,17 @@ io.on('connection', (socket) => {
 // Hacer io disponible para las rutas
 app.set('io', io);
 
-// Exportar app para testing
-module.exports = app;
+// Ruta de health check para tests (antes de otras rutas)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
-// Rutas de la API
-app.use('/api/reservations', reservationRoutes);
-app.use('/api/tables', tableRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/blacklist', blacklistRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/contact', contactRoutes);
-
-// Ruta de health check
+// Ruta de health check adicional
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
@@ -298,6 +325,15 @@ app.get('/health', (req, res) => {
     version: '1.0.0'
   });
 });
+
+// Rutas de la API con manejo de errores mejorado
+app.use('/api/reservations', reservationRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/blacklist', blacklistRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Ruta de prueba (solo en desarrollo)
 if (process.env.NODE_ENV !== 'production') {

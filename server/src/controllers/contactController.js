@@ -62,7 +62,9 @@ exports.createContact = async (req, res) => {
       contact: {
         id: contact._id,
         name: contact.name,
+        email: contact.email,
         subject: contact.subject,
+        message: contact.message,
         status: contact.status,
         createdAt: contact.createdAt
       }

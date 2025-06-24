@@ -22,16 +22,18 @@ const respondValidation = [
   body('response').notEmpty().trim().withMessage('La respuesta es obligatoria')
 ];
 
-// Rutas públicas (sin autenticación)
+// Rutas públicas (sin autenticación) - deben ir PRIMERO
 router.post('/', createReviewValidation, reviewController.createReview);
 router.get('/public', reviewController.getPublicReviews);
 
-// Rutas con autenticación (administradores)
-router.get('/', authenticateJWT, authorize(['admin']), reviewController.getAllReviews);
+// Rutas de administración con autenticación - más específicas primero
 router.get('/admin', authenticateJWT, authorize(['admin']), reviewController.getAllReviews);
 router.get('/admin/:id', authenticateJWT, authorize(['admin']), reviewController.getReviewById);
 router.post('/admin/:id/respond', authenticateJWT, authorize(['admin']), respondValidation, reviewController.respondToReview);
 router.get('/stats', authenticateJWT, authorize(['admin']), reviewController.getReviewStats);
+
+// Rutas genéricas con autenticación - al final
+router.get('/', authenticateJWT, authorize(['admin']), reviewController.getAllReviews);
 router.get('/:id', authenticateJWT, authorize(['admin']), reviewController.getReviewById);
 router.patch('/:id/status', authenticateJWT, authorize(['admin']), updateStatusValidation, reviewController.updateReviewStatus);
 router.delete('/:id', authenticateJWT, authorize(['admin']), reviewController.deleteReview);
