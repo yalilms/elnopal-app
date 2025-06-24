@@ -179,7 +179,7 @@
   left: 0;
   width: 120%;
   height: 120%;
-  background-image: var(--hero-bg-url, url('/path/to/default-hero.jpg'));
+  background-image: var(--hero-bg-url, url('../images/NOPAL_UNITY-19.JPG'));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
