@@ -6,7 +6,17 @@
 
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:3001/api';
+// Configuración de múltiples URLs para probar
+const POSSIBLE_URLS = [
+  'http://localhost:5000/api',      // ← PUERTO CORRECTO ENCONTRADO
+  'http://127.0.0.1:5000/api',      // ← PUERTO CORRECTO ENCONTRADO
+  'http://localhost:3001/api',
+  'http://localhost:80/api', 
+  'http://127.0.0.1:3001/api',
+  'http://127.0.0.1:80/api',
+  'http://elnopal.es/api',
+  'https://elnopal.es/api'
+];
 
 // Función para pruebas con mejor manejo de errores
 async function testEndpoint(name, method, endpoint, data = null, expectedStatus = 200) {
@@ -63,6 +73,20 @@ async function runCompleteTests() {
   console.log('🧪 Iniciando Tests Completos de Producción El Nopal');
   console.log('=' .repeat(60));
   
+  // Verificar que tenemos conexión al servidor
+  if (!BASE_URL) {
+    console.log('❌ No se pudo establecer conexión con el servidor');
+    return {
+      total: 0,
+      passed: 0,
+      failed: 1,
+      successRate: 0,
+      ready: false,
+      error: 'No server connection'
+    };
+  }
+  
+  console.log(`🎯 Usando servidor: ${BASE_URL}`);
   const results = [];
   
   // 1. Health Check
