@@ -275,7 +275,7 @@ const footerStyles = `
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.5rem;
     background: rgba(255, 183, 3, 0.1);
     border: 1px solid rgba(255, 183, 3, 0.3);
     border-radius: 15px;
@@ -482,7 +482,7 @@ const footerStyles = `
     
     .admin-link-improved {
       font-size: 0.7rem;
-      padding: 0.4rem 0.8rem;
+      padding: 0.6rem 1.2rem;
     }
     
     .copyright-improved {

@@ -93,7 +93,6 @@ const Home = () => {
   const [selectedPlato, setSelectedPlato] = useState(null);
   const sectionRefs = {
     hero: useRef(null),
-    about: useRef(null),
     video: useRef(null),
     promociones: useRef(null)
   };
@@ -164,24 +163,8 @@ const Home = () => {
       if (ref.current) observer.observe(ref.current);
     });
     
-    // Efecto de parallax en scroll
-    const handleScroll = () => {
-      const scrollPos = window.scrollY;
-      if (sectionRefs.hero.current) {
-        const heroHeight = sectionRefs.hero.current.offsetHeight;
-        const heroSection = sectionRefs.hero.current;
-        const parallaxBg = heroSection.querySelector('.parallax-bg');
-        if (parallaxBg && scrollPos <= heroHeight) {
-          parallaxBg.style.transform = `translateY(${scrollPos * 0.5}px)`;
-        }
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    
     return () => {
       clearInterval(imageInterval);
-      window.removeEventListener('scroll', handleScroll);
       Object.values(sectionRefs).forEach(ref => {
         if (ref.current) observer.unobserve(ref.current);
       });
@@ -294,7 +277,7 @@ const Home = () => {
       </section>
       
       {/* Acerca de El Nopal con estilo mexicano */}
-      <section id="about" ref={sectionRefs.about} className={`about-section-animated ${animationTriggered.about ? 'animate-in' : ''} about-mexican-style`}>
+      <section id="about" className="about-mexican-style">
         <div className="about-mexican-container">
           {/* Sombreros mexicanos decorativos */}
           <div className="sombrero-row">

@@ -51,7 +51,8 @@ const adminPanelStyles = `
     border-bottom: 3px solid #F8B612;
   }
 
-  .panel-header-top {
+  /* Fila del título principal */
+  .panel-header-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -60,7 +61,7 @@ const adminPanelStyles = `
     gap: 1rem;
   }
 
-  .panel-title {
+  .panel-header-title-row h2 {
     color: #0f5132;
     font-size: clamp(1.5rem, 4vw, 2.2rem);
     font-weight: 700;
@@ -70,7 +71,7 @@ const adminPanelStyles = `
     position: relative;
   }
 
-  .panel-title::after {
+  .panel-header-title-row h2::after {
     content: '';
     position: absolute;
     bottom: -5px;
@@ -81,17 +82,28 @@ const adminPanelStyles = `
     border-radius: 2px;
   }
 
-  .panel-date {
+  /* Información de fecha seleccionada */
+  .selected-date-info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: #666;
-    font-size: 1.1rem;
-    font-weight: 500;
+    gap: 0.8rem;
+    background: rgba(15, 81, 50, 0.1);
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    border: 2px solid rgba(15, 81, 50, 0.2);
+    backdrop-filter: blur(5px);
   }
 
-  .panel-date .fa-calendar-alt {
+  .selected-date-info svg {
     color: #D62828;
+    font-size: 1.1rem;
+  }
+
+  .selected-date-info span {
+    color: #0f5132;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
   }
 
   .panel-header-actions-row {

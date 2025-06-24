@@ -75,7 +75,6 @@ body:has(.about-page) {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   z-index: -1;
   transition: background-image 1s ease-in-out;
   /* Asegurar cobertura completa */
@@ -262,21 +261,9 @@ body:has(.about-page) {
   text-align: center;
   margin-bottom: 3rem;
   position: relative;
-  display: inline-block; /* Para que ::after funcione bien */
+  display: inline-block;
   left: 50%;
   transform: translateX(-50%);
-  animation: float 3s ease-in-out infinite;
-}
-.section-title.floating-title::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: 2px;
 }
 
 /* Cards 3D (reutilizados de App.css) */

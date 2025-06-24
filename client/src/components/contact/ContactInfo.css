@@ -80,9 +80,6 @@
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  left: auto;
-  transform: none;
-  animation: float 3s ease-in-out infinite;
 }
 
 .section-title.floating-title::after {
@@ -119,13 +116,11 @@
   border: 1px solid #e8e8e8;
   overflow: hidden;
   transition: all 0.3s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
 }
 
 .schedule-item:hover {
-  transform: translateY(-8px) rotateY(10deg);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
 }
 
 .schedule-item.card-3d {
@@ -141,13 +136,7 @@
   justify-content: center;
   align-items: center;
   height: 100%;
-  transition: all 0.4s ease;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.schedule-item:hover .schedule-item-inner {
-  transform: translateZ(20px);
+  transition: all 0.3s ease;
 }
 
 .schedule-item h3 {
