@@ -278,6 +278,9 @@ io.on('connection', (socket) => {
 // Hacer io disponible para las rutas
 app.set('io', io);
 
+// Exportar app para testing
+module.exports = app;
+
 // Rutas de la API
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/tables', tableRoutes);
