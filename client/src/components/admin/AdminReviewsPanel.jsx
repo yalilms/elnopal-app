@@ -102,6 +102,7 @@ const AdminReviewsPanel = () => {
   
   useEffect(() => {
     fetchReviews();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const fetchReviews = async () => {
@@ -296,7 +297,7 @@ const AdminReviewsPanel = () => {
         throw new Error('No se pudo enviar la respuesta');
       }
 
-      const data = await response.json();
+      // const data = await response.json(); // No se usa la respuesta
       
       // Actualizar el estado de la reseña
       setReviews(reviews.map(review => 

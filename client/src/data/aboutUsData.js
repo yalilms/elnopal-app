@@ -13,7 +13,7 @@ export const aboutUsData = {
   filosofia: {
     titulo: "Nuestra Filosofía",
     contenido: `
-      <p>En El Nopal creemos que la gastronomía es mucho más que alimentación; es cultura, tradición e identidad. Por eso, cada platillo que servimos cuenta una historia y preserva técnicas culinarias que han pasado de generación en generación.</p>
+      <p>En El Nopal creemos que la gastronomía es mucho más que alimentación; es cultura, tradición e identidad. Por eso, nos esforzamos por crear experiencias auténticas que preservan las técnicas culinarias que han pasado de generación en generación.</p>
       
       <p>Nuestro compromiso con la autenticidad nos lleva a importar directamente de México muchos de nuestros ingredientes clave como chiles secos, moles especiales y hierbas aromáticas. Otros ingredientes, como las verduras y carnes, los seleccionamos de productores locales que comparten nuestra filosofía de calidad y sostenibilidad.</p>
       

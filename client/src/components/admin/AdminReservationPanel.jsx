@@ -5,8 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { markAsNoShow as apiMarkNoShow } from '../../services/reservationService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faCalendarAlt, faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
-  faClock, faUsers, faUtensils, faCheck, faList, faUserSlash,
+  faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
+  faCheck, faList, faUserSlash,
   faComments, faHome, faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';

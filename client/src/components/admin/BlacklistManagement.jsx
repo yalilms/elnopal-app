@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faUserSlash, faTrashAlt, faEye, faEdit, faPlus, faSearch,
+  faUserSlash, faTrashAlt, faEye, faSearch,
   faCalendarAlt, faPhone, faEnvelope, faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -34,9 +34,7 @@ import ContactForm from './components/ContactForm';
 // Importar utilidades de scroll
 import { navigateAndScroll, handleHashScroll } from './utils/scrollUtils';
 
-// Datos
-import { menuData } from './data/menuData';
-// reviewsData no se usa, se elimina
+// Datos eliminados - no se usa menú
 
 // Importar el video
 import videoEjemplo from './images/ejemplo_video.mp4';
@@ -49,38 +47,7 @@ import heroImage2 from './images/NOPAL_UNITY-39.JPG';
 import heroImage3 from './images/NOPAL_UNITY-19.JPG';
 import heroImage4 from './images/NOPAL_UNITY-6.JPG';
 
-// Importar imágenes de platos de la semana
-import platoImage1 from './images/p.s.1.JPG';
-import platoImage2 from './images/p_s_2.JPG';
-import platoImage3 from './images/p_s_3.JPG';
-
-// Datos de platos de la semana
-const platosDelaSemana = [
-  {
-    id: 1,
-    title: "Tacos de Carnitas",
-    description: "Carne de cerdo confitada lentamente, servida con cebolla, cilantro y salsa verde casera.",
-    precio: "12.50€",
-    image: platoImage1,
-    color: "#D62828"  // Primario de variables.css
-  },
-  {
-    id: 2,
-    title: "Mole Poblano",
-    description: "Pollo en la tradicional salsa mole con más de 20 ingredientes, acompañado de arroz mexicano.",
-    precio: "18.50€",
-    image: platoImage2,
-    color: "#388E3C"  // Secundario de variables.css
-  },
-  {
-    id: 3,
-    title: "Ceviche de Pescado",
-    description: "Pescado fresco marinado en limón con cebolla morada, cilantro y chile jalapeño.",
-    precio: "16.00€",
-    image: platoImage3,
-    color: "#FFC107"  // Acento de variables.css
-  }
-];
+// Sección de platos eliminada - no se usa menú
 
 // Componentes de página
 const Home = () => {
@@ -89,12 +56,10 @@ const Home = () => {
   const [showHeroContent, setShowHeroContent] = useState(false);
   const [animationTriggered, setAnimationTriggered] = useState({});
   const [showVideo, setShowVideo] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedPlato, setSelectedPlato] = useState(null);
+  // Estados de modal de platos eliminados - no se usa menú
   const sectionRefs = {
     hero: useRef(null),
-    video: useRef(null),
-    promociones: useRef(null)
+    video: useRef(null)
   };
   
   // Imágenes para el efecto parallax
@@ -169,42 +134,16 @@ const Home = () => {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  }, [animationTriggered, heroImages.length, sectionRefs, showVideo]);
+  }, [animationTriggered, heroImages.length, showVideo]);
 
-  // Efecto para manejar la tecla Escape en el modal
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && showModal) {
-        closeModal();
-      }
-    };
-
-    if (showModal) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [showModal, closeModal]);
-  
+  // Definir funciones antes de usarlas
   const handleReservaClick = () => {
     history.push('/reservaciones');
   };
   
-  const openModal = (plato) => {
-    setSelectedPlato(plato);
-    setShowModal(true);
-  };
+  // Funciones de modal de platos eliminadas - no se usa menú
 
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedPlato(null);
-  };
+  // useEffect de modal eliminado - no se usa menú
   
   return (
     <div className="page home-page">
@@ -234,47 +173,7 @@ const Home = () => {
         </div>
       </section>
       
-      {/* Platos de la Semana con efecto 3D */}
-      <section id="promociones" ref={sectionRefs.promociones} className={`promociones-3d ${animationTriggered.promociones ? 'animate-in' : ''}`}>
-        <h2 className="section-title floating-title">Platos de la Semana</h2>
-        <div className="cards-3d-container">
-          {platosDelaSemana.map((plato, index) => (
-            <div 
-              key={plato.id} 
-              className={`card-3d ${index === 1 ? 'card-center' : ''} ${plato.id === 1 ? 'card-primary' : plato.id === 2 ? 'card-secondary' : 'card-accent'}`}
-            >
-              <div className="card-3d-inner">
-                <div className="card-3d-front">
-                  <div className="card-3d-image">
-                    <img src={plato.image} alt={plato.title} />
-                    <div className={`card-overlay ${plato.id === 1 ? 'overlay-primary' : plato.id === 2 ? 'overlay-secondary' : 'overlay-accent'}`}></div>
-                  </div>
-                  <h3 className="card-title-white">{plato.title}</h3>
-                  
-                  {/* Contenido móvil visible solo en pantallas pequeñas */}
-                  <div className="card-mobile-content">
-                    <p>{plato.description}</p>
-                    <div className="precio">{plato.precio}</div>
-                    <button className="card-mobile-button" onClick={() => openModal(plato)}>
-                      Ver detalles
-                    </button>
-                  </div>
-                </div>
-                <div className={`card-3d-back ${plato.id === 1 ? 'back-primary' : plato.id === 2 ? 'back-secondary' : 'back-accent'}`}>
-                  <div className="card-3d-content">
-                    <h3 className="card-title-white">{plato.title}</h3>
-                    <p className="card-description-white">{plato.description}</p>
-                    <div className="card-price-white">
-                      {plato.precio}
-                    </div>
-                    <button className="card-3d-button" onClick={() => openModal(plato)}>Ver detalles</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Sección de platos eliminada - no se usa menú */}
       
       {/* Acerca de El Nopal con estilo mexicano */}
       <section id="about" className="about-mexican-style">
@@ -435,33 +334,7 @@ const Home = () => {
       </section>
 
       {/* Modal de Detalles del Plato */}
-      {showModal && selectedPlato && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>×</button>
-            <div className="modal-header">
-              <img src={selectedPlato.image} alt={selectedPlato.title} className="modal-image" />
-              <div className="modal-title-section">
-                <span className="modal-categoria">{selectedPlato.title}</span>
-                <h2 className="modal-title">{selectedPlato.title}</h2>
-                <div className="modal-precio">{selectedPlato.precio}</div>
-              </div>
-            </div>
-            <div className="modal-body">
-              <p className="modal-description">{selectedPlato.description}</p>
-              <div className="modal-ingredientes">
-                <h3>Ingredientes:</h3>
-                <ul>
-                  {/* Assuming selectedPlato.ingredientes is an array of strings */}
-                  {selectedPlato.ingredientes.map((ingrediente, index) => (
-                    <li key={index}>{ingrediente}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal de platos eliminado - no se usa menú */}
     </div>
   );
 };
