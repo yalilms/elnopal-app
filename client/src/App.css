@@ -7,7 +7,7 @@
 
 /* Home Page Hero */
 .home-page .hero-parallax {
-  background-image: url('../images/NOPAL_UNITY-19.JPG');
+  /* Background image will be set via inline styles in React component */
 }
 
 /* Page transitions */

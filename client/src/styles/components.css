@@ -179,7 +179,8 @@
   left: 0;
   width: 120%;
   height: 120%;
-  background-image: var(--hero-bg-url, url('../images/NOPAL_UNITY-19.JPG'));
+  /* Background image will be set via inline styles in React component */
+  background-image: var(--hero-bg-url);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
