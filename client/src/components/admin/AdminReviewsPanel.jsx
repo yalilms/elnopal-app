@@ -102,65 +102,40 @@ const AdminReviewsPanel = () => {
   
   useEffect(() => {
     fetchReviews();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      
-      // Intentar múltiples métodos para obtener el token
-      let token = null;
-      
-      // 1. Desde currentUser
-      if (currentUser && currentUser.token) {
-        token = currentUser.token;
-      }
-      // 2. Desde sessionStorage
-      else if (typeof(Storage) !== "undefined") {
-        token = sessionStorage.getItem('authToken') || sessionStorage.getItem('token');
-      }
-      // 3. Desde localStorage como backup
-      else if (typeof(Storage) !== "undefined") {
-        token = localStorage.getItem('authToken') || localStorage.getItem('token');
-      }
+      // Obtenemos el token directamente del usuario actual
+      const token = currentUser ? currentUser.token : null;
       
       if (!token) {
-        console.warn('No se encontró token de autenticación, usando datos de prueba');
-        setReviews(testReviews);
-        return;
+        throw new Error('No hay token de autenticación');
       }
       
       const response = await fetch('/api/reviews/admin', {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`
         }
       });
       
       if (!response.ok) {
-        if (response.status === 401) {
-          console.warn('Token no válido, usando datos de prueba');
-          setReviews(testReviews);
-          return;
-        }
-        throw new Error(`Error ${response.status}: No se pudieron cargar las reseñas`);
+        throw new Error('No se pudieron cargar las reseñas');
       }
       
       const data = await response.json();
       // Normalizar las reviews para compatibilidad
-      const normalizedReviews = (data.reviews || data || []).map(review => normalizeReview(review)).filter(review => review !== null);
+      const normalizedReviews = (data.reviews || []).map(review => normalizeReview(review)).filter(review => review !== null);
       setReviews(normalizedReviews);
       
     } catch (error) {
+      toast.error('Error al cargar las reseñas: ' + (error.message || 'Error desconocido'));
       console.error('Error al cargar reseñas:', error);
-      console.log('Usando datos de prueba debido al error');
-      setReviews(testReviews);
       
-      // Solo mostrar toast para errores reales, no para falta de token
-      if (!error.message.includes('token')) {
-        toast.error('Error al cargar las reseñas: ' + (error.message || 'Error desconocido'));
-      }
+      // Usar datos de prueba si hay un error
+      console.log('Usando datos de prueba');
+      setReviews(testReviews);
     } finally {
       setLoading(false);
     }
@@ -172,17 +147,11 @@ const AdminReviewsPanel = () => {
     }
     
     try {
-      // Obtener token con múltiples métodos
-      let token = null;
-      if (currentUser && currentUser.token) {
-        token = currentUser.token;
-      } else if (typeof(Storage) !== "undefined") {
-        token = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-      }
+      // Obtenemos el token directamente del usuario actual
+      const token = currentUser ? currentUser.token : null;
       
       if (!token) {
-        toast.error('No hay token de autenticación. Por favor, inicie sesión nuevamente.');
-        return;
+        throw new Error('No hay token de autenticación');
       }
       
       const response = await fetch(`/api/reviews/${reviewId}`, {
@@ -212,17 +181,11 @@ const AdminReviewsPanel = () => {
   
   const approveReview = async (reviewId) => {
     try {
-      // Obtener token con múltiples métodos
-      let token = null;
-      if (currentUser && currentUser.token) {
-        token = currentUser.token;
-      } else if (typeof(Storage) !== "undefined") {
-        token = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-      }
+      // Obtenemos el token directamente del usuario actual
+      const token = currentUser ? currentUser.token : null;
       
       if (!token) {
-        toast.error('No hay token de autenticación. Por favor, inicie sesión nuevamente.');
-        return;
+        throw new Error('No hay token de autenticación');
       }
       
       const response = await fetch(`/api/reviews/${reviewId}/status`, {
@@ -268,17 +231,10 @@ const AdminReviewsPanel = () => {
     setSendingResponse(true);
     
     try {
-      // Obtener token con múltiples métodos
-      let token = null;
-      if (currentUser && currentUser.token) {
-        token = currentUser.token;
-      } else if (typeof(Storage) !== "undefined") {
-        token = sessionStorage.getItem('authToken') || sessionStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-      }
+      const token = currentUser ? currentUser.token : null;
       
       if (!token) {
-        toast.error('No hay token de autenticación. Por favor, inicie sesión nuevamente.');
-        return;
+        throw new Error('No hay token de autenticación');
       }
 
       const response = await fetch(`/api/reviews/admin/${selectedReview._id}/respond`, {
@@ -297,7 +253,7 @@ const AdminReviewsPanel = () => {
         throw new Error('No se pudo enviar la respuesta');
       }
 
-      // const data = await response.json(); // No se usa la respuesta
+      const data = await response.json();
       
       // Actualizar el estado de la reseña
       setReviews(reviews.map(review => 

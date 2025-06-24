@@ -9,7 +9,6 @@ import './styles/performance.css';
 import Blog from './components/routes/Blog';
 import BlogPost from './components/routes/BlogPost';
 import About from './components/routes/About';
-import PrivacyPolicy from './components/routes/PrivacyPolicy';
 // Importar componentes
 import Footer from './components/layout/Footer';
 import Navbar from './components/layout/Navbar';
@@ -35,8 +34,9 @@ import ContactForm from './components/ContactForm';
 // Importar utilidades de scroll
 import { navigateAndScroll, handleHashScroll } from './utils/scrollUtils';
 
-// Importar datos de platos
-import { platosDelaSemana } from './data/platosData';
+// Datos
+import { menuData } from './data/menuData';
+import { reviewsData } from './data/reviewsData';
 
 // Importar el video
 import videoEjemplo from './images/ejemplo_video.mp4';
@@ -49,7 +49,10 @@ import heroImage2 from './images/NOPAL_UNITY-39.JPG';
 import heroImage3 from './images/NOPAL_UNITY-19.JPG';
 import heroImage4 from './images/NOPAL_UNITY-6.JPG';
 
-// Sección de platos eliminada - no se usa menú
+// Importar imágenes de platos de la semana
+import platoImage1 from './images/p.s.1.JPG';
+import platoImage2 from './images/p_s_2.JPG';
+import platoImage3 from './images/p_s_3.JPG';
 
 // Componentes de página
 const Home = () => {
@@ -58,12 +61,13 @@ const Home = () => {
   const [showHeroContent, setShowHeroContent] = useState(false);
   const [animationTriggered, setAnimationTriggered] = useState({});
   const [showVideo, setShowVideo] = useState(false);
-  // Estados para modal de platos
   const [showModal, setShowModal] = useState(false);
   const [selectedPlato, setSelectedPlato] = useState(null);
   const sectionRefs = {
     hero: useRef(null),
-    video: useRef(null)
+    about: useRef(null),
+    video: useRef(null),
+    promociones: useRef(null)
   };
   
   // Imágenes para el efecto parallax
@@ -72,6 +76,59 @@ const Home = () => {
     heroImage2,
     heroImage3,
     heroImage4
+  ];
+  
+  // Platos de la semana para el carrusel 3D
+  const platosDelaSemana = [
+    {
+      id: 1,
+      title: "Nachos con Guacamole y Salsa",
+      description: "Totopos crujientes acompañados de guacamole fresco y salsa roja picante",
+      image: platoImage1,
+      color: "#e63946",
+      ingredientes: [
+        "Totopos de maíz crujientes",
+        "Guacamole fresco con aguacate",
+        "Salsa roja de tomate y chile",
+        "Cilantro y cebolla picada",
+        "Limón y sal de mar"
+      ],
+      precio: "9€",
+      categoria: "Botanas y Entradas"
+    },
+    {
+      id: 2,
+      title: "Enchiladas Rojas con Pollo",
+      description: "Tortillas bañadas en salsa roja de chiles guajillo con pollo deshebrado",
+      image: platoImage2,
+      color: "#457b9d",
+      ingredientes: [
+        "Tortillas de maíz suaves",
+        "Pollo deshebrado casero",
+        "Salsa roja de chile guajillo",
+        "Queso fresco desmoronado",
+        "Crema mexicana y cebolla"
+      ],
+      precio: "13€",
+      categoria: "Plato Principal"
+    },
+    {
+      id: 3,
+      title: "Tacos de Birria",
+      description: "Tacos dorados rellenos de carne de res guisada en consomé de chiles especiales",
+      image: platoImage3,
+      color: "#2a9d8f",
+      ingredientes: [
+        "Carne de res en birria tradicional",
+        "Tortillas de maíz doradas",
+        "Consomé de chiles guajillo y ancho",
+        "Queso Oaxaca derretido",
+        "Cebolla blanca y cilantro",
+        "Salsa verde y limones"
+      ],
+      precio: "15€",
+      categoria: "Especialidad Jaliciense"
+    }
   ];
   
   // Efectos de scroll y parallax
@@ -132,48 +189,64 @@ const Home = () => {
       if (ref.current) observer.observe(ref.current);
     });
     
+    // Efecto de parallax en scroll
+    const handleScroll = () => {
+      const scrollPos = window.scrollY;
+      if (sectionRefs.hero.current) {
+        const heroHeight = sectionRefs.hero.current.offsetHeight;
+        const heroSection = sectionRefs.hero.current;
+        const parallaxBg = heroSection.querySelector('.parallax-bg');
+        if (parallaxBg && scrollPos <= heroHeight) {
+          parallaxBg.style.transform = `translateY(${scrollPos * 0.5}px)`;
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
     return () => {
       clearInterval(imageInterval);
+      window.removeEventListener('scroll', handleScroll);
       Object.values(sectionRefs).forEach(ref => {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  }, [animationTriggered, heroImages.length, showVideo]);
+  }, [animationTriggered]);
 
-  // Definir funciones antes de usarlas
-  const handleReservaClick = () => {
-    history.push('/reservaciones');
-  };
-  
-  // Funciones para modal de platos
-  const openModal = (plato) => {
-    setSelectedPlato(plato);
-    setShowModal(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedPlato(null);
-    document.body.style.overflow = 'auto';
-  };
-
-  // useEffect para manejar el modal
+  // Efecto para manejar la tecla Escape en el modal
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && showModal) {
         closeModal();
       }
     };
 
     if (showModal) {
       document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+    } else {
+      document.body.style.overflow = 'unset';
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
     };
   }, [showModal]);
+  
+  const handleReservaClick = () => {
+    history.push('/reservaciones');
+  };
+  
+  const openModal = (plato) => {
+    setSelectedPlato(plato);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedPlato(null);
+  };
   
   return (
     <div className="page home-page">
@@ -194,19 +267,63 @@ const Home = () => {
                 <span className="icon-avocado">🥑</span>
               </div>
             </div>
-            <p className="hero-subtitle">Sabores tradicionales de México en el corazón de la ciudad</p>
+            <p className="hero-subtitle" style={{color: 'white'}}>Sabores tradicionales de México en el corazón de la ciudad</p>
             <button onClick={handleReservaClick} className="cta-button pulse-animation">
-              <span>¡Reserva Ahora!</span>
+              <span style={{color: 'white'}}>¡Reserva Ahora!</span>
               <i className="fas fa-arrow-right"></i>
             </button>
           </div>
         </div>
       </section>
       
-      {/* Sección de platos eliminada - no se usa menú */}
+      {/* Platos de la Semana con efecto 3D */}
+      <section id="promociones" ref={sectionRefs.promociones} className={`promociones-3d ${animationTriggered.promociones ? 'animate-in' : ''}`}>
+        <h2 className="section-title floating-title">Platos de la Semana</h2>
+        <div className="cards-3d-container">
+          {platosDelaSemana.map((plato, index) => (
+            <div 
+              key={plato.id} 
+              className={`card-3d ${index === 1 ? 'card-center' : ''}`}
+              style={{ 
+                backgroundColor: `${plato.color}10`,
+                borderColor: plato.color
+              }}
+            >
+              <div className="card-3d-inner">
+                <div className="card-3d-front">
+                  <div className="card-3d-image">
+                    <img src={plato.image} alt={plato.title} />
+                    <div className="card-overlay" style={{ backgroundColor: `${plato.color}80` }}></div>
+                  </div>
+                  <h3 style={{ color: 'white' }}>{plato.title}</h3>
+                  
+                  {/* Contenido móvil visible solo en pantallas pequeñas */}
+                  <div className="card-mobile-content">
+                    <p>{plato.description}</p>
+                    <div className="precio">{plato.precio}</div>
+                    <button className="card-mobile-button" onClick={() => openModal(plato)}>
+                      Ver detalles
+                    </button>
+                  </div>
+                </div>
+                <div className="card-3d-back" style={{ backgroundColor: plato.color }}>
+                  <div className="card-3d-content">
+                    <h3 style={{ color: 'white' }}>{plato.title}</h3>
+                    <p style={{ color: 'white' }}>{plato.description}</p>
+                    <div style={{ color: 'white', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                      {plato.precio}
+                    </div>
+                    <button className="card-3d-button" onClick={() => openModal(plato)}>Ver detalles</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
       
       {/* Acerca de El Nopal con estilo mexicano */}
-      <section id="about" className="about-mexican-style">
+      <section id="about" ref={sectionRefs.about} className={`about-section-animated ${animationTriggered.about ? 'animate-in' : ''} about-mexican-style`}>
         <div className="about-mexican-container">
           {/* Sombreros mexicanos decorativos */}
           <div className="sombrero-row">
@@ -307,66 +424,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Sección de Platos de la Semana */}
-      <section className="platos-semana-section">
-        <div className="platos-container">
-          <h2 className="section-title">Platos de la Semana</h2>
-          <p className="section-subtitle">Delicias especiales preparadas con ingredientes frescos y recetas tradicionales</p>
-          
-          <div className="platos-grid">
-            {platosDelaSemana.map((plato) => (
-              <div key={plato.id} className="plato-card">
-                <div className="plato-image-container">
-                  <img 
-                    src={plato.imagen} 
-                    alt={plato.nombre}
-                    onError={(e) => {
-                      e.target.src = heroImages[0]; // Imagen de fallback
-                    }}
-                  />
-                  <div className="plato-overlay">
-                    <div className="precio-container">
-                      <span className="precio-actual">{plato.precio}</span>
-                      {plato.precioOriginal && (
-                        <span className="precio-original">{plato.precioOriginal}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="plato-content">
-                  <h3 className="plato-nombre">{plato.nombre}</h3>
-                  <p className="plato-descripcion">{plato.descripcionCorta}</p>
-                  
-                  <div className="plato-info">
-                    <div className="plato-categoria">
-                      <span className="categoria-badge">{plato.categoria}</span>
-                    </div>
-                    <div className="plato-tiempo">
-                      <i className="fas fa-clock"></i>
-                      <span>{plato.tiempoPreparacion}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="plato-oferta">
-                    <i className="fas fa-tag"></i>
-                    <span>{plato.oferta}</span>
-                  </div>
-                  
-                  <button 
-                    className="plato-detalles-btn"
-                    onClick={() => openModal(plato)}
-                  >
-                    Ver Detalles
-                    <i className="fas fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Sección de Horario y Opiniones Combinada */}
       <section className="home-combined-section">
         <div className="combined-section-container">
@@ -427,75 +484,25 @@ const Home = () => {
       {showModal && selectedPlato && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>
-              <i className="fas fa-times"></i>
-            </button>
-            
+            <button className="modal-close" onClick={closeModal}>×</button>
             <div className="modal-header">
-              <div className="modal-image">
-                <img 
-                  src={selectedPlato.imagen} 
-                  alt={selectedPlato.nombre}
-                  onError={(e) => {
-                    e.target.src = heroImages[0]; // Imagen de fallback
-                  }}
-                />
-                <div className="modal-precio-overlay">
-                  <span className="modal-precio-actual">{selectedPlato.precio}</span>
-                  {selectedPlato.precioOriginal && (
-                    <span className="modal-precio-original">{selectedPlato.precioOriginal}</span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="modal-info">
-                <h2 className="modal-titulo">{selectedPlato.nombre}</h2>
-                <div className="modal-badges">
-                  <span className="modal-categoria">{selectedPlato.categoria}</span>
-                  <span className="modal-tiempo">
-                    <i className="fas fa-clock"></i>
-                    {selectedPlato.tiempoPreparacion}
-                  </span>
-                  <span className={`modal-picante ${selectedPlato.picante.toLowerCase().replace(' ', '-')}`}>
-                    <i className="fas fa-pepper-hot"></i>
-                    {selectedPlato.picante}
-                  </span>
-                </div>
-                
-                <div className="modal-oferta">
-                  <i className="fas fa-tag"></i>
-                  <span>{selectedPlato.oferta}</span>
-                </div>
+              <img src={selectedPlato.image} alt={selectedPlato.title} className="modal-image" />
+              <div className="modal-title-section">
+                <span className="modal-categoria">{selectedPlato.categoria}</span>
+                <h2 className="modal-title">{selectedPlato.title}</h2>
+                <div className="modal-precio">{selectedPlato.precio}</div>
               </div>
             </div>
-            
             <div className="modal-body">
-              <div className="modal-descripcion">
-                <h3>Descripción</h3>
-                <p>{selectedPlato.descripcion}</p>
-              </div>
-              
+              <p className="modal-description">{selectedPlato.description}</p>
               <div className="modal-ingredientes">
-                <h3>Ingredientes</h3>
-                <div className="ingredientes-grid">
+                <h3>Ingredientes:</h3>
+                <ul>
                   {selectedPlato.ingredientes.map((ingrediente, index) => (
-                    <div key={index} className="ingrediente-item">
-                      <i className="fas fa-leaf"></i>
-                      <span>{ingrediente}</span>
-                    </div>
+                    <li key={index}>{ingrediente}</li>
                   ))}
-                </div>
+                </ul>
               </div>
-            </div>
-            
-            <div className="modal-footer">
-              <button className="modal-reserva-btn" onClick={() => {
-                closeModal();
-                navigateAndScroll(history, '/reservaciones', 'reservation-form');
-              }}>
-                <i className="fas fa-calendar-plus"></i>
-                Reservar Mesa
-              </button>
             </div>
           </div>
         </div>
@@ -504,8 +511,6 @@ const Home = () => {
   );
 };
 
-// Menu component - temporalmente comentado ya que no se usa en las rutas
-/*
 const Menu = () => {
   const [categoria, setCategoria] = useState('Entradas');
   
@@ -540,7 +545,6 @@ const Menu = () => {
     </div>
   );
 };
-*/
 
 const Contact = () => {
   // Manejar scroll automático al cargar la página con hash
@@ -591,7 +595,6 @@ function App() {
                 <Route exact path="/blog" component={Blog} />
                 <Route path="/blog/:id" component={BlogPost} />
                 <Route path="/nosotros" component={About} />
-                <Route path="/privacidad" component={PrivacyPolicy} />
                 
                 {/* Mantener ruta para dejar reseñas pero eliminar la de ver opiniones */}
                 <Route path="/dejar-opinion" component={LeaveReviewPage} />

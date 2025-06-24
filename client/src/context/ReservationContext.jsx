@@ -4,7 +4,7 @@ import {
   createReservation as apiCreateReservation,
   updateReservation as apiUpdateReservation,
   cancelReservation as apiCancelReservation,
-  markAsNoShow as apiMarkNoShow,
+  markReservationNoShow as apiMarkNoShow,
   checkAvailability as apiCheckAvailability,
   getAllTables
 } from '../services/reservationService';

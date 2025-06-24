@@ -62,6 +62,9 @@ const Blog = () => {
     return dateString; // Ya está en formato legible
   };
   
+  // Encontrar posts destacados
+  const featuredPosts = posts.filter(post => post.featured);
+  
   if (loading) {
     return (
       <div className="blog-container">

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { markAsNoShow as apiMarkNoShow } from '../../services/reservationService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
-  faCheck, faList, faUserSlash, faClock,
-  faComments, faHome, faSignOutAlt
+  faCalendarAlt, faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
+  faClock, faUsers, faUtensils, faCheck, faList, faUserSlash, faEye,
+  faComments, faHome, faSignOutAlt, faFilter, faArrowLeft, faArrowRight,
+  faCheckCircle, faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
@@ -49,8 +49,7 @@ const adminPanelStyles = `
     border-bottom: 3px solid #F8B612;
   }
 
-  /* Fila del título principal */
-  .panel-header-title-row {
+  .panel-header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,7 +58,7 @@ const adminPanelStyles = `
     gap: 1rem;
   }
 
-  .panel-header-title-row h2 {
+  .panel-title {
     color: #0f5132;
     font-size: clamp(1.5rem, 4vw, 2.2rem);
     font-weight: 700;
@@ -69,7 +68,7 @@ const adminPanelStyles = `
     position: relative;
   }
 
-  .panel-header-title-row h2::after {
+  .panel-title::after {
     content: '';
     position: absolute;
     bottom: -5px;
@@ -80,28 +79,17 @@ const adminPanelStyles = `
     border-radius: 2px;
   }
 
-  /* Información de fecha seleccionada */
-  .selected-date-info {
+  .panel-date {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    background: rgba(15, 81, 50, 0.1);
-    padding: 0.8rem 1.5rem;
-    border-radius: 25px;
-    border: 2px solid rgba(15, 81, 50, 0.2);
-    backdrop-filter: blur(5px);
-  }
-
-  .selected-date-info svg {
-    color: #D62828;
+    gap: 0.5rem;
+    color: #666;
     font-size: 1.1rem;
+    font-weight: 500;
   }
 
-  .selected-date-info span {
-    color: #0f5132;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: capitalize;
+  .panel-date .fa-calendar-alt {
+    color: #D62828;
   }
 
   .panel-header-actions-row {
@@ -831,13 +819,13 @@ const AdminReservationPanel = () => {
   const [error, setError] = useState(null);
   const [blacklistEntries, setBlacklistEntries] = useState([]);
   
-  // Estados de validación utilizados
+  // Nuevos estados para validación
   const [newFormErrors, setNewFormErrors] = useState({});
   const [newFormTouched, setNewFormTouched] = useState({});
   const [editFormErrors, setEditFormErrors] = useState({});
   const [editFormTouched, setEditFormTouched] = useState({});
   
-  // Estados de modales utilizados
+  // Nuevos estados para los modales
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showNewReservationModal, setShowNewReservationModal] = useState(false);
   
@@ -1443,7 +1431,7 @@ const AdminReservationPanel = () => {
       await cancelReservation(selectedReservation.id, reason);
       
       // Recargar datos
-      await loadReservations();
+      await loadData();
       
       toast.success('Reservación cancelada exitosamente');
       setSelectedReservation(null);
@@ -1473,19 +1461,73 @@ const AdminReservationPanel = () => {
     setIsEditing(false);
   };
 
-  // Funciones para manejo de blacklist usando servicios
-  const handleAddToBlacklistService = async (blacklistData) => {
+  // Funciones para manejo de blacklist
+  const addToBlacklist = async (blacklistData) => {
+    // Simular API call - en producción sería una llamada real al backend
+    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(blacklistData)
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al agregar a blacklist');
+    }
+    
+    return await response.json();
+  };
+
+  const getBlacklist = async () => {
     try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener blacklist');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error loading blacklist:', error);
+      return [];
+    }
+  };
+
+  const removeFromBlacklist = async (entryId) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist/${entryId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al remover de blacklist');
+    }
+    
+    return await response.json();
+  };
+  
+  const handleAddToBlacklist = async (blacklistData) => {
+    try {
+
+
       await addToBlacklist({
         ...blacklistData,
         reservationId: selectedReservation.id
       });
       
       // Actualizar el estado de la reserva a "no-show"
-      await apiMarkNoShow(selectedReservation.id);
+      await updateReservationStatus(selectedReservation.id, 'no-show');
       
       // Recargar las reservaciones
-      await loadReservations();
+      await loadData();
       
       // Cerrar el modal
       setShowBlacklistModal(false);
@@ -1502,51 +1544,1203 @@ const AdminReservationPanel = () => {
     }
   };
   
-  const loadBlacklistDataService = async () => {
+  // Función para cargar datos
+  const loadData = async () => {
     try {
-      // Llamar directamente a la API de blacklist
-      const response = await fetch('/api/blacklist', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      setLoading(true);
+      setError(null);
       
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      if (viewMode === 'blacklist') {
+        await loadBlacklistData();
+      } else {
+        // Cargar reservas para la fecha seleccionada
+        await loadReservations({ date: selectedDate });
+        
+        // También refrescar las mesas
+        await refreshData();
       }
-      
-      const data = await response.json();
-      setBlacklistEntries(Array.isArray(data) ? data : (data.data || data.entries || []));
-      return data;
     } catch (error) {
-      console.error('Error loading blacklist:', error);
-      setBlacklistEntries([]);
-      throw error;
+      console.error('Error al cargar datos:', error);
+      setError('Error al cargar los datos: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleRemoveFromBlacklistService = async (entryId) => {
-    try {
-      // Llamar directamente a la API para remover de blacklist
-      const response = await fetch(`/api/blacklist/${entryId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
+  // Cargar datos al montar el componente y cuando cambie la fecha
+  useEffect(() => {
+    loadData();
+  }, [selectedDate]);
+  
+  // Renderizar formulario de nueva reserva telefónica
+  const renderNewReservationForm = () => {
+    // Obtener mesas disponibles según los datos del formulario
+    const availableTables = getAvailableTables();
+    
+    return (
+      <div style={{
+        padding: '1.5rem',
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        animation: 'fadeIn 0.3s ease-in-out',
+        color: '#333333',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
+        border: '1px solid rgba(0, 0, 0, 0.05)'
+      }}>
+        <h3 style={{
+          color: '#333333',
+          fontSize: '1.5rem',
+          fontWeight: '700',
+          marginBottom: '2rem',
+          textAlign: 'center',
+          position: 'relative',
+          padding: '1rem 0',
+          backgroundColor: 'rgba(255, 183, 3, 0.15)',
+          borderRadius: '8px',
+          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <FontAwesomeIcon icon={faPlus} style={{ marginRight: '10px', color: '#D62828', fontSize: '1.2rem' }} />
+          Nueva Reserva Telefónica
+        </h3>
+        <form onSubmit={handleCreateReservation}>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="name" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Nombre del cliente: *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={newReservationForm.name}
+              onChange={handleNewReservationFormChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="phone" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Teléfono: *
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={newReservationForm.phone}
+              onChange={handleNewReservationFormChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="email" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={newReservationForm.email}
+              onChange={handleNewReservationFormChange}
+              placeholder="Opcional"
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ flex: 1 }}>
+              <label 
+                htmlFor="date" 
+                style={{ 
+                  display: 'block', 
+                  marginBottom: '0.6rem', 
+                  color: '#333333', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem' 
+                }}
+              >
+                Fecha: *
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={newReservationForm.date}
+                onChange={handleNewReservationFormChange}
+                min={new Date().toISOString().split('T')[0]}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.9rem 1.2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #d0d0d0',
+                  color: '#333333',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#fff',
+                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+                }}
+              />
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <label 
+                htmlFor="time" 
+                style={{ 
+                  display: 'block', 
+                  marginBottom: '0.6rem', 
+                  color: '#333333', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem' 
+                }}
+              >
+                Hora: *
+              </label>
+              <select
+                id="time"
+                name="time"
+                value={newReservationForm.time}
+                onChange={handleNewReservationFormChange}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.9rem 1.2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #d0d0d0',
+                  color: '#333333',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#fff',
+                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                  appearance: 'none',
+                  backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 1rem center',
+                  backgroundSize: '16px',
+                  paddingRight: '2.5rem'
+                }}
+              >
+                <option value="" style={{ color: '#333333' }}>Seleccionar hora</option>
+                {adminFormAvailableSlots.length > 0 ? (
+                  adminFormAvailableSlots.map(time => (
+                    <option key={time} value={time} style={{ color: '#333333' }}>{time}</option>
+                  ))
+                ) : (
+                  <option value="" disabled style={{ color: '#333333' }}>Seleccione una fecha válida</option>
+                )}
+              </select>
+            </div>
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="partySize" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Número de personas: *
+            </label>
+            <select
+              id="partySize"
+              name="partySize"
+              value={newReservationForm.partySize}
+              onChange={handleNewReservationFormChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                appearance: 'none',
+                backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 1rem center',
+                backgroundSize: '16px',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="" style={{ color: '#333333' }}>Seleccionar</option>
+              {[...Array(8)].map((_, i) => (
+                <option key={i + 1} value={i + 1} style={{ color: '#333333' }}>
+                  {i + 1} {i === 0 ? 'persona' : 'personas'}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="tableId" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Mesa:
+            </label>
+            <select
+              id="tableId"
+              name="tableId"
+              value={newReservationForm.tableId}
+              onChange={handleNewReservationFormChange}
+              disabled={!newReservationForm.time || !newReservationForm.partySize}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                appearance: 'none',
+                backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 1rem center',
+                backgroundSize: '16px',
+                paddingRight: '2.5rem',
+                opacity: !newReservationForm.time || !newReservationForm.partySize ? 0.7 : 1
+              }}
+            >
+              <option value="">🤖 Asignación automática (recomendado)</option>
+              {availableTables.map(table => (
+                <option key={table.id} value={table.id} style={{ color: '#333333' }}>
+                  Mesa {table.number} - {table.capacity} personas ({table.location})
+                </option>
+              ))}
+            </select>
+            <p style={{
+              color: '#666',
+              fontSize: '0.85rem',
+              marginTop: '0.5rem',
+              fontStyle: 'italic'
+            }}>
+              💡 La asignación automática usa las reglas del restaurante: mesas 2-10 para 1-3 personas, 11-18 para 4-5 personas, mesas juntas para grupos grandes
+            </p>
+            {newReservationForm.time && newReservationForm.partySize && availableTables.length === 0 && (
+              <p style={{
+                color: '#dc3545',
+                fontSize: '0.9rem',
+                marginTop: '0.5rem',
+                padding: '0.5rem',
+                backgroundColor: 'rgba(230, 57, 70, 0.08)',
+                borderRadius: '8px',
+                borderLeft: '3px solid #dc3545'
+              }}>
+                No hay mesas disponibles para esta fecha, hora y tamaño de grupo.
+              </p>
+            )}
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="specialRequests" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Peticiones especiales:
+            </label>
+            <textarea
+              id="specialRequests"
+              name="specialRequests"
+              value={newReservationForm.specialRequests}
+              onChange={handleNewReservationFormChange}
+              rows="3"
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                resize: 'vertical'
+              }}
+            ></textarea>
+          </div>
+
+          {/* Sección de Accesibilidad en formulario de nueva reserva */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.6rem', 
+              color: '#333333', 
+              fontWeight: '600', 
+              fontSize: '0.95rem' 
+            }}>
+              Necesidades de accesibilidad:
+            </label>
+            <div className="accessibility-checkboxes">
+              <div 
+                className="accessibility-checkbox-item"
+                onClick={(e) => {
+                  // Solo activar si no se hizo clic directamente en el checkbox
+                  if (e.target.type !== 'checkbox') {
+                    const checkbox = document.getElementById('new-needsBabyCart');
+                    checkbox.checked = !checkbox.checked;
+                    handleNewReservationFormChange({ target: { name: 'needsBabyCart', type: 'checkbox', checked: checkbox.checked } });
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  id="new-needsBabyCart"
+                  name="needsBabyCart"
+                  checked={newReservationForm.needsBabyCart}
+                  onChange={handleNewReservationFormChange}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <label htmlFor="new-needsBabyCart">
+                  <span className="emoji">🍼</span>
+                  Viene con carrito de bebé
+                </label>
+              </div>
+              
+              <div 
+                className="accessibility-checkbox-item"
+                onClick={(e) => {
+                  // Solo activar si no se hizo clic directamente en el checkbox
+                  if (e.target.type !== 'checkbox') {
+                    const checkbox = document.getElementById('new-needsWheelchair');
+                    checkbox.checked = !checkbox.checked;
+                    handleNewReservationFormChange({ target: { name: 'needsWheelchair', type: 'checkbox', checked: checkbox.checked } });
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  id="new-needsWheelchair"
+                  name="needsWheelchair"
+                  checked={newReservationForm.needsWheelchair}
+                  onChange={handleNewReservationFormChange}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <label htmlFor="new-needsWheelchair">
+                  <span className="emoji">♿</span>
+                  Viene con silla de ruedas
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            marginTop: '2rem',
+            borderTop: '1px solid #d0d0d0',
+            paddingTop: '1.5rem',
+            justifyContent: 'flex-end'
+          }}>
+            <button
+              type="button"
+              onClick={handleCancelCreate}
+              style={{
+                backgroundColor: '#f0f0f0',
+                color: '#333333',
+                border: 'none',
+                minWidth: '140px',
+                padding: '0.9rem 1.5rem',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.6rem'
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: '#009B9B',
+                color: 'white',
+                border: 'none',
+                minWidth: '140px',
+                padding: '0.9rem 1.5rem',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.6rem'
+              }}
+            >
+              Crear Reserva
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  };
+  
+  // Renderizar lista de reservaciones
+  const renderReservationsList = () => {
+    if (sortedReservations.length === 0) {
+      return <p className="no-reservations">No hay reservaciones para esta fecha.</p>;
+    }
+    
+    return (
+      <div className="reservations-list">
+        <div className="filters-enhanced">
+          <div className="filter-header">
+            <h4>Filtrar reservas</h4>
+            <span className="results-count">
+              {sortedReservations.length} resultados
+            </span>
+          </div>
+          
+          <div className="filter-tabs-container">
+            <button 
+              className={`filter-tab ${filterStatus === 'all' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('all')}
+            >
+              <FontAwesomeIcon icon={faList} />
+              <span>Todas</span>
+              <span className="filter-count">{dayStats.total}</span>
+            </button>
+            
+            <button 
+              className={`filter-tab confirmed ${filterStatus === 'confirmed' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('confirmed')}
+            >
+              <FontAwesomeIcon icon={faCheckCircle} />
+              <span>Confirmadas</span>
+              <span className="filter-count">{dayStats.confirmed}</span>
+            </button>
+            
+            <button 
+              className={`filter-tab cancelled ${filterStatus === 'cancelled' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('cancelled')}
+            >
+              <FontAwesomeIcon icon={faTimesCircle} />
+              <span>Canceladas</span>
+              <span className="filter-count">{dayStats.cancelled}</span>
+            </button>
+          </div>
+        </div>
+        
+        {/* Tabla para desktop */}
+        <div className="reservations-table-container">
+          <table className="reservations-table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Cliente</th>
+                <th>Mesa</th>
+                <th>Personas</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedReservations.map(reservation => (
+                <tr 
+                  key={reservation.id} 
+                  className={`${selectedReservation && selectedReservation.id === reservation.id ? 'selected' : ''} status-${reservation.status}`}
+                  onClick={() => handleSelectReservation(reservation)}
+                >
+                  <td>{reservation.time}</td>
+                  <td>{reservation.name}</td>
+                  <td>{reservation.tableName || 'N/A'}</td>
+                  <td>{reservation.partySize}</td>
+                  <td>
+                    <span className={`status-badge ${reservation.status}`}>
+                      {reservation.status === 'confirmed' ? 'Confirmada' : 
+                       reservation.status === 'cancelled' ? 'Cancelada' : reservation.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button 
+                      className="action-button view-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSelectReservation(reservation);
+                      }}
+                    >
+                      Ver
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Cards para móvil */}
+        <div className="mobile-cards">
+          {sortedReservations.map(reservation => (
+            <div 
+              key={reservation.id} 
+              className={`reservation-card ${selectedReservation && selectedReservation.id === reservation.id ? 'selected' : ''}`}
+              onClick={() => handleSelectReservation(reservation)}
+            >
+              <div className="reservation-card-header">
+                <div className="reservation-time">{reservation.time}</div>
+                <span className={`status-badge ${reservation.status}`}>
+                  {reservation.status === 'confirmed' ? 'Confirmada' : 
+                   reservation.status === 'cancelled' ? 'Cancelada' : reservation.status}
+                </span>
+              </div>
+              
+              <div className="reservation-card-body">
+                <div className="reservation-info-item">
+                  <div className="reservation-info-label">Cliente</div>
+                  <div className="reservation-info-value">{reservation.name}</div>
+                </div>
+                
+                <div className="reservation-info-item">
+                  <div className="reservation-info-label">Mesa</div>
+                  <div className="reservation-info-value">{reservation.tableName || 'N/A'}</div>
+                </div>
+                
+                <div className="reservation-info-item">
+                  <div className="reservation-info-label">Personas</div>
+                  <div className="reservation-info-value">{reservation.partySize}</div>
+                </div>
+                
+                <div className="reservation-info-item">
+                  <div className="reservation-info-label">Teléfono</div>
+                  <div className="reservation-info-value">{reservation.phone || 'N/A'}</div>
+                </div>
+              </div>
+              
+              <div className="reservation-card-actions">
+                <button 
+                  className="action-button view-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectReservation(reservation);
+                  }}
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+  
+  // Renderizar detalles de reservación
+  const renderReservationDetails = () => {
+    if (isCreatingReservation) {
+      return renderNewReservationForm();
+    }
+    
+    if (!selectedReservation) {
+      return <p className="select-message">Selecciona una reserva para ver sus detalles.</p>;
+    }
+    
+    if (isEditing) {
+      return (
+        <div style={{
+          padding: '1.5rem',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          animation: 'fadeIn 0.3s ease-in-out',
+          color: '#333333',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)'
+        }}>
+          <button 
+            onClick={handleCloseDetails}
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              background: 'none',
+              border: 'none',
+              fontSize: '1.2rem',
+              color: '#555555',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              padding: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%'
+            }}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+          <h3 style={{
+            color: '#009B9B',
+            fontSize: '1.4rem',
+            fontWeight: '600',
+            marginBottom: '1.5rem',
+            textAlign: 'center',
+            position: 'relative',
+            paddingBottom: '0.8rem',
+            backgroundColor: 'rgba(0, 155, 155, 0.08)',
+            padding: '1rem',
+            borderRadius: '8px'
+          }}>
+            Editar Reserva
+          </h3>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-name" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Nombre:
+            </label>
+            <input
+              type="text"
+              id="edit-name"
+              name="name"
+              value={editForm.name}
+              onChange={handleEditFormChange}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-email" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Email:
+            </label>
+            <input
+              type="email"
+              id="edit-email"
+              name="email"
+              value={editForm.email}
+              onChange={handleEditFormChange}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-phone" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Teléfono:
+            </label>
+            <input
+              type="tel"
+              id="edit-phone"
+              name="phone"
+              value={editForm.phone}
+              onChange={handleEditFormChange}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ flex: 1, marginBottom: 0 }}>
+              <label 
+                htmlFor="edit-date" 
+                style={{ 
+                  display: 'block', 
+                  marginBottom: '0.6rem', 
+                  color: '#333333', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem' 
+                }}
+              >
+                Fecha:
+              </label>
+              <input
+                type="date"
+                id="edit-date"
+                name="date"
+                value={editForm.date}
+                onChange={handleEditFormChange}
+                style={{
+                  width: '100%',
+                  padding: '0.9rem 1.2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #d0d0d0',
+                  color: '#333333',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#fff',
+                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+                }}
+              />
+            </div>
+            
+            <div style={{ flex: 1, marginBottom: 0 }}>
+              <label 
+                htmlFor="edit-time" 
+                style={{ 
+                  display: 'block', 
+                  marginBottom: '0.6rem', 
+                  color: '#333333', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem' 
+                }}
+              >
+                Hora:
+              </label>
+              <input
+                type="time"
+                id="edit-time"
+                name="time"
+                value={editForm.time}
+                onChange={handleEditFormChange}
+                style={{
+                  width: '100%',
+                  padding: '0.9rem 1.2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #d0d0d0',
+                  color: '#333333',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#fff',
+                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+                }}
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-partySize" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Personas:
+            </label>
+            <input
+              type="number"
+              id="edit-partySize"
+              name="partySize"
+              value={editForm.partySize}
+              onChange={handleEditFormChange}
+              min="1"
+              max="10"
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            />
+          </div>
+          
+          {/* SELECTOR DE MESAS PARA EDICIÓN */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-tableId" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Mesa:
+            </label>
+            <select
+              id="edit-tableId"
+              name="tableId"
+              value={editForm.tableId || ''}
+              onChange={handleEditFormChange}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                appearance: 'none',
+                backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 1rem center',
+                backgroundSize: '16px',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="">Sin mesa asignada (asignación automática)</option>
+              {tables && tables.map(table => (
+                <option key={table._id} value={table._id}>
+                  Mesa {table.number} - {table.capacity} personas ({table.location})
+                </option>
+              ))}
+            </select>
+            <p style={{
+              color: '#666',
+              fontSize: '0.85rem',
+              marginTop: '0.5rem',
+              fontStyle: 'italic'
+            }}>
+              💡 Deja "Sin mesa asignada" para usar asignación automática según las reglas del restaurante
+            </p>
+          </div>
+          
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label 
+              htmlFor="edit-specialRequests" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '0.6rem', 
+                color: '#333333', 
+                fontWeight: '600', 
+                fontSize: '0.95rem' 
+              }}
+            >
+              Peticiones especiales:
+            </label>
+            <textarea
+              id="edit-specialRequests"
+              name="specialRequests"
+              value={editForm.specialRequests}
+              onChange={handleEditFormChange}
+              rows="3"
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.2rem',
+                borderRadius: '8px',
+                border: '2px solid #d0d0d0',
+                color: '#333333',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                backgroundColor: '#fff',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.05)',
+                resize: 'vertical'
+              }}
+            ></textarea>
+          </div>
+
+          {/* Sección de Accesibilidad en formulario de edición */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.6rem', 
+              color: '#333333', 
+              fontWeight: '600', 
+              fontSize: '0.95rem' 
+            }}>
+              Necesidades de accesibilidad:
+            </label>
+            <div className="accessibility-checkboxes">
+              <div 
+                className="accessibility-checkbox-item"
+                onClick={(e) => {
+                  // Solo activar si no se hizo clic directamente en el checkbox
+                  if (e.target.type !== 'checkbox') {
+                    const checkbox = document.getElementById('edit-needsBabyCart');
+                    checkbox.checked = !checkbox.checked;
+                    handleEditFormChange({ target: { name: 'needsBabyCart', type: 'checkbox', checked: checkbox.checked } });
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  id="edit-needsBabyCart"
+                  name="needsBabyCart"
+                  checked={editForm.needsBabyCart}
+                  onChange={handleEditFormChange}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <label htmlFor="edit-needsBabyCart">
+                  <span className="emoji">🍼</span>
+                  Vengo con carrito de bebé
+                </label>
+              </div>
+              
+              <div 
+                className="accessibility-checkbox-item"
+                onClick={(e) => {
+                  // Solo activar si no se hizo clic directamente en el checkbox
+                  if (e.target.type !== 'checkbox') {
+                    const checkbox = document.getElementById('edit-needsWheelchair');
+                    checkbox.checked = !checkbox.checked;
+                    handleEditFormChange({ target: { name: 'needsWheelchair', type: 'checkbox', checked: checkbox.checked } });
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  id="edit-needsWheelchair"
+                  name="needsWheelchair"
+                  checked={editForm.needsWheelchair}
+                  onChange={handleEditFormChange}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <label htmlFor="edit-needsWheelchair">
+                  <span className="emoji">♿</span>
+                  Vengo con silla de ruedas
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            marginTop: '2rem',
+            borderTop: '1px solid #d0d0d0',
+            paddingTop: '1.5rem',
+            justifyContent: 'flex-end'
+          }}>
+            <button 
+              type="button" 
+              onClick={handleCancelEdit}
+              style={{
+                backgroundColor: '#f0f0f0',
+                color: '#333333',
+                border: 'none',
+                minWidth: '140px',
+                padding: '0.9rem 1.5rem',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.6rem'
+              }}
+            >
+              Cancelar
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSaveEdit}
+              style={{
+                backgroundColor: '#009B9B',
+                color: 'white',
+                border: 'none',
+                minWidth: '140px',
+                padding: '0.9rem 1.5rem',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                transition: 'all 0.3s ease',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.6rem'
+              }}
+            >
+              Guardar Cambios
+            </button>
+          </div>
+        </div>
+      );
+    }
+  };
+  
+  // Renderizar la gestión de lista negra
+  const renderBlacklistManagement = () => (
+    <BlacklistManagement />
+  );
+
+  const handleNavigateToOpiniones = () => {
+    history.push('/admin/opiniones');
+  };
+  
+  // Calcular estadísticas del día seleccionado
+  const calculateDayStats = () => {
+    const dayReservations = reservations.filter(reservation => 
+      areDatesEqual(reservation.date, selectedDate)
+    );
+    
+    const confirmed = dayReservations.filter(res => res.status === 'confirmed').length;
+    const cancelled = dayReservations.filter(res => res.status === 'cancelled').length;
+    const noShow = dayReservations.filter(res => res.status === 'no-show').length;
+    const totalGuests = dayReservations
+      .filter(res => res.status === 'confirmed')
+      .reduce((sum, res) => sum + parseInt(res.partySize || 0), 0);
+    
+    // Calcular capacidad utilizada (asumiendo 50 personas como capacidad total del restaurante)
+    const totalCapacity = 50;
+    const occupancyRate = totalCapacity > 0 ? Math.round((totalGuests / totalCapacity) * 100) : 0;
+    
+    // Calcular horarios más populares
+    const timeSlots = {};
+    dayReservations
+      .filter(res => res.status === 'confirmed')
+      .forEach(res => {
+        timeSlots[res.time] = (timeSlots[res.time] || 0) + 1;
       });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      // Recargar la lista después de eliminar
-      await loadBlacklistDataService();
+    
+    const mostPopularTime = Object.keys(timeSlots).length > 0 
+      ? Object.keys(timeSlots).reduce((a, b) => timeSlots[a] > timeSlots[b] ? a : b)
+      : 'N/A';
+    
+    return {
+      total: dayReservations.length,
+      confirmed,
+      cancelled,
+      noShow,
+      totalGuests,
+      occupancyRate,
+      mostPopularTime,
+      averagePartySize: confirmed > 0 ? Math.round((totalGuests / confirmed) * 10) / 10 : 0
+    };
+  };
+
+  const dayStats = calculateDayStats();
+  
+  // Función para cargar datos de la lista negra
+  const loadBlacklistData = async () => {
+    try {
+      const blacklistData = await getBlacklist();
+      setBlacklistEntries(blacklistData.entries || blacklistData || []);
     } catch (error) {
-      console.error('Error al remover de blacklist:', error);
-      throw error;
+      console.error('Error al cargar lista negra:', error);
+      toast.error('Error al cargar la lista negra: ' + error.message);
+      setBlacklistEntries([]);
     }
   };
 
@@ -1638,107 +2832,6 @@ const AdminReservationPanel = () => {
     }
     
     return error;
-  };
-  
-  // Funciones faltantes para corregir errores ESLint
-  const addToBlacklist = async (blacklistData) => {
-    try {
-      const response = await fetch('/api/blacklist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        },
-        body: JSON.stringify(blacklistData)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Error adding to blacklist:', error);
-      throw error;
-    }
-  };
-
-  const removeFromBlacklist = async (entryId) => {
-    try {
-      const response = await fetch(`/api/blacklist/${entryId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Error removing from blacklist:', error);
-      throw error;
-    }
-  };
-
-  const loadBlacklistData = async () => {
-    return await loadBlacklistDataService();
-  };
-
-  const handleNavigateToOpiniones = () => {
-    history.push('/admin/reviews');
-  };
-
-  // Calcular estadísticas del día
-  const dayStats = React.useMemo(() => {
-    const dayReservations = reservations.filter(res => areDatesEqual(res.date, selectedDate));
-    
-    const total = dayReservations.length;
-    const confirmed = dayReservations.filter(res => res.status === 'confirmed').length;
-    const cancelled = dayReservations.filter(res => res.status === 'cancelled').length;
-    const totalGuests = dayReservations.reduce((sum, res) => sum + (res.partySize || 0), 0);
-    
-    // Calcular tasa de ocupación aproximada (asumiendo capacidad total de 40 personas)
-    const maxCapacity = 40;
-    const occupancyRate = total > 0 ? Math.round((totalGuests / maxCapacity) * 100) : 0;
-    
-    return {
-      total,
-      confirmed,
-      cancelled,
-      totalGuests,
-      occupancyRate: Math.min(occupancyRate, 100)
-    };
-  }, [reservations, selectedDate]);
-
-  const renderNewReservationForm = () => {
-    return (
-      <div>
-        <p>Formulario de nueva reserva (función placeholder)</p>
-      </div>
-    );
-  };
-
-  const renderReservationsList = () => {
-    return (
-      <div>
-        <p>Lista de reservaciones (función placeholder)</p>
-      </div>
-    );
-  };
-
-  const renderBlacklistManagement = () => {
-    return (
-      <BlacklistManagement
-        blacklistEntries={blacklistEntries}
-        onLoadData={loadBlacklistDataService}
-        onRemoveFromBlacklist={handleRemoveFromBlacklistService}
-        loading={loading}
-      />
-    );
   };
   
   // Modal para nueva reserva telefónica
@@ -2420,7 +3513,7 @@ const AdminReservationPanel = () => {
           isOpen={showBlacklistModal}
           onClose={() => setShowBlacklistModal(false)}
           customer={selectedCustomer}
-          onAddToBlacklist={handleAddToBlacklistService}
+          onAddToBlacklist={handleAddToBlacklist}
           reservationId={selectedReservation?.id}
         />
       )}

@@ -102,7 +102,120 @@ const blogData = [
         
         <p><em>Fuentes: <a href="https://www.fortunebusinessinsights.com/mezcal-market-102652" target="_blank">Fortune Business Insights</a> | <a href="https://thefoodtech.com/tendencias-de-consumo/tendencias-de-bebidas-alcoholicas-con-denominacion-de-origen-en-mexico-para-2025/" target="_blank">The Food Tech</a> | <a href="https://www.mezcalistas.com/agave-trends-2025/" target="_blank">Mezcalistas</a></em></p>
     `,
-  // Entradas de blog sobre platos específicos eliminadas - no se usa menú
+  },
+  {
+    id: 4,
+    title: "Chiles en Nogada: El Platillo Patrio que Celebra la Independencia",
+    author: "Javier López",
+    date: "28 de Abril, 2025",
+    imageUrl: "https://mexicanfoodjournal.com/wp-content/uploads/2016/09/Chile-en-Nogada.jpg",
+    categories: ["Tradición", "Temporada", "Historia"],
+    excerpt: "Descubre la historia del platillo que representa los colores de la bandera mexicana y se convierte en símbolo patrio cada septiembre.",
+    content: `
+        <p>Los chiles en nogada representan uno de los platillos más emblemáticos de la gastronomía mexicana, no solo por su exquisito sabor, sino por su profundo simbolismo patrio. Este manjar estacional, disponible únicamente durante agosto y septiembre, coincide perfectamente con las celebraciones de la Independencia de México.</p>
+        
+        <h2>Historia y Leyenda</h2>
+        <p>Según la tradición más aceptada, los chiles en nogada fueron creados en 1821 por las monjas agustinas del Convento de Santa Mónica en Puebla. Lo prepararon especialmente para agasajar a Agustín de Iturbide tras la firma de los Tratados de Córdoba, que consumaban la independencia de México.</p>
+        
+        <p>Las religiosas ingeniosamente diseñaron un platillo que incorporara los colores de la bandera del Ejército Trigarante: verde del chile poblano y perejil, blanco de la nogada, y rojo de la granada. Estos colores posteriormente se convertirían en los de la bandera nacional.</p>
+        
+        <h2>Una Obra Maestra Culinaria</h2>
+        <p>La preparación de los chiles en nogada es un proceso laborioso que requiere ingredientes de temporada de la más alta calidad. El chile poblano se rellena con un picadillo que combina carne de cerdo y res con frutas frescas como manzana, pera, durazno y plátano macho, además de especias aromáticas.</p>
+        
+        <p>La nogada, la delicada salsa blanca que corona el platillo, se elabora con nueces de Castilla frescas, queso fresco, crema y un toque de jerez o brandy. Su preparación requiere paciencia y técnica para lograr la consistencia y sabor perfectos.</p>
+        
+        <h2>Temporada Especial</h2>
+        <p>La temporada de chiles en nogada está determinada por la disponibilidad de ingredientes frescos, especialmente las nueces de Castilla y las granadas. Esta estacionalidad hace que el platillo sea aún más especial y esperado cada año.</p>
+        
+        <p>Durante septiembre, restaurantes de todo México celebran esta tradición culinaria, y muchos chefs compiten por crear la versión más auténtica y deliciosa de este platillo histórico.</p>
+        
+        <h2>Tradición Viva</h2>
+        <p>Más allá de su valor gastronómico, los chiles en nogada representan la identidad mexicana en un plato. Cada bocado es un recordatorio de la historia, la independencia y la riqueza cultural del país.</p>
+        
+        <p>En El Nopal Granada, honramos esta tradición preparando nuestros chiles en nogada siguiendo la receta tradicional, trayendo los auténticos sabores mexicanos a España. Utilizamos únicamente ingredientes de temporada y respetamos cada paso del proceso ancestral para ofrecer a nuestros comensales granadinos una experiencia gastronómica genuinamente mexicana.</p>
+        
+        <p><em>Temporada disponible: 15 de agosto - 30 de septiembre</em></p>
+    `,
+  },
+  {
+    id: 5,
+    title: "Pozole: El Caldo Sagrado de los Aztecas que Conquistó México",
+    author: "Ana Torres",
+    date: "5 de Mayo, 2025",
+    imageUrl: "https://www.adrianasbestrecipes.com/wp-content/uploads/2018/09/Instant-Pot-Green-Pork-Pozole-Recipe.jpg.webp",
+    categories: ["Tradición", "Historia", "Recetas"],
+    excerpt: "Descubre los orígenes prehispánicos del pozole, desde su significado ritual hasta convertirse en el platillo favorito de las celebraciones mexicanas.",
+    content: `
+        <p>El pozole, uno de los platillos más emblemáticos de México, tiene raíces que se extienden hasta las civilizaciones prehispánicas. Este caldo ceremonial, que originalmente tenía un significado ritual sagrado para los aztecas, se ha transformado en el corazón de las celebraciones familiares mexicanas.</p>
+        
+        <h2>Orígenes Sagrados</h2>
+        <p>En la época prehispánica, el pozole era un platillo ceremonial reservado para ocasiones especiales y rituales religiosos. Los aztecas lo preparaban con maíz cacahuazintle (una variedad de maíz de grano grande) y lo consideraban un alimento sagrado que conectaba a los humanos con los dioses.</p>
+        
+        <p>El nombre "pozole" deriva del náhuatl "pozolli", que significa "espumoso", haciendo referencia a la espuma que se forma cuando hierve el maíz cacahuazintle. Este maíz especial, que se cultiva principalmente en los estados de Jalisco, Guerrero y Nayarit, es fundamental para la textura característica del platillo.</p>
+        
+        <h2>Transformación Colonial</h2>
+        <p>Con la llegada de los españoles, el pozole experimentó una transformación significativa. Los ingredientes originales fueron sustituidos por cerdo, pollo o res, manteniendo la base de maíz cacahuazintle pero adaptándose a los nuevos ingredientes disponibles.</p>
+        
+        <p>Esta evolución permitió que el pozole se democratizara, pasando de ser un platillo exclusivamente ceremonial a convertirse en una comida familiar que une a las generaciones mexicanas.</p>
+        
+        <h2>Variedades Regionales</h2>
+        <p>México cuenta con tres principales variedades de pozole, cada una representativa de diferentes regiones:</p>
+        
+        <p><strong>Pozole Rojo:</strong> Originario de Jalisco y Guerrero, obtiene su color característico de chiles guajillo, ancho y chipotle. Es la variedad más popular y se sirve tradicionalmente con carne de cerdo.</p>
+        
+        <p><strong>Pozole Verde:</strong> Típico de Guerrero, se prepara con chiles poblanos, serranos y hierbas como cilantro y epazote, que le dan su color verde distintivo.</p>
+        
+        <p><strong>Pozole Blanco:</strong> La versión más pura, sin chiles que alteren su color natural. Es común en el centro de México y permite apreciar mejor el sabor del maíz y la carne.</p>
+        
+        <h2>Ritual de Preparación</h2>
+        <p>La preparación del pozole es todo un ritual familiar. El maíz cacahuazintle debe remojarse y cocerse durante horas hasta que "florezca" (se abra como una flor). La carne se cuece lentamente para obtener un caldo rico y aromático.</p>
+        
+        <p>Los acompañamientos son esenciales: lechuga finamente picada, rábanos en rodajas, cebolla, orégano, chile piquín, limón y tostadas. Cada comensal personaliza su plato según su gusto.</p>
+        
+        <h2>Celebración y Tradición</h2>
+        <p>El pozole es sinónimo de celebración en México. Se prepara para las fiestas patrias, cumpleaños, bodas y reuniones familiares. Es un platillo que requiere tiempo y paciencia, convirtiéndose en una expresión de amor y cuidado hacia los seres queridos.</p>
+        
+        <p>En El Nopal Granada, preparamos nuestro pozole siguiendo las recetas tradicionales, importando maíz cacahuazintle auténtico desde México y respetando los tiempos de cocción para ofrecer a nuestros comensales en España una experiencia gastronómica que honra esta tradición milenaria mexicana.</p>
+    `,
+  },
+  {
+    id: 6,
+    title: "Cochinita Pibil: El Tesoro Culinario de Yucatán",
+    author: "Roberto Jiménez",
+    date: "15 de Mayo, 2025",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/84/Cochinita_pibil_2.jpg",
+    categories: ["Yucatán", "Tradición", "Técnicas"],
+    excerpt: "Descubre los secretos de la cochinita pibil, el platillo yucateco que conquista paladares con su cocción ancestral en horno de tierra.",
+    content: `
+        <p>La cochinita pibil representa una de las joyas más preciadas de la gastronomía yucateca y mexicana. Este platillo ancestral, que combina técnicas de cocción prehispánicas con ingredientes únicos de la península de Yucatán, ofrece una experiencia culinaria que transporta directamente a las raíces mayas de México.</p>
+        
+        <h2>Orígenes Mayas</h2>
+        <p>La palabra "pibil" proviene del maya "p'ib", que significa "enterrado" o "horneado bajo tierra". Esta técnica de cocción era utilizada por los antiguos mayas para preparar carnes en ceremonias especiales y festividades importantes.</p>
+        
+        <p>Los mayas desarrollaron este método de cocción subterránea que permite que los alimentos se cocinen lentamente con vapor, conservando todos sus jugos naturales y desarrollando sabores profundos y complejos que son imposibles de replicar con métodos modernos.</p>
+        
+        <h2>El Achiote: El Oro Rojo de Yucatán</h2>
+        <p>El ingrediente estrella de la cochinita pibil es el achiote (Bixa orellana), una semilla que crece en árboles nativos de la región. Los mayas lo consideraban sagrado y lo utilizaban tanto para cocinar como para ceremonias religiosas y pintura corporal.</p>
+        
+        <p>El achiote no solo aporta el característico color rojizo-anaranjado al platillo, sino también un sabor terroso y ligeramente dulce que es fundamental en la identidad de la cochinita pibil. Se combina con especias como comino, pimienta negra, orégano y ajo para crear la pasta de recado rojo.</p>
+        
+        <h2>Técnica Tradicional del Pib</h2>
+        <p>La preparación tradicional de la cochinita pibil es todo un ritual que comienza desde la noche anterior. Se excava un hoyo en la tierra de aproximadamente un metro de profundidad, donde se enciende un fuego con leña dura que debe arder durante horas hasta formar brasas intensas.</p>
+        
+        <p>La carne de cerdo, marinada con la pasta de achiote y envuelta en hojas de plátano, se coloca en ollas de barro sobre las brasas. Todo se cubre con láminas de metal, tierra y más brasas, creando un horno subterráneo que mantiene una temperatura constante durante 8 a 12 horas.</p>
+        
+        <h2>Las Hojas de Plátano: Más que un Envoltorio</h2>
+        <p>Las hojas de plátano no son solo un envoltorio, sino un elemento fundamental que aporta humedad, aroma y sabor sutil al platillo. Antes de usar, las hojas se pasan por el fuego para hacerlas más flexibles y liberar sus aceites naturales.</p>
+        
+        <p>Este envoltorio natural crea un ambiente de vapor que mantiene la carne jugosa mientras absorbe los aromas de las hojas, creando una complejidad de sabores única.</p>
+        
+        <h2>Acompañamientos Tradicionales</h2>
+        <p>La cochinita pibil tradicionalmente se sirve con cebolla morada encurtida en naranja agria, chile habanero y tortillas de maíz recién hechas. La acidez de la naranja agria y el picor del habanero contrastan perfectamente con la riqueza de la carne.</p>
+        
+        <p>En El Nopal Granada, honramos esta tradición yucateca preparando nuestra cochinita pibil con técnicas que respetan el método ancestral, importando achiote auténtico desde Yucatán y marinando la carne durante horas para lograr esa textura deshebrada y sabor inconfundible que caracteriza a este tesoro culinario. Traemos los sabores más auténticos de México directamente a Granada.</p>
+        
+        <p><em>Disponible todos los días en nuestro menú especial de Yucatán en Granada</em></p>
+    `,
   },
 ];
 
