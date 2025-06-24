@@ -77,14 +77,7 @@ const Navbar = () => {
                   Nosotros
                 </a>
               </li>
-              <li>
-                <Link 
-                  to="/menu" 
-                  className={location.pathname === '/menu' ? 'active' : ''}
-                >
-                  Carta
-                </Link>
-              </li>
+
               <li>
                 <Link 
                   to="/blog" 
@@ -132,7 +125,7 @@ const Navbar = () => {
               )}
             </ul>
           </div>
-          <Link to="/reservation" className="reserva-btn reserva-btn-desktop">
+          <Link to="/reservaciones" className="reserva-btn reserva-btn-desktop">
             Reservar Mesa
           </Link>
         </div>
@@ -162,11 +155,7 @@ const Navbar = () => {
                   Nosotros
                 </a>
               </li>
-              <li>
-                <Link to="/menu" onClick={() => setIsMobileMenuOpen(false)}>
-                  Carta
-                </Link>
-              </li>
+
               <li>
                 <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)}>
                   Blog
@@ -200,7 +189,7 @@ const Navbar = () => {
             </ul>
           </div>
           <Link 
-            to="/reservation" 
+            to="/reservaciones" 
             className="reserva-btn"
             onClick={() => setIsMobileMenuOpen(false)}
           >
