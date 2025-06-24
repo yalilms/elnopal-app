@@ -21,7 +21,7 @@ export const createReservation = async (reservationData) => {
 export const getAllReservations = async (filters = {}) => {
   return makeRequest(
     () => {
-      const params = new URLSearchParams();
+    const params = new URLSearchParams();
       
       Object.keys(filters).forEach(key => {
         if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
@@ -121,8 +121,8 @@ export const checkAvailability = async (date, time, partySize) => {
       }
       
       return api.get('/api/reservations/availability', {
-        params: { date, time, partySize }
-      });
+      params: { date, time, partySize }
+    });
     },
     'Error al verificar disponibilidad'
   );

@@ -1495,10 +1495,12 @@ const AdminReservationPanel = () => {
   const loadBlacklistDataService = async () => {
     try {
       const response = await getBlacklist();
-      setBlacklistEntries(response.data || []);
+      // getBlacklist ya devuelve la data directamente, no necesita .data
+      setBlacklistEntries(Array.isArray(response) ? response : (response.data || []));
     } catch (error) {
       console.error('Error loading blacklist:', error);
       setBlacklistEntries([]);
+      toast.error('Error al cargar la lista negra: ' + error.message);
     }
   };
 
@@ -2705,7 +2707,9 @@ const AdminReservationPanel = () => {
   const loadBlacklistData = async () => {
     try {
       const blacklistData = await getBlacklist();
-      setBlacklistEntries(blacklistData.entries || blacklistData || []);
+      // Normalizar la respuesta - getBlacklist puede devolver array directamente o objeto con data
+      const entries = Array.isArray(blacklistData) ? blacklistData : (blacklistData.data || blacklistData.entries || []);
+      setBlacklistEntries(entries);
     } catch (error) {
       console.error('Error al cargar lista negra:', error);
       toast.error('Error al cargar la lista negra: ' + error.message);

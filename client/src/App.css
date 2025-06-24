@@ -238,11 +238,11 @@
 
 /* IE11 fallbacks si es necesario */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  .card-3d {
+.card-3d {
     transform: none !important;
-  }
-  
-  .card-3d:hover {
+}
+
+.card-3d:hover {
     transform: none !important;
   }
 } 
