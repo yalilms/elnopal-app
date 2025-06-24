@@ -6,7 +6,9 @@ const morgan = require('morgan');
 const http = require('http');
 const socketIo = require('socket.io');
 const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const helmet = require('helmet');
+const xss = require('xss');
 
 // Rutas
 const reservationRoutes = require('./routes/reservations');
@@ -20,6 +22,14 @@ const contactRoutes = require('./routes/contact');
 const app = express();
 const server = http.createServer(app);
 
+// Validar variables de entorno críticas
+const requiredEnvVars = ['JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+if (missingEnvVars.length > 0) {
+  console.error(`Error: Variables de entorno faltantes: ${missingEnvVars.join(', ')}`);
+  process.exit(1);
+}
+
 // Configuración de CORS segura
 const corsOptions = {
   origin: function (origin, callback) {
@@ -30,8 +40,15 @@ const corsOptions = {
       'http://127.0.0.1:3000'
     ];
     
-    // Permitir requests sin origin (aplicaciones móviles, Postman, etc.)
-    if (!origin) return callback(null, true);
+    // En producción, ser más estricto con los orígenes
+    if (process.env.NODE_ENV === 'production' && !origin) {
+      return callback(new Error('No se permite acceso sin origen en producción'));
+    }
+    
+    // Permitir requests sin origin solo en desarrollo
+    if (!origin && process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
     
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -41,7 +58,8 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
 // Socket.io con CORS seguro
@@ -51,11 +69,12 @@ const io = socketIo(server, {
       process.env.CORS_ORIGIN || 'http://elnopal.es',
       'https://elnopal.es' // IONOS puede activar HTTPS automáticamente
     ],
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-// Middleware de seguridad
+// Middleware de seguridad avanzado
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -64,10 +83,21 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "wss:", "ws:"]
+      connectSrc: ["'self'", "wss:", "ws:"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
     }
   },
-  crossOriginEmbedderPolicy: false
+  crossOriginEmbedderPolicy: false,
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  noSniff: true,
+  xssFilter: true,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" }
 }));
 
 // Rate limiting para prevenir ataques de fuerza bruta
@@ -88,9 +118,10 @@ const authLimiter = rateLimit({
   }
 });
 
+// Rate limiting general más estricto para producción
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 1000, // aumentado para evitar problemas en desarrollo
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000,
   message: {
     error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.'
   },
@@ -105,20 +136,68 @@ const generalLimiter = rateLimit({
   }
 });
 
-// Aplicar rate limiting solo en producción o de forma más permisiva
+// Slow down para prevenir abuse
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  delayAfter: 50, // Permitir 50 requests a velocidad normal
+  delayMs: 500, // Añadir 500ms de delay por request
+  maxDelayMs: 5000, // Máximo delay de 5 segundos
+  skip: (req) => {
+    if (process.env.NODE_ENV !== 'production') {
+      return req.ip === '127.0.0.1' || req.ip === '::1';
+    }
+    return false;
+  }
+});
+
+// Aplicar rate limiting y speed limiting
+app.use('/api/auth/login', authLimiter);
 if (process.env.NODE_ENV === 'production') {
-  app.use('/api/auth/login', authLimiter);
   app.use('/api/', generalLimiter);
+  app.use('/api/', speedLimiter);
 }
 
 // Middleware básico
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '10mb' }));
+
+// Middleware para sanitizar entrada XSS
+app.use((req, res, next) => {
+  if (req.body) {
+    for (let key in req.body) {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = xss(req.body[key]);
+      }
+    }
+  }
+  next();
+});
+
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    try {
+      JSON.parse(buf);
+    } catch (e) {
+      res.status(400).json({ error: 'JSON inválido' });
+      return;
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Logging solo en desarrollo
-if (process.env.NODE_ENV !== 'production') {
+// Logging seguro - solo en desarrollo o errores críticos
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
+} else {
+  // En producción, solo loguear errores y requests importantes
+  app.use(morgan('combined', {
+    skip: (req, res) => res.statusCode < 400,
+    stream: {
+      write: (message) => {
+        console.error('HTTP Error:', message.trim());
+      }
+    }
+  }));
 }
 
 // Configuración de MongoDB
@@ -127,50 +206,81 @@ const mongoOptions = {
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
+  maxPoolSize: 10,
+  minPoolSize: 1,
+  maxIdleTimeMS: 30000,
+  connectTimeoutMS: 10000,
 };
 
 // Conexión a la base de datos
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions)
 .then(() => {
-  console.log('Conectado a MongoDB');
+  console.log('✅ Conectado a MongoDB');
   
   // Solo iniciar el servidor después de conectar a MongoDB
   const PORT = process.env.PORT || 3001;
   server.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔒 Modo producción activado con seguridad reforzada');
+    }
   });
 })
 .catch(err => {
-  console.error('Error conectando a MongoDB:', err);
+  console.error('❌ Error conectando a MongoDB:', err.message);
   process.exit(1);
 });
 
 // Manejar errores de MongoDB después de la conexión inicial
 mongoose.connection.on('error', err => {
-  console.error('Error en la conexión de MongoDB:', err);
+  console.error('❌ Error en la conexión de MongoDB:', err.message);
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.warn('Desconectado de MongoDB');
+  console.warn('⚠️ Desconectado de MongoDB');
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('🔄 Señal SIGTERM recibida, cerrando servidor...');
+  server.close(() => {
+    mongoose.connection.close(false, () => {
+      console.log('👋 Servidor cerrado correctamente');
+      process.exit(0);
+    });
+  });
 });
 
 // Inicialización de Socket.io
 io.on('connection', (socket) => {
-  console.log('Cliente conectado');
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔌 Cliente conectado:', socket.id);
+  }
   
   socket.on('disconnect', () => {
-    console.log('Cliente desconectado');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('❌ Cliente desconectado:', socket.id);
+    }
   });
   
   // Manejar eventos de reservas
   socket.on('newReservation', (data) => {
-    io.emit('reservationUpdate', data);
+    // Validar datos antes de emitir
+    if (data && typeof data === 'object') {
+      io.emit('reservationUpdate', data);
+    }
   });
   
   socket.on('cancelReservation', (data) => {
-    io.emit('reservationUpdate', data);
+    // Validar datos antes de emitir
+    if (data && typeof data === 'object') {
+      io.emit('reservationUpdate', data);
+    }
   });
 });
+
+// Hacer io disponible para las rutas
+app.set('io', io);
 
 // Rutas de la API
 app.use('/api/reservations', reservationRoutes);
@@ -181,34 +291,79 @@ app.use('/api/blacklist', blacklistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/contact', contactRoutes);
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('API de El Nopal funcionando correctamente');
+// Ruta de health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
 });
+
+// Ruta de prueba (solo en desarrollo)
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/', (req, res) => {
+    res.json({ 
+      message: 'API de El Nopal funcionando correctamente',
+      environment: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString()
+    });
+  });
+}
 
 // Middleware para rutas no encontradas
 app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Ruta no encontrada' });
+  res.status(404).json({ 
+    error: 'Ruta no encontrada',
+    path: req.originalUrl,
+    method: req.method
+  });
 });
 
-// Manejo de errores
+// Manejo de errores global
 app.use((err, req, res, next) => {
-  // No loguear errores en producción para evitar exposición de información
-  if (process.env.NODE_ENV !== 'production') {
-    console.error('Error en el servidor:', err);
+  // Log del error (sin información sensible)
+  const errorInfo = {
+    message: err.message,
+    path: req.path,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  };
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.error('❌ Error en el servidor:', errorInfo);
+    console.error('Stack trace:', err.stack);
+  } else {
+    console.error('❌ Error en producción:', errorInfo);
   }
   
-  res.status(500).json({
-    message: 'Error interno del servidor'
+  // Respuesta de error sin información sensible
+  const statusCode = err.statusCode || 500;
+  const message = process.env.NODE_ENV === 'production' 
+    ? 'Error interno del servidor' 
+    : err.message;
+  
+  res.status(statusCode).json({
+    error: message,
+    timestamp: new Date().toISOString()
   });
 });
 
-// Manejar señales de terminación
-process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
-    console.log('MongoDB desconectado a través de la terminación de la app');
-    process.exit(0);
-  });
+// Manejar errores no capturados
+process.on('uncaughtException', (err) => {
+  console.error('💥 Uncaught Exception:', err.message);
+  if (process.env.NODE_ENV === 'development') {
+    console.error(err.stack);
+  }
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('💥 Unhandled Rejection en:', promise, 'razón:', reason);
+  if (process.env.NODE_ENV === 'development') {
+    console.error(reason);
+  }
+  process.exit(1);
 });
 
 module.exports = app; 

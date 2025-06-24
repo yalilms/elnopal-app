@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -7,12 +7,14 @@ import {
   faCalendarAlt, faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
   faClock, faUsers, faUtensils, faCheck, faList, faUserSlash, faEye,
   faComments, faHome, faSignOutAlt, faFilter, faArrowLeft, faArrowRight,
-  faCheckCircle, faTimesCircle
+  faCheckCircle, faTimesCircle,
+  faUserCheck, faUserTimes, faExclamationTriangle, faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import BlacklistModal from './BlacklistModal';
 import CancelReservationModal from './CancelReservationModal';
 import BlacklistManagement from './BlacklistManagement';
+import TableMap from './TableMap';
 
 // Estilos CSS completos para el panel de administración
 const adminPanelStyles = `
@@ -1461,70 +1463,16 @@ const AdminReservationPanel = () => {
     setIsEditing(false);
   };
 
-  // Funciones para manejo de blacklist
-  const addToBlacklist = async (blacklistData) => {
-    // Simular API call - en producción sería una llamada real al backend
-    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(blacklistData)
-    });
-    
-    if (!response.ok) {
-      throw new Error('Error al agregar a blacklist');
-    }
-    
-    return await response.json();
-  };
-
-  const getBlacklist = async () => {
+  // Funciones para manejo de blacklist usando servicios
+  const handleAddToBlacklistService = async (blacklistData) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Error al obtener blacklist');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Error loading blacklist:', error);
-      return [];
-    }
-  };
-
-  const removeFromBlacklist = async (entryId) => {
-    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/admin/blacklist/${entryId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error('Error al remover de blacklist');
-    }
-    
-    return await response.json();
-  };
-  
-  const handleAddToBlacklist = async (blacklistData) => {
-    try {
-
-
       await addToBlacklist({
         ...blacklistData,
         reservationId: selectedReservation.id
       });
       
       // Actualizar el estado de la reserva a "no-show"
-      await updateReservationStatus(selectedReservation.id, 'no-show');
+      await markAsNoShow(selectedReservation.id);
       
       // Recargar las reservaciones
       await loadData();
@@ -1543,6 +1491,27 @@ const AdminReservationPanel = () => {
       toast.error(error.message || 'Error al añadir cliente a la lista negra');
     }
   };
+
+  const loadBlacklistDataService = async () => {
+    try {
+      const response = await getBlacklist();
+      setBlacklistEntries(response.data || []);
+    } catch (error) {
+      console.error('Error loading blacklist:', error);
+      setBlacklistEntries([]);
+    }
+  };
+
+  const handleRemoveFromBlacklistService = async (entryId) => {
+    try {
+      await removeFromBlacklist(entryId);
+      toast.success('Cliente removido de la lista negra');
+      await loadBlacklistDataService();
+    } catch (error) {
+      console.error('Error al remover de blacklist:', error);
+      toast.error(error.message || 'Error al remover cliente de la lista negra');
+    }
+  };
   
   // Función para cargar datos
   const loadData = async () => {
@@ -1551,7 +1520,7 @@ const AdminReservationPanel = () => {
       setError(null);
       
       if (viewMode === 'blacklist') {
-        await loadBlacklistData();
+        await loadBlacklistDataService();
       } else {
         // Cargar reservas para la fecha seleccionada
         await loadReservations({ date: selectedDate });
@@ -3513,7 +3482,7 @@ const AdminReservationPanel = () => {
           isOpen={showBlacklistModal}
           onClose={() => setShowBlacklistModal(false)}
           customer={selectedCustomer}
-          onAddToBlacklist={handleAddToBlacklist}
+          onAddToBlacklist={handleAddToBlacklistService}
           reservationId={selectedReservation?.id}
         />
       )}

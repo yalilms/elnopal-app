@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faPhone, faEnvelope, faClock, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-hot-toast';
 
 // Configurar base URL para desarrollo y producción
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
@@ -546,8 +547,9 @@ const ContactForm = () => {
     e.preventDefault();
     
     // Validaciones básicas
-    if (!formData.nombre || !formData.email || !formData.mensaje) {
-      alert('Por favor completa todos los campos obligatorios');
+    const { nombre, email, mensaje } = formData;
+    if (!nombre.trim() || !email.trim() || !mensaje.trim()) {
+      toast.error('Por favor completa todos los campos obligatorios');
       return;
     }
     
@@ -563,10 +565,10 @@ const ContactForm = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: formData.nombre,
-          email: formData.email,
+          name: nombre,
+          email: email,
           subject: formData.asunto,
-          message: formData.mensaje
+          message: mensaje
         })
       });
       
@@ -578,7 +580,7 @@ const ContactForm = () => {
       
       // Éxito
       setTimeout(() => {
-        alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+        toast.success('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
         setFormData({
           nombre: '',
           email: '',
@@ -591,7 +593,7 @@ const ContactForm = () => {
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       setTimeout(() => {
-        alert('Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo o contáctanos directamente.');
+        toast.error('Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo o contáctanos directamente.');
         e.target.classList.remove('form-submitted');
       }, 1000);
     } finally {

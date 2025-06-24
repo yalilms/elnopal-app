@@ -26,7 +26,7 @@ const About = () => {
             <div className="animated-subtitle">
               <h3>Conoce nuestra esencia y tradición</h3>
             </div>
-            <p className="hero-subtitle" style={{color: 'white'}}>Más que un restaurante, somos una familia apasionada por México</p>
+            <p className="about-hero-subtitle">Más que un restaurante, somos una familia apasionada por México</p>
           </div>
         </div>
       </section>

@@ -360,33 +360,23 @@ const ReservationForm = () => {
   
   // Renderizar indicador de campo
   const renderFieldIndicator = (fieldName) => {
-    const hasError = fieldTouched[fieldName] && fieldErrors[fieldName];
-    const isValid = fieldTouched[fieldName] && !fieldErrors[fieldName] && formData[fieldName];
+    if (!fieldTouched[fieldName]) return null;
     
-    if (hasError) {
-      return <FaTimes style={{ color: '#D62828', marginLeft: '8px', fontSize: '14px' }} />;
-    } else if (isValid) {
-      return <FaCheck style={{ color: '#28a745', marginLeft: '8px', fontSize: '14px' }} />;
+    if (fieldErrors[fieldName]) {
+      return <FaTimes className="field-error-icon" />;
+    } else {
+      return <FaCheck className="field-success-icon" />;
     }
-    return null;
   };
   
   // Renderizar mensaje de error para un campo
   const renderFieldError = (fieldName) => {
-    const hasError = fieldTouched[fieldName] && fieldErrors[fieldName];
-    if (!hasError) return null;
+    if (!fieldErrors[fieldName] || !fieldTouched[fieldName]) return null;
     
     return (
-      <div style={{
-        color: '#D62828',
-        fontSize: '0.85rem',
-        marginTop: '0.4rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.3rem'
-      }}>
-        <FaExclamationCircle style={{ fontSize: '12px' }} />
-        {fieldErrors[fieldName]}
+      <div className="field-error-message">
+        <FaExclamationCircle className="error-icon" />
+        <span>{fieldErrors[fieldName]}</span>
       </div>
     );
   };
@@ -397,13 +387,8 @@ const ReservationForm = () => {
     const isNearLimit = currentLength > maxLength * 0.8;
     
     return (
-      <div style={{
-        fontSize: '0.75rem',
-        color: isNearLimit ? '#D62828' : '#666',
-        textAlign: 'right',
-        marginTop: '0.3rem'
-      }}>
-        {currentLength}/{maxLength} caracteres
+      <div className={`char-counter ${isNearLimit ? 'near-limit' : ''}`}>
+        <span>{currentLength}/{maxLength}</span>
       </div>
     );
   };
@@ -465,52 +450,61 @@ const ReservationForm = () => {
 
   if (success && confirmedDetails) {
     return (
-      <div style={formContainerStyle}>
-        <div style={{textAlign: 'center', padding: '3rem 2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 5px 20px rgba(66, 31, 22, 0.1)'}}>
-          <FaCheckCircle style={{color: '#006B3C', fontSize: '5rem', marginBottom: '1.5rem'}} />
-          <h2 style={{color: '#006B3C', fontSize: '2.2rem', marginBottom: '1.5rem', fontFamily: 'Poppins, sans-serif', fontWeight: '700'}}>¡Reserva Confirmada!</h2>
-          <div style={{width: '80px', height: '4px', background: 'linear-gradient(90deg, #006B3C, #F8B612)', margin: '0 auto 2rem', borderRadius: '2px'}}></div>
-          <div style={{backgroundColor: 'rgba(0, 107, 60, 0.05)', padding: '1.5rem 2rem', borderRadius: '12px', marginBottom: '2rem', borderLeft: '4px solid #006B3C'}}>
-            <h3 style={{color: '#421f16', fontSize: '1.3rem', marginBottom: '1.2rem', fontWeight: '600'}}>Detalles de su Reserva:</h3>
-            <p style={{marginBottom: '0.8rem', fontSize: '1.1rem', color: '#421f16'}}>
-              Fecha: <strong style={{color: '#006B3C', fontWeight: '600'}}>
-                {confirmedDetails?.date ? new Date(confirmedDetails.date + 'T00:00:00').toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
+      <div className="reservation-form-container">
+        <div className="success-message-container">
+          <FaCheckCircle className="success-icon" />
+          <h2 className="success-title">¡Reserva Confirmada!</h2>
+          <div className="success-divider"></div>
+          <div className="reservation-details-container">
+            <h3 className="details-title">Detalles de su Reserva:</h3>
+            <p className="detail-item">
+              Fecha: <strong className="detail-value">
+                {new Date(confirmedDetails.date).toLocaleDateString('es-ES', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
               </strong>
             </p>
-            <p style={{marginBottom: '0.8rem', fontSize: '1.1rem', color: '#421f16'}}>
-              Hora: <strong style={{color: '#006B3C', fontWeight: '600'}}>
-                {confirmedDetails?.time || 'N/A'}
+            <p className="detail-item">
+              Hora: <strong className="detail-value">
+                {confirmedDetails.time}
               </strong>
             </p>
-
-            {(formData.needsBabyCart || formData.needsWheelchair) && (
-              <div style={{marginTop: '1rem', padding: '0.8rem', backgroundColor: 'rgba(248, 182, 18, 0.1)', borderRadius: '8px', borderLeft: '4px solid #F8B612'}}>
-                <p style={{margin: '0 0 0.5rem 0', fontSize: '1rem', color: '#421f16', fontWeight: '600'}}>Necesidades de accesibilidad:</p>
-                {formData.needsBabyCart && (
-                  <p style={{margin: '0.2rem 0', fontSize: '0.95rem', color: '#421f16'}}>
-                    <span style={{marginRight: '0.5rem'}}>🍼</span>
-                    Carrito de bebé
+            {assignedTable && (
+              <p className="detail-item">Mesa: <strong className="detail-value">{assignedTable}</strong></p>
+            )}
+            
+            {(confirmedDetails.needsBabyCart || confirmedDetails.needsWheelchair) && (
+              <div className="accessibility-details">
+                <p className="accessibility-title">Necesidades de accesibilidad:</p>
+                {confirmedDetails.needsBabyCart && (
+                  <p className="accessibility-item">
+                    <span className="accessibility-icon">🍼</span>
+                    Trona para bebé disponible
                   </p>
                 )}
-                {formData.needsWheelchair && (
-                  <p style={{margin: '0.2rem 0', fontSize: '0.95rem', color: '#421f16'}}>
-                    <span style={{marginRight: '0.5rem'}}>♿</span>
-                    Silla de ruedas
+                {confirmedDetails.needsWheelchair && (
+                  <p className="accessibility-item">
+                    <span className="accessibility-icon">♿</span>
+                    Mesa accesible para silla de ruedas
                   </p>
                 )}
               </div>
             )}
           </div>
-          <p style={{color: '#421f16', fontSize: '1.1rem', marginBottom: '2rem', lineHeight: '1.6'}}>
-            Hemos enviado un correo electrónico con los detalles de su reserva.
+          
+          <p className="confirmation-message">
+            Hemos enviado un email de confirmación con todos los detalles. 
+            ¡Esperamos verte pronto en El Nopal!
           </p>
-          <div style={{display: 'flex', gap: '1.5rem', marginTop: '1rem', justifyContent: 'center'}}>
+          
+          <div className="success-buttons">
             <button 
-              style={{background: 'linear-gradient(135deg, #006B3C, #F8B612)', color: 'white', border: 'none', padding: '1rem 1.5rem', borderRadius: '50px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0, 107, 60, 0.3)'}}
+              className="success-primary-btn"
               onClick={() => {
                 setSuccess(false);
-                setAssignedTable(null);
-                setConfirmedDetails(null);
                 setFormData({
                   name: '',
                   email: '',
@@ -522,29 +516,18 @@ const ReservationForm = () => {
                   needsBabyCart: false,
                   needsWheelchair: false
                 });
+                setConfirmedDetails(null);
+                setAssignedTable(null);
+                setFieldErrors({});
+                setFieldTouched({});
               }}
             >
-              Hacer otra reserva
+              Nueva Reserva
             </button>
+            
             <button 
-              style={{backgroundColor: '#f5f5f5', color: '#421f16', border: '2px solid #e0e0e0', padding: '1rem 1.5rem', borderRadius: '50px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer'}}
-              onClick={() => {
-                setSuccess(false);
-                setAssignedTable(null);
-                setConfirmedDetails(null);
-                setFormData({
-                  name: '',
-                  email: '',
-                  phone: '',
-                  date: '',
-                  time: '',
-                  partySize: '',
-                  specialRequests: '',
-                  needsBabyCart: false,
-                  needsWheelchair: false
-                });
-                history.push('/');
-              }}
+              className="success-secondary-btn"
+              onClick={() => history.push('/')}
             >
               Volver al Inicio
             </button>
@@ -555,22 +538,22 @@ const ReservationForm = () => {
   }
 
   return (
-    <div style={formContainerStyle}>
-      <section id="reservation-header">
-        <h2 style={formTitleStyle}>Reserva tu Mesa</h2>
-      </section>
-      
-      <section id="reservation-form">
-        <form onSubmit={handleSubmit} style={formStyle}>
-        <div style={formRowStyle}>
-          <div style={formGroupStyle}>
-            <label htmlFor="name" style={labelStyle}>
-              Nombre completo <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (2-50 caracteres, solo letras)
+    <div className="reservation-form-container">
+      <div className="form-header">
+        <h2 className="form-title">Reserva tu Mesa</h2>
+        <p className="form-subtitle">Completa el formulario para reservar tu mesa en El Nopal</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="reservation-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">
+              Nombre completo <span className="required">*</span>
+              <span className="label-hint">
+                (Mínimo 2 caracteres, máximo 50)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <div className="input-container">
               <input
                 type="text"
                 id="name"
@@ -578,27 +561,25 @@ const ReservationForm = () => {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                style={getFieldStyle('name')}
+                className={`form-input ${fieldErrors.name && fieldTouched.name ? 'error' : ''} ${!fieldErrors.name && fieldTouched.name && formData.name ? 'success' : ''}`}
                 placeholder="Introduce tu nombre completo"
-                maxLength="50"
-                required
+                autoComplete="name"
               />
               {renderFieldIndicator('name')}
             </div>
             {renderFieldError('name')}
-            {renderCharCounter('name', 50)}
           </div>
         </div>
 
-        <div style={formRowStyle}>
-          <div style={formGroupStyle}>
-            <label htmlFor="email" style={labelStyle}>
-              Email <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (para confirmación de reserva)
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              Email <span className="required">*</span>
+              <span className="label-hint">
+                (ejemplo@correo.com)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <div className="input-container">
               <input
                 type="email"
                 id="email"
@@ -606,22 +587,23 @@ const ReservationForm = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                style={getFieldStyle('email')}
-                placeholder="ejemplo@correo.com"
-                required
+                className={`form-input ${fieldErrors.email && fieldTouched.email ? 'error' : ''} ${!fieldErrors.email && fieldTouched.email && formData.email ? 'success' : ''}`}
+                placeholder="correo@ejemplo.com"
+                autoComplete="email"
               />
               {renderFieldIndicator('email')}
             </div>
             {renderFieldError('email')}
           </div>
-          <div style={formGroupStyle}>
-            <label htmlFor="phone" style={labelStyle}>
-              Teléfono <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (mínimo 9 dígitos)
+          
+          <div className="form-group">
+            <label htmlFor="phone" className="form-label">
+              Teléfono <span className="required">*</span>
+              <span className="label-hint">
+                (9-15 dígitos)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <div className="input-container">
               <input
                 type="tel"
                 id="phone"
@@ -629,9 +611,9 @@ const ReservationForm = () => {
                 value={formData.phone}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                style={getFieldStyle('phone')}
+                className={`form-input ${fieldErrors.phone && fieldTouched.phone ? 'error' : ''} ${!fieldErrors.phone && fieldTouched.phone && formData.phone ? 'success' : ''}`}
                 placeholder="+34 123 456 789"
-                required
+                autoComplete="tel"
               />
               {renderFieldIndicator('phone')}
             </div>
@@ -639,15 +621,15 @@ const ReservationForm = () => {
           </div>
         </div>
 
-        <div style={formRowStyle}>
-          <div style={formGroupStyle}>
-            <label htmlFor="date" style={labelStyle}>
-              Fecha <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (cerrados los lunes)
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="date" className="form-label">
+              Fecha <span className="required">*</span>
+              <span className="label-hint">
+                (No disponible los lunes)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <div className="input-container">
               <input
                 type="date"
                 id="date"
@@ -656,187 +638,128 @@ const ReservationForm = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 min={new Date().toISOString().split('T')[0]}
-                max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                style={getFieldStyle('date')}
-                required
+                className={`form-input ${fieldErrors.date && fieldTouched.date ? 'error' : ''} ${!fieldErrors.date && fieldTouched.date && formData.date ? 'success' : ''}`}
               />
               {renderFieldIndicator('date')}
             </div>
             {renderFieldError('date')}
           </div>
-          <div style={formGroupStyle}>
-            <label htmlFor="time" style={labelStyle}>
-              Hora <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (30 min anticipación)
+          
+          <div className="form-group">
+            <label htmlFor="time" className="form-label">
+              Hora <span className="required">*</span>
+              <span className="label-hint">
+                (Ver horarios disponibles)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
-              {formData.date && new Date(formData.date).getDay() === 1 ? (
-                <div style={{
-                  padding: '0.8rem',
-                  backgroundColor: 'rgba(214, 40, 40, 0.1)',
-                  borderRadius: '8px',
-                  color: '#D62828',
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                  <span style={{fontSize: '1.2rem'}}>⚠️</span>
-                  Lo sentimos, los lunes el restaurante permanece cerrado. Por favor, seleccione otro día.
+            <div className="input-container">
+              {formData.date && availableSlotsForDate.length === 0 && (
+                <div className="no-slots-warning">
+                  <span className="warning-icon">⚠️</span>
+                  No hay horarios disponibles para la fecha seleccionada
                 </div>
-              ) : (
-                <>
-                  <select
-                    id="time"
-                    name="time"
-                    value={formData.time}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    style={getFieldStyle('time')}
-                    required
-                  >
-                    <option value="">Seleccionar hora</option>
-                    {availableSlotsForDate.length > 0 ? (
-                      availableSlotsForDate.map(slot => (
-                        <option key={slot} value={slot}>{slot}</option>
-                      ))
-                    ) : (
-                      <option value="" disabled>
-                        {formData.date ? 'No hay horarios disponibles para este día' : 'Seleccione una fecha primero'}
-                      </option>
-                    )}
-                  </select>
-                  {renderFieldIndicator('time')}
-                </>
               )}
+              
+              <select
+                id="time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={!formData.date || availableSlotsForDate.length === 0}
+                className={`form-input ${fieldErrors.time && fieldTouched.time ? 'error' : ''} ${!fieldErrors.time && fieldTouched.time && formData.time ? 'success' : ''}`}
+              >
+                <option value="">Selecciona una hora</option>
+                {availableSlotsForDate.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
+              {renderFieldIndicator('time')}
             </div>
-            {renderFieldError('time')}
-            {availableSlotsForDate.length === 0 && formData.date && new Date(formData.date).getDay() !== 1 && (
-              <div style={{
-                fontSize: '0.85rem',
-                color: '#F8B612',
-                marginTop: '0.4rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.3rem'
-              }}>
-                <FaExclamationCircle style={{ fontSize: '12px' }} />
-                Todos los horarios están ocupados para esta fecha
+            
+            {formData.time && !isValidReservationTime(formData.date, formData.time) && (
+              <div className="time-warning">
+                <FaExclamationCircle className="warning-icon" />
+                <span>La reserva debe realizarse con al menos 30 minutos de anticipación</span>
               </div>
             )}
+            
+            {renderFieldError('time')}
           </div>
         </div>
 
-        <div style={formRowStyle}>
-          <div style={formGroupStyle}>
-            <label htmlFor="partySize" style={labelStyle}>
-              Número de personas <span style={{color: '#D62828'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (máximo 8 por reserva online)
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="partySize" className="form-label">
+              Número de personas <span className="required">*</span>
+              <span className="label-hint">
+                (Máximo 8 personas)
               </span>
             </label>
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <div className="input-container">
               <select
                 id="partySize"
                 name="partySize"
                 value={formData.partySize}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                style={getFieldStyle('partySize')}
-                required
+                className={`form-input ${fieldErrors.partySize && fieldTouched.partySize ? 'error' : ''} ${!fieldErrors.partySize && fieldTouched.partySize && formData.partySize ? 'success' : ''}`}
               >
-                <option value="">Seleccionar</option>
-                <option value="1">1 persona</option>
-                <option value="2">2 personas</option>
-                <option value="3">3 personas</option>
-                <option value="4">4 personas</option>
-                <option value="5">5 personas</option>
-                <option value="6">6 personas</option>
-                <option value="7">7 personas</option>
-                <option value="8">8 personas</option>
+                <option value="">Selecciona número de personas</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                  <option key={num} value={num}>
+                    {num} persona{num > 1 ? 's' : ''}
+                  </option>
+                ))}
               </select>
               {renderFieldIndicator('partySize')}
             </div>
-            {renderFieldError('partySize')}
-            {parseInt(formData.partySize) > 6 && (
-              <div style={{
-                fontSize: '0.85rem',
-                color: '#F8B612',
-                marginTop: '0.4rem',
-                padding: '0.5rem',
-                backgroundColor: 'rgba(248, 182, 18, 0.1)',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.3rem'
-              }}>
-                <FaExclamationCircle style={{ fontSize: '12px' }} />
-                Para grupos grandes te asignaremos mesas juntas automáticamente
+            
+            {formData.partySize && parseInt(formData.partySize) > 8 && (
+              <div className="party-size-warning">
+                <FaExclamationCircle className="warning-icon" />
+                <span>Para grupos de más de 8 personas, por favor contáctanos directamente</span>
               </div>
             )}
+            
+            {renderFieldError('partySize')}
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="specialRequests" className="form-label">
+              Peticiones especiales
+              <span className="label-hint">
+                (Opcional, máximo 500 caracteres)
+              </span>
+            </label>
+            <div className="input-container">
+              <textarea
+                id="specialRequests"
+                name="specialRequests"
+                value={formData.specialRequests}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Alergias alimentarias, celebraciones especiales, preferencias de mesa..."
+                maxLength="500"
+                className={`form-textarea ${fieldErrors.specialRequests && fieldTouched.specialRequests ? 'error' : ''}`}
+              />
+            </div>
+            {renderCharCounter('specialRequests', 500)}
+            {renderFieldError('specialRequests')}
           </div>
         </div>
 
-        <div style={formGroupStyle}>
-          <label htmlFor="specialRequests" style={labelStyle}>
-            Peticiones especiales
-            <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-              (opcional, máximo 500 caracteres)
-            </span>
-          </label>
-          <div style={{position: 'relative'}}>
-            <textarea
-              id="specialRequests"
-              name="specialRequests"
-              value={formData.specialRequests}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="Indícanos si tienes alguna petición especial (cumpleaños, aniversario, alergias, etc.)..."
-              maxLength="500"
-              style={{...getFieldStyle('specialRequests'), minHeight: '120px', resize: 'vertical'}}
-            />
-            {renderFieldIndicator('specialRequests')}
-          </div>
-          {renderFieldError('specialRequests')}
-          {renderCharCounter('specialRequests', 500)}
-        </div>
-
-        {/* Sección de Accesibilidad mejorada */}
-        <div style={formGroupStyle}>
-          <label style={labelStyle}>
+        <div className="form-group">
+          <label className="form-label">
             Necesidades de accesibilidad
-            <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-              (nos ayuda a preparar tu mesa)
+            <span className="label-hint">
+              (Opcional)
             </span>
           </label>
-          <div className="accessibility-checkboxes" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1rem',
-            marginTop: '0.8rem'
-          }}>
-            <div 
-              className="accessibility-checkbox-item"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0.8rem',
-                border: '2px solid #e0e0e0',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backgroundColor: formData.needsBabyCart ? 'rgba(0, 107, 60, 0.05)' : 'white'
-              }}
-              onClick={(e) => {
-                if (e.target.type !== 'checkbox') {
-                  const checkbox = document.getElementById('needsBabyCart');
-                  checkbox.checked = !checkbox.checked;
-                  handleChange({ target: { name: 'needsBabyCart', type: 'checkbox', checked: checkbox.checked } });
-                }
-              }}
-            >
+          <div className="accessibility-checkboxes">
+            <label className={`checkbox-label ${formData.needsBabyCart ? 'checked' : ''}`}>
               <input
                 type="checkbox"
                 id="needsBabyCart"
@@ -844,35 +767,11 @@ const ReservationForm = () => {
                 checked={formData.needsBabyCart}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                onClick={(e) => e.stopPropagation()}
-                style={{marginRight: '0.8rem'}}
               />
-              <label htmlFor="needsBabyCart" style={{margin: 0, cursor: 'pointer', display: 'flex', alignItems: 'center'}}>
-                <span style={{marginRight: '0.5rem', fontSize: '1.2rem'}}>🍼</span>
-                Vengo con carrito de bebé
-              </label>
-            </div>
+              <span>🍼</span>
+            </label>
             
-            <div 
-              className="accessibility-checkbox-item"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0.8rem',
-                border: '2px solid #e0e0e0',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backgroundColor: formData.needsWheelchair ? 'rgba(0, 107, 60, 0.05)' : 'white'
-              }}
-              onClick={(e) => {
-                if (e.target.type !== 'checkbox') {
-                  const checkbox = document.getElementById('needsWheelchair');
-                  checkbox.checked = !checkbox.checked;
-                  handleChange({ target: { name: 'needsWheelchair', type: 'checkbox', checked: checkbox.checked } });
-                }
-              }}
-            >
+            <label className={`checkbox-label ${formData.needsWheelchair ? 'checked' : ''}`}>
               <input
                 type="checkbox"
                 id="needsWheelchair"
@@ -880,110 +779,38 @@ const ReservationForm = () => {
                 checked={formData.needsWheelchair}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                onClick={(e) => e.stopPropagation()}
-                style={{marginRight: '0.8rem'}}
               />
-              <label htmlFor="needsWheelchair" style={{margin: 0, cursor: 'pointer', display: 'flex', alignItems: 'center'}}>
-                <span style={{marginRight: '0.5rem', fontSize: '1.2rem'}}>♿</span>
-                Vengo con silla de ruedas
-              </label>
-            </div>
+              <span>♿</span>
+            </label>
           </div>
         </div>
 
-        {/* Indicador de progreso del formulario */}
-        <div style={{
-          marginBottom: '1.5rem',
-          padding: '1rem',
-          backgroundColor: 'rgba(0, 107, 60, 0.05)',
-          borderRadius: '8px',
-          border: '1px solid rgba(0, 107, 60, 0.1)'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '0.5rem'
-          }}>
-            <span style={{fontSize: '0.9rem', color: '#421f16', fontWeight: '600'}}>
-              Progreso del formulario
-            </span>
-            <span style={{fontSize: '0.9rem', color: '#006B3C', fontWeight: '600'}}>
-              {Math.round((Object.keys(formData).filter(key => {
-                // Solo contar campos obligatorios: name, email, phone, date, time, partySize
-                const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'partySize'];
-                return requiredFields.includes(key) && formData[key] && formData[key].toString().trim() !== '';
-              }).length / 6) * 100)}%
-            </span>
-          </div>
-          <div style={{
-            width: '100%',
-            height: '6px',
-            backgroundColor: '#e0e0e0',
-            borderRadius: '3px',
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              width: `${Math.round((Object.keys(formData).filter(key => {
-                // Solo contar campos obligatorios: name, email, phone, date, time, partySize
-                const requiredFields = ['name', 'email', 'phone', 'date', 'time', 'partySize'];
-                return requiredFields.includes(key) && formData[key] && formData[key].toString().trim() !== '';
-              }).length / 6) * 100)}%`,
-              height: '100%',
-              backgroundColor: '#006B3C',
-              transition: 'width 0.3s ease',
-              borderRadius: '3px'
-            }} />
-          </div>
-        </div>
-
-        {error && (
-          <div style={{
-            ...errorMessageStyle,
-            marginBottom: '1.5rem'
-          }}>
-            <FaExclamationCircle style={{marginRight: '10px', fontSize: '1.2rem'}} />
-            {error}
-          </div>
-        )}
-
-        <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
+        <div className="form-group">
           <button
             type="submit"
-            style={{
-              ...buttonStyle,
-              opacity: validateForm() ? 1 : 0.6,
-              cursor: validateForm() ? 'pointer' : 'not-allowed',
-              transition: 'all 0.3s ease'
-            }}
+            className={`submit-button ${!validateForm() || loading ? 'disabled' : ''}`}
             disabled={!validateForm() || loading}
           >
             {loading ? (
               <>
-                <span style={{marginRight: '8px'}}>⏳</span>
+                <span>⏳</span>
                 Procesando reserva...
               </>
             ) : (
               <>
-                <span style={{marginRight: '8px'}}>🍽️</span>
+                <span>🍽️</span>
                 Confirmar Reserva
               </>
             )}
           </button>
           
           {!validateForm() && !loading && (
-            <div style={{
-              marginTop: '0.8rem',
-              fontSize: '0.85rem',
-              color: '#666',
-              textAlign: 'center'
-            }}>
+            <div className="form-error">
               Complete todos los campos obligatorios marcados con *
             </div>
           )}
         </div>
-        </form>
-      </section>
+      </form>
     </div>
   );
 };

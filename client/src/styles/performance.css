@@ -20,6 +20,10 @@ html {
   scroll-behavior: smooth;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: 80px;
 }
 
 /* Base body optimizations */
@@ -62,6 +66,9 @@ img {
   display: block;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
+  loading: lazy;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Lazy loading optimization */
@@ -137,6 +144,7 @@ select {
 .smooth-scroll {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 100px;
 }
 
 /* Optimizar scroll en contenedores */
@@ -167,6 +175,18 @@ select {
     animation-fill-mode: both;
     animation-duration: 0.6s;
     animation-timing-function: ease-out;
+  }
+  
+  .smooth-animation {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .fast-animation {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .slow-animation {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -225,11 +245,11 @@ select {
 
 /* Fallback fonts */
 .font-primary {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .font-secondary {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* ===============================
@@ -503,4 +523,267 @@ picture img {
   max-width: 100%;
   margin: 0 auto;
   overflow-x: hidden;
+}
+
+/* === OPTIMIZACIONES DE RENDIMIENTO CSS === */
+
+/* Configuración para elementos que van a ser animados */
+.will-animate,
+.card-3d,
+.hero-parallax,
+.fade-in,
+.slide-in,
+.zoom-in {
+  /* Habilitar aceleración de hardware */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Optimizar transformaciones */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* === OPTIMIZACIONES DE ANIMACIONES === */
+
+/* Configuración base para animaciones fluidas */
+@media (prefers-reduced-motion: no-preference) {
+  .smooth-animation {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .fast-animation {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .slow-animation {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* === OPTIMIZACIONES DE SCROLL === */
+
+/* Elementos que aparecen en scroll */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === OPTIMIZACIONES DE LAYOUT === */
+
+/* Prevenir layout shift en containers */
+.stable-container {
+  contain: layout style paint;
+}
+
+/* Grid y flexbox optimizados */
+.optimized-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  contain: layout;
+}
+
+.optimized-flex {
+  display: flex;
+  contain: layout;
+}
+
+/* === OPTIMIZACIONES DE FUENTES === */
+
+/* Carga de fuentes optimizada */
+@font-display: swap;
+
+/* === OPTIMIZACIONES PARA MÓVILES === */
+
+/* Touch optimizations */
+.touch-optimized {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* === OPTIMIZACIONES DE RENDIMIENTO DE CSS === */
+
+/* Contain para elementos independientes */
+.card,
+.modal,
+.sidebar {
+  contain: content;
+}
+
+/* Optimización para elementos fuera de viewport */
+.offscreen {
+  contain: strict;
+  content-visibility: auto;
+}
+
+/* === OPTIMIZACIONES DE CRÍTICO CSS === */
+
+/* Estilos críticos para above-the-fold */
+.critical-section {
+  /* Priorizar renderizado */
+  will-change: auto;
+  contain: layout style;
+}
+
+/* === LOADING STATES OPTIMIZADOS === */
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* === OPTIMIZACIONES PARA DISPOSITIVOS DE ALTA DPI === */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .high-dpi-optimized {
+    /* Optimizaciones específicas para pantallas retina */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Imágenes optimizadas para retina */
+  .hero-image {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* === OPTIMIZACIONES DE MEMORIA === */
+
+/* Liberar memoria de elementos no visibles */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 400px;
+}
+
+/* === OPTIMIZACIONES DE CPU === */
+
+/* Usar compositing layers solo cuando sea necesario */
+.compositing-layer {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Eliminar will-change después de animación */
+.animation-finished {
+  will-change: auto;
+}
+
+/* === OPTIMIZACIONES PARA PWA === */
+
+/* Optimizaciones para Progressive Web App */
+.pwa-optimized {
+  /* Mejorar la percepción de velocidad */
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+/* === OPTIMIZACIONES DE RED === */
+
+/* Preload para recursos críticos */
+.preload-hint {
+  /* Hint al navegador para precargar */
+  contain: layout style paint;
+}
+
+/* === FALLBACKS DE RENDIMIENTO === */
+
+/* Fallback para navegadores que no soportan content-visibility */
+@supports not (content-visibility: auto) {
+  .offscreen {
+    /* Fallback tradicional */
+    transform: translateZ(0);
+  }
+}
+
+/* Fallback para contain */
+@supports not (contain: layout) {
+  .stable-container {
+    /* Fallback sin contain */
+    overflow: hidden;
+  }
+}
+
+/* === OPTIMIZACIONES ESPECÍFICAS PARA EL PROYECTO === */
+
+/* Optimizaciones para las cards 3D */
+.card-3d {
+  /* Optimizar transformaciones 3D */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+  /* Mejorar el rendering en móviles */
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimizaciones para el hero parallax */
+.hero-parallax {
+  /* Optimizar el efecto parallax */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimizaciones para modals */
+.modal {
+  /* Aislar el rendering del modal */
+  contain: layout style paint;
+  will-change: transform, opacity;
+}
+
+/* Optimizaciones para el navbar */
+.navbar {
+  /* Optimizar el navbar fijo */
+  contain: layout style;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* === OPTIMIZACIONES DE ACCESIBILIDAD === */
+
+/* Respetar preferencias del usuario */
+@media (prefers-contrast: high) {
+  .performance-optimized {
+    /* Desactivar optimizaciones que puedan afectar el contraste */
+    will-change: auto;
+    filter: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: linear-gradient(110deg, #2a2a2a 8%, #3a3a3a 18%, #2a2a2a 33%);
+  }
+}
+
+/* === RESET DE OPTIMIZACIONES EN MODO DEBUG === */
+
+.debug-mode * {
+  will-change: auto !important;
+  contain: none !important;
+  content-visibility: visible !important;
 } 

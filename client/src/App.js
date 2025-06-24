@@ -54,6 +54,34 @@ import platoImage1 from './images/p.s.1.JPG';
 import platoImage2 from './images/p_s_2.JPG';
 import platoImage3 from './images/p_s_3.JPG';
 
+// Datos de platos de la semana
+const platosDelaSemana = [
+  {
+    id: 1,
+    title: "Tacos de Carnitas",
+    description: "Carne de cerdo confitada lentamente, servida con cebolla, cilantro y salsa verde casera.",
+    precio: "12.50€",
+    image: platoImage1,
+    color: "#D62828"  // Primario de variables.css
+  },
+  {
+    id: 2,
+    title: "Mole Poblano",
+    description: "Pollo en la tradicional salsa mole con más de 20 ingredientes, acompañado de arroz mexicano.",
+    precio: "18.50€",
+    image: platoImage2,
+    color: "#388E3C"  // Secundario de variables.css
+  },
+  {
+    id: 3,
+    title: "Ceviche de Pescado",
+    description: "Pescado fresco marinado en limón con cebolla morada, cilantro y chile jalapeño.",
+    precio: "16.00€",
+    image: platoImage3,
+    color: "#FFC107"  // Acento de variables.css
+  }
+];
+
 // Componentes de página
 const Home = () => {
   const history = useHistory();
@@ -76,59 +104,6 @@ const Home = () => {
     heroImage2,
     heroImage3,
     heroImage4
-  ];
-  
-  // Platos de la semana para el carrusel 3D
-  const platosDelaSemana = [
-    {
-      id: 1,
-      title: "Nachos con Guacamole y Salsa",
-      description: "Totopos crujientes acompañados de guacamole fresco y salsa roja picante",
-      image: platoImage1,
-      color: "#e63946",
-      ingredientes: [
-        "Totopos de maíz crujientes",
-        "Guacamole fresco con aguacate",
-        "Salsa roja de tomate y chile",
-        "Cilantro y cebolla picada",
-        "Limón y sal de mar"
-      ],
-      precio: "9€",
-      categoria: "Botanas y Entradas"
-    },
-    {
-      id: 2,
-      title: "Enchiladas Rojas con Pollo",
-      description: "Tortillas bañadas en salsa roja de chiles guajillo con pollo deshebrado",
-      image: platoImage2,
-      color: "#457b9d",
-      ingredientes: [
-        "Tortillas de maíz suaves",
-        "Pollo deshebrado casero",
-        "Salsa roja de chile guajillo",
-        "Queso fresco desmoronado",
-        "Crema mexicana y cebolla"
-      ],
-      precio: "13€",
-      categoria: "Plato Principal"
-    },
-    {
-      id: 3,
-      title: "Tacos de Birria",
-      description: "Tacos dorados rellenos de carne de res guisada en consomé de chiles especiales",
-      image: platoImage3,
-      color: "#2a9d8f",
-      ingredientes: [
-        "Carne de res en birria tradicional",
-        "Tortillas de maíz doradas",
-        "Consomé de chiles guajillo y ancho",
-        "Queso Oaxaca derretido",
-        "Cebolla blanca y cilantro",
-        "Salsa verde y limones"
-      ],
-      precio: "15€",
-      categoria: "Especialidad Jaliciense"
-    }
   ];
   
   // Efectos de scroll y parallax
@@ -267,9 +242,9 @@ const Home = () => {
                 <span className="icon-avocado">🥑</span>
               </div>
             </div>
-            <p className="hero-subtitle" style={{color: 'white'}}>Sabores tradicionales de México en el corazón de la ciudad</p>
+            <p className="hero-subtitle">Sabores tradicionales de México en el corazón de la ciudad</p>
             <button onClick={handleReservaClick} className="cta-button pulse-animation">
-              <span style={{color: 'white'}}>¡Reserva Ahora!</span>
+              <span>¡Reserva Ahora!</span>
               <i className="fas fa-arrow-right"></i>
             </button>
           </div>
@@ -283,19 +258,15 @@ const Home = () => {
           {platosDelaSemana.map((plato, index) => (
             <div 
               key={plato.id} 
-              className={`card-3d ${index === 1 ? 'card-center' : ''}`}
-              style={{ 
-                backgroundColor: `${plato.color}10`,
-                borderColor: plato.color
-              }}
+              className={`card-3d ${index === 1 ? 'card-center' : ''} ${plato.id === 1 ? 'card-primary' : plato.id === 2 ? 'card-secondary' : 'card-accent'}`}
             >
               <div className="card-3d-inner">
                 <div className="card-3d-front">
                   <div className="card-3d-image">
                     <img src={plato.image} alt={plato.title} />
-                    <div className="card-overlay" style={{ backgroundColor: `${plato.color}80` }}></div>
+                    <div className={`card-overlay ${plato.id === 1 ? 'overlay-primary' : plato.id === 2 ? 'overlay-secondary' : 'overlay-accent'}`}></div>
                   </div>
-                  <h3 style={{ color: 'white' }}>{plato.title}</h3>
+                  <h3 className="card-title-white">{plato.title}</h3>
                   
                   {/* Contenido móvil visible solo en pantallas pequeñas */}
                   <div className="card-mobile-content">
@@ -306,11 +277,11 @@ const Home = () => {
                     </button>
                   </div>
                 </div>
-                <div className="card-3d-back" style={{ backgroundColor: plato.color }}>
+                <div className={`card-3d-back ${plato.id === 1 ? 'back-primary' : plato.id === 2 ? 'back-secondary' : 'back-accent'}`}>
                   <div className="card-3d-content">
-                    <h3 style={{ color: 'white' }}>{plato.title}</h3>
-                    <p style={{ color: 'white' }}>{plato.description}</p>
-                    <div style={{ color: 'white', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    <h3 className="card-title-white">{plato.title}</h3>
+                    <p className="card-description-white">{plato.description}</p>
+                    <div className="card-price-white">
                       {plato.precio}
                     </div>
                     <button className="card-3d-button" onClick={() => openModal(plato)}>Ver detalles</button>
@@ -488,7 +459,7 @@ const Home = () => {
             <div className="modal-header">
               <img src={selectedPlato.image} alt={selectedPlato.title} className="modal-image" />
               <div className="modal-title-section">
-                <span className="modal-categoria">{selectedPlato.categoria}</span>
+                <span className="modal-categoria">{selectedPlato.title}</span>
                 <h2 className="modal-title">{selectedPlato.title}</h2>
                 <div className="modal-precio">{selectedPlato.precio}</div>
               </div>
@@ -498,6 +469,7 @@ const Home = () => {
               <div className="modal-ingredientes">
                 <h3>Ingredientes:</h3>
                 <ul>
+                  {/* Assuming selectedPlato.ingredientes is an array of strings */}
                   {selectedPlato.ingredientes.map((ingrediente, index) => (
                     <li key={index}>{ingrediente}</li>
                   ))}
