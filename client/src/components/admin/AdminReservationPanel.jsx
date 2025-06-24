@@ -6,7 +6,7 @@ import { markAsNoShow as apiMarkNoShow } from '../../services/reservationService
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPlus, faEdit, faTimes, faUser, faPhone, faEnvelope, 
-  faCheck, faList, faUserSlash,
+  faCheck, faList, faUserSlash, faClock,
   faComments, faHome, faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
