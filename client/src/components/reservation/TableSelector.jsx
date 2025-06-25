@@ -164,13 +164,10 @@ const TableSelector = ({
                     <div
                       key={table.id}
                       className={`table-item ${table.shape} ${selectedTableId === table.id ? 'selected' : ''} ${table.status !== 'available' ? 'unavailable' : ''}`}
-                      style={{
-                        position: 'absolute',
-                        left: `${table.position.x}%`,
-                        top: `${table.position.y}%`,
-                        width: table.width,
-                        height: table.height
-                      }}
+data-position-x={table.position.x}
+                      data-position-y={table.position.y}
+                      data-width={table.width}
+                      data-height={table.height}
                       onClick={() => handleTableSelect(table.id)}
                     >
                       <span className="table-number">{table.number}</span>

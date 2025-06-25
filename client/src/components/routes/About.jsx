@@ -17,7 +17,7 @@ const About = () => {
     <div className="page about-page">
       {/* Hero similar al de la Home Page */}
       <section className="about-hero hero-parallax">
-        <div className="parallax-bg" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop)` }}>
+        <div className="parallax-bg">
           <div className="parallax-overlay"></div>
         </div>
         <div className="hero-content fade-in" data-aos="fade-down" data-aos-delay="300">
@@ -26,7 +26,7 @@ const About = () => {
             <div className="animated-subtitle">
               <h3>Conoce nuestra esencia y tradición</h3>
             </div>
-            <p className="hero-subtitle" style={{color: 'white'}}>Más que un restaurante, somos una familia apasionada por México</p>
+            <p className="hero-subtitle">Más que un restaurante, somos una familia apasionada por México</p>
           </div>
         </div>
       </section>

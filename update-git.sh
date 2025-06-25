@@ -15,19 +15,6 @@ VPS_IP="5.250.190.97"
 
 echo -e "${BLUE}🔄 Actualizando El Nopal Restaurant${NC}"
 
-# Verificar cambios pendientes
-if [ -n "$(git status --porcelain)" ]; then
-    echo -e "${YELLOW}📝 Guardando cambios locales...${NC}"
-    git add .
-    echo "Describe los cambios realizados:"
-    read -r commit_message
-    git commit -m "$commit_message"
-fi
-
-# Subir cambios
-echo -e "${BLUE}📤 Subiendo cambios al repositorio...${NC}"
-git push origin main || git push origin master
-
 # Actualizar en el servidor
 echo -e "${BLUE}🚀 Actualizando servidor...${NC}"
 ssh root@$VPS_IP << 'EOF'

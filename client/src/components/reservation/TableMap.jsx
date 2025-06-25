@@ -239,8 +239,7 @@ const TableMap = ({ selectedDate, selectedTime, onTableSelect, partySize }) => {
                 onClick={() => handleTableClick(table)} // Pass basic info
                 onMouseEnter={() => !isVisualColumn && isReservable && setHoveredTable(table)}
                 onMouseLeave={() => !isVisualColumn && setHoveredTable(null)}
-                style={{ cursor: !isVisualColumn && isReservable ? 'pointer' : 'default' }}
-                className={isVisualColumn ? 'column-element' : 'table-element'}
+                                  className={`${isVisualColumn ? 'column-element' : 'table-element'} ${!isVisualColumn && isReservable ? 'clickable' : ''}`}
               >
                 <rect
                   x={config.x}
