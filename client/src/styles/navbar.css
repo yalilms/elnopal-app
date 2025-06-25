@@ -21,27 +21,16 @@
   height: 70px;
 }
 
-.navbar.scrolled .navbar-links a {
-  color: var(--color-dark);
-}
-
-.navbar-links a {
-  color: var(--color-white) !important;
-}
-
-/* Mantener texto blanco siempre */
+/* Texto blanco siempre */
 .navbar .navbar-links a,
 .navbar.scrolled .navbar-links a {
   color: var(--color-white) !important;
 }
 
-.navbar-logo img {
-  filter: none; /* Logo blanco por defecto */
-}
-
-/* Logo negro cuando hay scroll (fondo blanco) */
+/* Logo sin filtros - debe ser blanco por defecto */
+.navbar-logo img,
 .navbar.scrolled .navbar-logo img {
-  filter: brightness(0) invert(1);
+  filter: none !important;
 }
 
 .navbar-container {
@@ -64,7 +53,7 @@
   height: 60px;
   width: auto;
   max-width: 160px;
-  filter: brightness(0) invert(1);
+  filter: none;
   transition: all 0.3s ease;
   border-radius: var(--border-radius-md);
 }
@@ -110,14 +99,14 @@
 
 .navbar-links a:hover,
 .navbar-links a:focus {
-  color: var(--color-accent);
+  color: var(--color-accent) !important;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .navbar-links a.active {
-  color: var(--color-accent);
+  color: var(--color-accent) !important;
   background: rgba(255, 255, 255, 0.15);
 }
 

@@ -367,7 +367,7 @@
 .text-appear {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   line-height: var(--line-height-relaxed);
-  color: var(--color-light);
+  color: var(--color-white);
   margin: 0;
   opacity: 0;
   animation: textReveal 1.5s ease-out 0.5s forwards;
@@ -1738,18 +1738,24 @@ img {
 
 /* Título con logo */
 .mexican-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin-bottom: var(--spacing-16);
   position: relative;
+  width: 100%;
 }
 
 .mexican-title img {
-  max-width: 400px;
+  max-width: 450px;
   width: 100%;
   height: auto;
   filter: drop-shadow(4px 4px 12px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
   animation: logoGlow 3s ease-in-out infinite alternate;
+  display: block;
+  margin: 0 auto;
 }
 
 @keyframes logoGlow {
@@ -1773,12 +1779,12 @@ img {
 }
 
 .mexican-title::before {
-  left: -120px;
+  left: -150px;
   animation-delay: 0.5s;
 }
 
 .mexican-title::after {
-  right: -120px;
+  right: -150px;
   animation-delay: 1s;
 }
 
@@ -1793,7 +1799,7 @@ img {
   margin: 0 auto;
   font-size: var(--font-size-lg);
   line-height: var(--line-height-relaxed);
-  color: var(--color-text-primary);
+  color: var(--color-dark);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius-2xl);
@@ -1833,6 +1839,7 @@ img {
   text-align: justify;
   position: relative;
   padding-left: var(--spacing-4);
+  color: var(--color-dark);
 }
 
 .mexican-text p:first-child {
@@ -1974,10 +1981,27 @@ img {
 .stamp:nth-child(5) { animation-delay: 2.4s; }
 
 /* RESPONSIVE ABOUT SECTION */
+@media (max-width: 1200px) {
+  .mexican-title::before,
+  .mexican-title::after {
+    left: -100px;
+    right: -100px;
+    font-size: 1.5rem;
+  }
+  
+  .mexican-title img {
+    max-width: 380px;
+  }
+}
+
 @media (max-width: 1024px) {
   .mexican-title::before,
   .mexican-title::after {
     display: none;
+  }
+  
+  .mexican-title img {
+    max-width: 350px;
   }
   
   .sombrero-row {
@@ -1999,6 +2023,10 @@ img {
 @media (max-width: 768px) {
   .about-mexican-container {
     padding: var(--spacing-8) var(--spacing-4);
+  }
+  
+  .mexican-title img {
+    max-width: 300px;
   }
   
   .mexican-text {
@@ -2038,6 +2066,10 @@ img {
 }
 
 @media (max-width: 480px) {
+  .mexican-title img {
+    max-width: 250px;
+  }
+  
   .sombrero-row {
     gap: var(--spacing-4);
     flex-wrap: wrap;
