@@ -14,7 +14,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ReservationProvider } from './context/ReservationContext';
 // Importar componentes de reserva
 import ReservationForm from './components/reservation/ReservationForm';
-import AdminReservationPanel from './components/admin/AdminReservationPanel';
+import AdminMainPanel from './components/admin/AdminReservationPanel';
 import AdminLogin from './components/admin/AdminLogin';
 import Forbidden from './components/admin/Forbidden';
 // Importar PrivateRoute
@@ -467,7 +467,7 @@ function App() {
                 {/* Rutas protegidas */}
                 <PrivateRoute
                   path="/admin/reservaciones"
-                  component={AdminReservationPanel}
+                  component={AdminMainPanel}
                   requireAdmin={true}
                 />
                 
