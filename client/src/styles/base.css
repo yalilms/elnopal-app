@@ -36,11 +36,13 @@ html {
 body {
   font-family: var(--font-primary);
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-primary);
   background-color: var(--color-background);
   overflow-x: hidden;
   min-height: 100vh;
+  padding-top: 0; /* Removed navbar spacing since hero is fullscreen */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
