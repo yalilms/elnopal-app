@@ -21,16 +21,29 @@
   height: 70px;
 }
 
-/* Texto blanco siempre */
+/* COLORES DE TEXTO CON MÁXIMA PRIORIDAD */
 .navbar .navbar-links a,
-.navbar.scrolled .navbar-links a {
+.navbar .navbar-links li a {
   color: var(--color-white) !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Logo sin filtros - debe ser blanco por defecto */
-.navbar-logo img,
-.navbar.scrolled .navbar-logo img {
+/* Texto negro cuando hay scroll (fondo blanco) */
+.navbar.scrolled .navbar-links a,
+.navbar.scrolled .navbar-links li a {
+  color: var(--color-dark) !important;
+  text-shadow: none !important;
+}
+
+/* Logo blanco por defecto, negro cuando hay scroll */
+.navbar-logo img {
   filter: none !important;
+  /* El logo ya es blanco por defecto */
+}
+
+.navbar.scrolled .navbar-logo img {
+  filter: invert(1) !important;
+  /* Invertir a negro cuando hay scroll */
 }
 
 .navbar-container {
@@ -78,7 +91,7 @@
 }
 
 .navbar-links a {
-  color: var(--color-white);
+  color: var(--color-white) !important;
   font-size: var(--font-size-xl);
   text-decoration: none;
   padding: var(--spacing-3) var(--spacing-6);
@@ -95,19 +108,26 @@
   cursor: pointer;
   text-transform: uppercase;
   white-space: nowrap;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* Estados hover y active - AMARILLO SIEMPRE */
 .navbar-links a:hover,
-.navbar-links a:focus {
+.navbar-links a:focus,
+.navbar.scrolled .navbar-links a:hover,
+.navbar.scrolled .navbar-links a:focus {
   color: var(--color-accent) !important;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-.navbar-links a.active {
+.navbar-links a.active,
+.navbar.scrolled .navbar-links a.active {
   color: var(--color-accent) !important;
   background: rgba(255, 255, 255, 0.15);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
 .navbar-links a::after {
@@ -125,7 +145,10 @@
 
 .navbar-links a:hover::after,
 .navbar-links a:focus::after,
-.navbar-links a.active::after {
+.navbar-links a.active::after,
+.navbar.scrolled .navbar-links a:hover::after,
+.navbar.scrolled .navbar-links a:focus::after,
+.navbar.scrolled .navbar-links a.active::after {
   width: 80%;
 }
 
