@@ -299,4 +299,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Estilos consolidados de TableMap.jsx - Sin cambios visuales */
+
+/* Cursor styles for table elements */
+.table-element-clickable {
+  cursor: pointer;
+}
+
+.table-element-default {
+  cursor: default;
 } 

@@ -507,4 +507,16 @@ body:has(.about-page) {
   .card-3d:hover {transform: none;}
   .card-3d-inner { transform: none !important; }
   .card-3d-back { display: none; } /* Simplificar en móviles pequeños */
+}
+
+/* Estilos extraídos de About.jsx - Sin cambios visuales */
+
+/* Parallax background */
+.about-parallax-bg {
+  background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop');
+}
+
+/* Hero subtitle color override for About page */
+.about-hero-subtitle {
+  color: white;
 } 

@@ -1,6 +1,10 @@
 /* Fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Poppins:wght@700&display=swap');
 
+/* Importar archivos CSS organizados */
+@import './styles/home.css';
+@import './styles/promotions.css';
+
 /* Variables de colores mexicanos */
 :root {
   --primary: #D62828; /* Rojo mexicano */

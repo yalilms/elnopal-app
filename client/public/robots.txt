@@ -1,0 +1,18 @@
+# robots.txt para El Nopal - Restaurante Mexicano
+
+User-agent: *
+Allow: /
+
+# Permitir acceso a recursos estáticos
+Allow: /static/
+Allow: /images/
+Allow: *.css
+Allow: *.js
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.ico
+
+# Sitemap
+Sitemap: https://elnopal.es/sitemap.xml 
