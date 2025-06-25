@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -478,77 +478,73 @@ function App() {
             
             <main className="main-content">
               <Suspense fallback={<LoadingFallback message="Cargando página..." />}>
-                <Switch>
-                  <Route exact path="/" component={Home} />
-                  <Route path="/reservaciones" render={() => (
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/reservaciones" element={
                     <Suspense fallback={<LoadingFallback message="Cargando formulario de reservación..." />}>
                       <ReservationForm />
                     </Suspense>
-                  )} />
-                  <Route path="/contacto" component={Contact} />
-                  <Route path="/admin/login" render={() => (
+                  } />
+                  <Route path="/contacto" element={<Contact />} />
+                  <Route path="/admin/login" element={
                     <Suspense fallback={<LoadingFallback message="Cargando panel de administración..." />}>
                       <AdminLogin />
                     </Suspense>
-                  )} />
-                  <Route exact path="/blog" render={() => (
+                  } />
+                  <Route path="/blog" element={
                     <Suspense fallback={<LoadingFallback message="Cargando blog..." />}>
                       <Blog />
                     </Suspense>
-                  )} />
-                  <Route path="/blog/:id" render={() => (
+                  } />
+                  <Route path="/blog/:id" element={
                     <Suspense fallback={<LoadingFallback message="Cargando artículo..." />}>
                       <BlogPost />
                     </Suspense>
-                  )} />
-                  <Route path="/nosotros" render={() => (
+                  } />
+                  <Route path="/nosotros" element={
                     <Suspense fallback={<LoadingFallback message="Cargando información..." />}>
                       <About />
                     </Suspense>
-                  )} />
+                  } />
                   
                   {/* Mantener ruta para dejar reseñas pero eliminar la de ver opiniones */}
-                  <Route path="/dejar-opinion" render={() => (
+                  <Route path="/dejar-opinion" element={
                     <Suspense fallback={<LoadingFallback message="Cargando formulario de opinión..." />}>
                       <LeaveReviewPage />
                     </Suspense>
-                  )} />
+                  } />
                   
                   {/* Rutas protegidas */}
-                  <Route path="/admin/reservaciones" render={() => (
+                  <Route path="/admin/reservaciones" element={
                     <Suspense fallback={<LoadingFallback message="Cargando panel de administración..." />}>
                       <PrivateRoute
                         component={AdminMainPanel}
                         requireAdmin={true}
                       />
                     </Suspense>
-                  )} />
+                  } />
                   
                   {/* Ruta para administrar reseñas */}
-                  <Route path="/admin/opiniones" render={() => (
+                  <Route path="/admin/opiniones" element={
                     <Suspense fallback={<LoadingFallback message="Cargando panel de opiniones..." />}>
                       <PrivateRoute
                         component={AdminReviewsPanel}
                         requireAdmin={true}
                       />
                     </Suspense>
-                  )} />
+                  } />
                   
                   {/* Redirección para rutas /admin que no estén especificadas */}
-                  <Route exact path="/admin">
-                    <Redirect to="/admin/login" />
-                  </Route>
+                  <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
                   
-                  <Route path="/forbidden" render={() => (
+                  <Route path="/forbidden" element={
                     <Suspense fallback={<LoadingFallback message="Cargando..." />}>
                       <Forbidden />
                     </Suspense>
-                  )} />
+                  } />
                   
-                  <Route path="*">
-                    <NotFound />
-                  </Route>
-                </Switch>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
               </Suspense>
             </main>
             

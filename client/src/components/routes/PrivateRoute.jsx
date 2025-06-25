@@ -1,8 +1,8 @@
 import React from 'react';
-import { Route, Redirect, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component, requireAdmin = false }) => {
   const { currentUser, isAdmin, loading } = useAuth();
   const location = useLocation();
 
@@ -16,28 +16,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   }
 
-  return (
-    <Route
-      {...rest}
-      render={props => 
-        currentUser ? (
-          // Si el componente requiere permisos de admin
-          rest.requireAdmin && !isAdmin() ? (
-            <Redirect to="/forbidden" />
-          ) : (
-            <Component {...props} />
-          )
-        ) : (
-          <Redirect 
-            to={{
-              pathname: "/admin/login",
-              state: { from: location }
-            }}
-          />
-        )
-      }
-    />
-  );
+  // Si no hay usuario autenticado, redirigir al login
+  if (!currentUser) {
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+  }
+
+  // Si requiere admin y el usuario no es admin, redirigir a forbidden
+  if (requireAdmin && !isAdmin()) {
+    return <Navigate to="/forbidden" replace />;
+  }
+
+  // Si todo está bien, renderizar el componente
+  return <Component />;
 };
 
 export default PrivateRoute; 
