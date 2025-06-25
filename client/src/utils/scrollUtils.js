@@ -34,12 +34,12 @@ export const scrollToTop = () => {
 
 /**
  * Navega a una página y luego hace scroll a una sección específica
- * @param {object} history - El objeto history de React Router
+ * @param {function} navigate - La función navigate de React Router v6
  * @param {string} path - La ruta a la que navegar
  * @param {string} sectionId - El ID de la sección a la que hacer scroll (opcional)
  * @param {number} delay - Retraso antes de hacer scroll (por defecto 100ms)
  */
-export const navigateAndScroll = (history, path, sectionId = null, delay = 100) => {
+export const navigateAndScroll = (navigate, path, sectionId = null, delay = 100) => {
   // Si ya estamos en la página correcta, solo hacer scroll
   if (window.location.pathname === path && sectionId) {
     scrollToSection(sectionId);
@@ -47,7 +47,7 @@ export const navigateAndScroll = (history, path, sectionId = null, delay = 100) 
   }
 
   // Navegar a la página
-  history.push(path);
+  navigate(path);
 
   // Si hay una sección específica, hacer scroll después de un pequeño retraso
   if (sectionId) {

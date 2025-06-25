@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
@@ -12,7 +12,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Cerrar menú móvil cuando cambia la ruta
@@ -42,7 +42,7 @@ const Navbar = () => {
   const handleNavigationClick = (e, path, sectionId = null) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    navigateAndScroll(history, path, sectionId);
+    navigateAndScroll(navigate, path, sectionId);
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faTwitter, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faPhone, faMapMarkerAlt, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { navigateAndScroll } from '../../utils/scrollUtils';
 
 const Footer = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
@@ -16,16 +16,16 @@ const Footer = () => {
     
     // Si ya está autenticado, ir directo al panel de administración
     if (currentUser) {
-      history.push('/admin/reservaciones');
+      navigate('/admin/reservaciones');
     } else {
       // Si no está autenticado, ir a la página de login
-      history.push('/admin/login');
+      navigate('/admin/login');
     }
   };
 
   const handleNavigationClick = (e, path, sectionId = null) => {
     e.preventDefault();
-    navigateAndScroll(history, path, sectionId);
+    navigateAndScroll(navigate, path, sectionId);
   };
 
   const handlePrivacyClick = (e) => {

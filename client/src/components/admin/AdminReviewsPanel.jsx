@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignOutAlt, faCalendarAlt, faCheck, faSearch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 // import './AdminReviewsPanel.css'; // Archivo eliminado - estilos ahora en sistema modular
@@ -98,7 +98,7 @@ const AdminReviewsPanel = () => {
   const [responseText, setResponseText] = useState('');
   const [sendingResponse, setSendingResponse] = useState(false);
   const { currentUser, logout } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetchReviews();
@@ -335,16 +335,16 @@ const AdminReviewsPanel = () => {
   };
   
   const handleNavigateToReservaciones = () => {
-    history.push('/admin/reservaciones');
+            navigate('/admin/reservaciones');
   };
   
   const handleBackToHome = () => {
-    history.push('/');
+    navigate('/');
   };
   
   const handleLogout = () => {
     logout();
-    history.push('/');
+    navigate('/');
   };
   
   return (

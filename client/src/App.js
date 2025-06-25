@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, Redirect, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -58,7 +58,7 @@ const LoadingFallback = ({ message = "Cargando..." }) => (
 
 // Componentes de página
 const Home = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showVideo, setShowVideo] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedPlato, setSelectedPlato] = useState(null);
@@ -143,7 +143,7 @@ const Home = () => {
   };
 
   const handleReservaClick = () => {
-    navigateAndScroll(history, '/reservaciones', 'reservation-form');
+    navigateAndScroll(navigate, '/reservaciones', 'reservation-form');
   };
 
   const openModal = (plato) => {

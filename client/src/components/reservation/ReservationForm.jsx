@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUser, 
@@ -52,7 +52,7 @@ const getTimeSlotsForDay = (date) => {
 };
 
 const ReservationForm = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -276,7 +276,7 @@ const ReservationForm = () => {
             </button>
             <button 
                 className="btn btn-outline"
-                onClick={() => history.push('/')}
+                onClick={() => navigate('/')}
             >
               Volver al Inicio
             </button>

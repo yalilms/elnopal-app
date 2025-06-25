@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faHome, faSignOutAlt, faCalendarAlt, faCheck, faTimes, faEye, 
@@ -17,7 +17,7 @@ import TableMap from './TableMap';
 
 const AdminMainPanel = () => {
   const { currentUser, logout } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const AdminMainPanel = () => {
 
   const handleLogout = () => {
     logout();
-    history.push('/admin/login');
+          navigate('/admin/login');
   };
 
   const handleViewDetails = (reservation) => {
@@ -402,7 +402,7 @@ const AdminMainPanel = () => {
           
           <div className="admin-header-right">
             <button 
-              onClick={() => history.push('/')} 
+                                onClick={() => navigate('/')} 
               className="admin-btn-secondary"
             >
               <FontAwesomeIcon icon={faHome} />

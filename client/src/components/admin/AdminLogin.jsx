@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faChevronLeft, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
@@ -17,13 +17,13 @@ const AdminLogin = () => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const { login, isAuthenticated, error: authError } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
-      history.push('/admin/reservaciones');
+      navigate('/admin/reservaciones');
     }
-  }, [isAuthenticated, history]);
+  }, [isAuthenticated, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -47,7 +47,7 @@ const AdminLogin = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        history.push('/admin/reservaciones');
+        navigate('/admin/reservaciones');
       } else {
         setError(authError || 'Email o contraseña incorrectos');
       }
@@ -60,7 +60,7 @@ const AdminLogin = () => {
   };
 
   const handleBackToSite = () => {
-    history.push('/');
+    navigate('/');
   };
 
   return (

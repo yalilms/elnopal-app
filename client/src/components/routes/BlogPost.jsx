@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import blogData from '../../data/blogData';
 import '../../styles/blog.css';
 
 const BlogPost = () => {
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +42,7 @@ const BlogPost = () => {
       <div className="blog-post-error">
         <h2>Artículo no encontrado</h2>
         <p>El artículo que buscas no existe o ha sido eliminado.</p>
-        <button onClick={() => history.push('/blog')}>Volver al Blog</button>
+        <button onClick={() => navigate('/blog')}>Volver al Blog</button>
       </div>
     );
   }

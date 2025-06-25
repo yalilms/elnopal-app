@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ReviewForm from './ReviewForm';
 import { handleHashScroll } from '../../utils/scrollUtils';
 // import './LeaveReviewPage.css'; // Archivo eliminado - estilos ahora en sistema modular
 
 const LeaveReviewPage = () => {
   const [submitted, setSubmitted] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Manejar scroll automático al cargar la página con hash
   useEffect(() => {
@@ -20,7 +20,7 @@ const LeaveReviewPage = () => {
     setSubmitted(true);
     // Después de 3 segundos, redirigir a la página principal
     setTimeout(() => {
-      history.push('/');
+      navigate('/');
     }, 3000);
   };
 
