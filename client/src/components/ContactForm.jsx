@@ -125,7 +125,7 @@ const ContactForm = () => {
       setLoading(false);
       return;
     }
-
+    
     try {
       // Simular envío del formulario
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -178,7 +178,7 @@ const ContactForm = () => {
             <div className="alert alert-success">
               <FontAwesomeIcon icon={faCheckCircle} />
               ¡Mensaje enviado correctamente! Te contactaremos pronto.
-            </div>
+          </div>
           )}
 
           <form onSubmit={handleSubmit}>
@@ -186,7 +186,7 @@ const ContactForm = () => {
               <div className="alert alert-error">
                 <FontAwesomeIcon icon={faExclamationCircle} />
                 {errors.submit}
-              </div>
+        </div>
             )}
 
             {/* Información personal */}
@@ -195,54 +195,54 @@ const ContactForm = () => {
                 Información de Contacto
               </h3>
               
-              <div className="form-group">
+        <div className="form-group">
                 <label htmlFor="name" className="form-label required">
                   <FontAwesomeIcon icon={faUser} /> Nombre completo
                 </label>
-                <input
-                  type="text"
+          <input
+            type="text"
                   id="name"
                   name="name"
                   className={`form-control ${errors.name ? 'error' : touched.name && !errors.name ? 'success' : ''}`}
                   value={formData.name}
-                  onChange={handleChange}
+            onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="Tu nombre completo"
                   disabled={loading || success}
                 />
                 {errors.name && <div className="form-error">{errors.name}</div>}
-              </div>
+        </div>
 
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)'}}>
-                <div className="form-group">
+        <div className="form-group">
                   <label htmlFor="email" className="form-label required">
                     <FontAwesomeIcon icon={faEnvelope} /> Email
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
+          <input
+            type="email"
+            id="email"
+            name="email"
                     className={`form-control ${errors.email ? 'error' : touched.email && !errors.email ? 'success' : ''}`}
-                    value={formData.email}
-                    onChange={handleChange}
+            value={formData.email}
+            onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="tu@email.com"
                     disabled={loading || success}
                   />
                   {errors.email && <div className="form-error">{errors.email}</div>}
-                </div>
-
-                <div className="form-group">
+        </div>
+        
+        <div className="form-group">
                   <label htmlFor="phone" className="form-label">
                     <FontAwesomeIcon icon={faPhone} /> Teléfono (opcional)
                   </label>
-                  <input
+          <input
                     type="tel"
                     id="phone"
                     name="phone"
                     className={`form-control ${errors.phone ? 'error' : touched.phone && !errors.phone && formData.phone ? 'success' : ''}`}
                     value={formData.phone}
-                    onChange={handleChange}
+            onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="+34 123 456 789"
                     disabled={loading || success}
@@ -277,18 +277,18 @@ const ContactForm = () => {
                   ))}
                 </select>
                 {errors.subject && <div className="form-error">{errors.subject}</div>}
-              </div>
+        </div>
 
-              <div className="form-group">
+        <div className="form-group">
                 <label htmlFor="message" className="form-label required">
                   Mensaje
                 </label>
-                <textarea
+          <textarea
                   id="message"
                   name="message"
                   className={`form-control form-textarea ${errors.message ? 'error' : touched.message && !errors.message ? 'success' : ''}`}
                   value={formData.message}
-                  onChange={handleChange}
+            onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="Escribe tu mensaje aquí..."
                   rows="6"
@@ -310,7 +310,7 @@ const ContactForm = () => {
                 <li>Para reservas urgentes, llama al +34 653 73 31 11</li>
                 <li>También puedes visitarnos en C. Martínez Campos, 23, Granada</li>
               </ul>
-            </div>
+        </div>
 
             {/* Botón de envío */}
             <div style={{textAlign: 'center'}}>
@@ -336,9 +336,9 @@ const ContactForm = () => {
                     Enviar Mensaje
                   </>
                 )}
-              </button>
-            </div>
-          </form>
+          </button>
+        </div>
+      </form>
         </div>
       </div>
     </div>
