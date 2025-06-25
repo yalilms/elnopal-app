@@ -511,32 +511,42 @@ const Menu = () => {
   const [categoria, setCategoria] = useState('Entradas');
   
   return (
-    <div className="page">
-      <h2>Nuestro Menú</h2>
-      <div className="menu-categories">
-        {Object.keys(menuData).map(cat => (
-          <button 
-            key={cat} 
-            className={`category-btn ${categoria === cat ? 'active' : ''}`}
-            onClick={() => setCategoria(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-      <div className="menu-items">
-        {menuData[categoria].map((item) => (
-          <div className="menu-item" key={item.id}>
-            <div className="menu-item-image">
-              <img src={item.imagen} alt={item.nombre} />
+    <div className="page menu-page">
+      <div className="container">
+        <div className="menu-header">
+          <h1 className="text-gradient text-mexican">Nuestro Menú</h1>
+          <p>Descubre la auténtica cocina mexicana con ingredientes frescos y recetas tradicionales</p>
+        </div>
+        
+        <div className="menu-categories">
+          {Object.keys(menuData).map(cat => (
+            <button 
+              key={cat} 
+              className={`category-btn ${categoria === cat ? 'active' : ''}`}
+              onClick={() => setCategoria(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+        
+        <div className="menu-items">
+          {menuData[categoria].map((item) => (
+            <div className="menu-item hover-lift" key={item.id}>
+              <div className="menu-item-image">
+                <img src={item.imagen} alt={item.nombre} loading="lazy" />
+              </div>
+              <div className="menu-item-content">
+                <h3 className="menu-item-title">{item.nombre}</h3>
+                <p className="menu-item-description">{item.descripcion}</p>
+                <div className="menu-item-footer">
+                  <span className="menu-item-price">{item.precio}</span>
+                  <span className="menu-item-category">{categoria}</span>
+                </div>
+              </div>
             </div>
-            <div className="menu-item-content">
-              <h3>{item.nombre}</h3>
-              <p>{item.descripcion}</p>
-              <span className="price">{item.precio}</span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
