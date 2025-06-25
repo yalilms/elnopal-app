@@ -361,20 +361,7 @@
 }
 
 .bg-fiesta {
-  background: linear-gradient(45deg, 
-    rgba(214, 40, 40, 0.1) 0%,
-    rgba(0, 107, 60, 0.1) 25%,
-    rgba(248, 182, 18, 0.1) 50%,
-    rgba(214, 40, 40, 0.1) 75%,
-    rgba(0, 107, 60, 0.1) 100%);
-  background-size: 400% 400%;
-  animation: fiestaBackground 6s ease infinite;
-}
-
-@keyframes fiestaBackground {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  background: rgba(214, 40, 40, 0.05);
 }
 
 /* Bordes decorativos */
@@ -398,14 +385,9 @@
   right: 0;
   bottom: 0;
   border-radius: inherit;
-  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  background: var(--color-primary);
   margin: -2px;
   z-index: -1;
-  animation: borderRotate 3s linear infinite;
-}
-
-@keyframes borderRotate {
-  to { transform: rotate(360deg); }
 }
 
 /* Efectos de carga */
@@ -497,18 +479,12 @@
   .text-gradient {
     animation-duration: 4s;
   }
-  
-  .bg-fiesta {
-    animation-duration: 8s;
-  }
 }
 
 /* Reducir animaciones para usuarios que lo prefieran */
 @media (prefers-reduced-motion: reduce) {
   .text-gradient,
-  .bg-fiesta,
   .skeleton,
-  .border-animated::before,
   .loading-dots::after {
     animation: none;
   }

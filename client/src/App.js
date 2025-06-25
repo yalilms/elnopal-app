@@ -260,7 +260,7 @@ const Home = () => {
                 
                 <div className="video-content">
                   <i className="fas fa-play-circle pulse-icon"></i>
-                  <span>Descubre El Nopal</span>
+                  <span>Ver Video del Restaurante</span>
                 </div>
               </div>
             ) : (
