@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+
+// ===== ESTILOS =====
 import 'react-toastify/dist/ReactToastify.css';
 
 // ===== COMPONENTES CRÍTICOS (CARGA INMEDIATA) =====
@@ -340,7 +342,7 @@ const Home = () => {
                 <blockquote>"La opinión de nuestros clientes es nuestra mayor motivación"</blockquote>
               </div>
               
-              <button onClick={() => navigateAndScroll(history, '/dejar-opinion', 'review-form')} className="leave-review-btn">
+              <button onClick={() => navigateAndScroll(navigate, '/dejar-opinion', 'review-form')} className="leave-review-btn">
                 Dejar una opinión
               </button>
             </div>
