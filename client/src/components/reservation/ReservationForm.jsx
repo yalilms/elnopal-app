@@ -14,7 +14,7 @@ import {
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 
-import { makeReservation } from '../../services/reservationService';
+import { createReservation } from '../../services/reservationService';
 
 // Obtener horarios disponibles por día
 const getTimeSlotsForDay = (date) => {
@@ -195,7 +195,7 @@ const ReservationForm = () => {
     }
 
     try {
-      const result = await makeReservation(formData);
+              const result = await createReservation(formData);
       setConfirmedDetails({ 
         date: formData.date, 
         time: formData.time,
