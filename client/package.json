@@ -3,28 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
-    "@fortawesome/free-brands-svg-icons": "^6.7.2",
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
     "@tailwindcss/forms": "^0.5.10",
     "aos": "^2.3.4",
     "axios": "^0.26.1",
     "date-fns": "^2.30.0",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-bootstrap": "^2.10.9",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
-    "react-router-dom": "^5.3.4",
-    "react-scripts": "^5.0.1",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
     "react-toastify": "^8.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:optimized": "node build-optimized.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "optimize-images": "node optimize-images.js",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +53,10 @@
   "proxy": "http://localhost:5000",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "imagemin": "^8.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-webp": "^7.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17"
   },

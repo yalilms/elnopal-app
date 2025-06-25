@@ -12,7 +12,27 @@
     <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/logo192.png?v=1" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>El Nopal - Restaurante Mexicano</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ===== PRELOADS CRÍTICOS PARA RENDIMIENTO ===== -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
+    
+    <!-- Preload imagen crítica del hero -->
+    <link rel="preload" as="image" href="/static/media/NOPAL_UNITY-50.9e08b17275cac29852b5.JPG" type="image/jpeg">
+    
+    <!-- DNS Prefetch para recursos externos -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    
+    <!-- Optimizaciones de rendering -->
+    <meta name="theme-color" content="#D62828">
+    <meta name="color-scheme" content="light">
+    
+    <!-- Critical CSS inline será insertado aquí por el build -->
+    <style>
+      /* CSS Crítico inline para First Paint más rápido */
+      :root{--color-primary:#F8B612;--color-secondary:#008C45;--color-accent:#CD212A;--color-dark:#2C1810;--color-light:#F5F3F0;--font-primary:'Montserrat',sans-serif;--font-secondary:'Poppins',sans-serif;--font-size-xl:20px;--font-size-lg:18px;--spacing-lg:24px;--spacing-xl:32px;--spacing-2xl:48px;--shadow-md:0 4px 6px rgba(0,0,0,0.1);--shadow-lg:0 10px 25px rgba(0,0,0,0.15)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-primary);line-height:1.6;color:var(--color-dark);background-color:var(--color-light);overflow-x:hidden}.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:80px;background:linear-gradient(135deg,rgba(44,24,16,0.95) 0%,rgba(44,24,16,0.98) 100%);backdrop-filter:blur(10px);transition:all 0.3s ease;padding:0 var(--spacing-lg)}.hero-section{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center}.hero-background{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}.hero-background img,.hero-background .optimized-image{width:100%;height:100%;object-fit:cover;object-position:center}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(44,24,16,0.7) 0%,rgba(205,33,42,0.3) 50%,rgba(0,140,69,0.6) 100%);z-index:2}.hero-content{position:relative;z-index:3;text-align:center;color:white;max-width:800px;padding:var(--spacing-2xl)}.hero-title{font-size:clamp(2.5rem,6vw,4rem);font-weight:700;margin-bottom:var(--spacing-lg);text-shadow:2px 2px 4px rgba(0,0,0,0.7);line-height:1.2}
+    </style>
 </head>
 <body>
     <noscript>Necesitas habilitar JavaScript para ejecutar esta aplicación.</noscript>

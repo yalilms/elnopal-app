@@ -1,42 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Blog from './components/routes/Blog';
-import BlogPost from './components/routes/BlogPost';
-import About from './components/routes/About';
-// Importar componentes
+
+// ===== COMPONENTES CRÍTICOS (CARGA INMEDIATA) =====
 import Footer from './components/layout/Footer';
 import Navbar from './components/layout/Navbar';
-// Importar AuthProvider
 import { AuthProvider } from './context/AuthContext';
-// Importar ReservationProvider
 import { ReservationProvider } from './context/ReservationContext';
-// Importar componentes de reserva
-import ReservationForm from './components/reservation/ReservationForm';
-import AdminMainPanel from './components/admin/AdminReservationPanel';
-import AdminLogin from './components/admin/AdminLogin';
-import Forbidden from './components/admin/Forbidden';
-// Importar PrivateRoute
-import PrivateRoute from './components/routes/PrivateRoute';
-// Importar los nuevos componentes de reseñas
-import LeaveReviewPage from './components/reviews/LeaveReviewPage';
-import AdminReviewsPanel from './components/admin/AdminReviewsPanel';
-
-// Importar componentes de contacto
-import ContactInfo from './components/contact/ContactInfo';
-import ContactForm from './components/ContactForm';
-
-// Importar utilidades de scroll
+import OptimizedImage from './components/common/OptimizedImage';
 import { navigateAndScroll, handleHashScroll } from './utils/scrollUtils';
 
-// Datos
+// ===== LAZY LOADING PARA COMPONENTES NO CRÍTICOS =====
+const Blog = React.lazy(() => import('./components/routes/Blog'));
+const BlogPost = React.lazy(() => import('./components/routes/BlogPost'));
+const About = React.lazy(() => import('./components/routes/About'));
+const ReservationForm = React.lazy(() => import('./components/reservation/ReservationForm'));
+const AdminMainPanel = React.lazy(() => import('./components/admin/AdminReservationPanel'));
+const AdminLogin = React.lazy(() => import('./components/admin/AdminLogin'));
+const Forbidden = React.lazy(() => import('./components/admin/Forbidden'));
+const PrivateRoute = React.lazy(() => import('./components/routes/PrivateRoute'));
+const LeaveReviewPage = React.lazy(() => import('./components/reviews/LeaveReviewPage'));
+const AdminReviewsPanel = React.lazy(() => import('./components/admin/AdminReviewsPanel'));
+const ContactInfo = React.lazy(() => import('./components/contact/ContactInfo'));
+const ContactForm = React.lazy(() => import('./components/ContactForm'));
+
+// ===== DATOS CRÍTICOS =====
 import { menuData } from './data/menuData';
 import { reviewsData } from './data/reviewsData';
 
-// Importar el video
+// ===== RECURSOS MULTIMEDIA =====
 import videoEjemplo from './images/ejemplo_video.mp4';
-// Importar el logo
 import logoElNopal from './images/logo_elnopal.png';
 
 // Importar nuevas imágenes para el héroe
@@ -49,6 +43,18 @@ import heroImage4 from './images/NOPAL_UNITY-6.JPG';
 import platoImage1 from './images/p.s.1.JPG';
 import platoImage2 from './images/p_s_2.JPG';
 import platoImage3 from './images/p_s_3.JPG';
+
+// ===== COMPONENTE DE LOADING =====
+const LoadingFallback = ({ message = "Cargando..." }) => (
+  <div className="loading-container">
+    <div className="loading-spinner">
+      <div className="mexican-spinner">
+        <span className="spinner-emoji">🌮</span>
+      </div>
+    </div>
+    <p className="loading-text">{message}</p>
+  </div>
+);
 
 // Componentes de página
 const Home = () => {
@@ -155,7 +161,14 @@ const Home = () => {
       {/* HERO SECTION */}
       <section ref={sectionRefs.hero} className="hero-section">
         <div className="hero-background" ref={parallaxRef}>
-          <img src={heroImage1} alt="Auténtica comida mexicana servida en la mesa de El Nopal" />
+          <OptimizedImage 
+            src={heroImage1} 
+            alt="Auténtica comida mexicana servida en la mesa de El Nopal"
+            priority={true}
+            loading="eager"
+            className="critical hero-image"
+            sizes="100vw"
+          />
         </div>
         <div className="hero-overlay"></div>
         <div className="hero-content">
@@ -341,7 +354,13 @@ const Home = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>×</button>
             <div className="modal-header">
-              <img src={selectedPlato.image} alt={selectedPlato.title} className="modal-image" />
+              <OptimizedImage 
+                src={selectedPlato.image} 
+                alt={selectedPlato.title}
+                className="modal-image"
+                loading="eager"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
               <div className="modal-title-section">
                 <span className="modal-categoria">{selectedPlato.categoria}</span>
                 <h2 className="modal-title">{selectedPlato.title}</h2>
@@ -393,7 +412,13 @@ const Menu = () => {
           {menuData[categoria].map((item) => (
             <div className="menu-item hover-lift" key={item.id}>
               <div className="menu-item-image">
-                <img src={item.imagen} alt={item.nombre} loading="lazy" />
+                <OptimizedImage 
+                  src={item.imagen} 
+                  alt={item.nombre}
+                  loading="lazy"
+                  className="menu-image"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
               </div>
               <div className="menu-item-content">
                 <h3 className="menu-item-title">{item.nombre}</h3>
@@ -452,43 +477,79 @@ function App() {
             <Navbar />
             
             <main className="main-content">
-              <Switch>
-                <Route exact path="/" component={Home} />
-                <Route path="/reservaciones" component={ReservationForm} />
-                <Route path="/contacto" component={Contact} />
-                <Route path="/admin/login" component={AdminLogin} />
-                <Route exact path="/blog" component={Blog} />
-                <Route path="/blog/:id" component={BlogPost} />
-                <Route path="/nosotros" component={About} />
-                
-                {/* Mantener ruta para dejar reseñas pero eliminar la de ver opiniones */}
-                <Route path="/dejar-opinion" component={LeaveReviewPage} />
-                
-                {/* Rutas protegidas */}
-                <PrivateRoute
-                  path="/admin/reservaciones"
-                  component={AdminMainPanel}
-                  requireAdmin={true}
-                />
-                
-                {/* Ruta para administrar reseñas */}
-                <PrivateRoute
-                  path="/admin/opiniones"
-                  component={AdminReviewsPanel}
-                  requireAdmin={true}
-                />
-                
-                {/* Redirección para rutas /admin que no estén especificadas */}
-                <Route exact path="/admin">
-                  <Redirect to="/admin/login" />
-                </Route>
-                
-                <Route path="/forbidden" component={Forbidden} />
-                
-                <Route path="*">
-                  <NotFound />
-                </Route>
-              </Switch>
+              <Suspense fallback={<LoadingFallback message="Cargando página..." />}>
+                <Switch>
+                  <Route exact path="/" component={Home} />
+                  <Route path="/reservaciones" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando formulario de reservación..." />}>
+                      <ReservationForm />
+                    </Suspense>
+                  )} />
+                  <Route path="/contacto" component={Contact} />
+                  <Route path="/admin/login" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando panel de administración..." />}>
+                      <AdminLogin />
+                    </Suspense>
+                  )} />
+                  <Route exact path="/blog" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando blog..." />}>
+                      <Blog />
+                    </Suspense>
+                  )} />
+                  <Route path="/blog/:id" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando artículo..." />}>
+                      <BlogPost />
+                    </Suspense>
+                  )} />
+                  <Route path="/nosotros" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando información..." />}>
+                      <About />
+                    </Suspense>
+                  )} />
+                  
+                  {/* Mantener ruta para dejar reseñas pero eliminar la de ver opiniones */}
+                  <Route path="/dejar-opinion" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando formulario de opinión..." />}>
+                      <LeaveReviewPage />
+                    </Suspense>
+                  )} />
+                  
+                  {/* Rutas protegidas */}
+                  <Route path="/admin/reservaciones" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando panel de administración..." />}>
+                      <PrivateRoute
+                        component={AdminMainPanel}
+                        requireAdmin={true}
+                      />
+                    </Suspense>
+                  )} />
+                  
+                  {/* Ruta para administrar reseñas */}
+                  <Route path="/admin/opiniones" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando panel de opiniones..." />}>
+                      <PrivateRoute
+                        component={AdminReviewsPanel}
+                        requireAdmin={true}
+                      />
+                    </Suspense>
+                  )} />
+                  
+                  {/* Redirección para rutas /admin que no estén especificadas */}
+                  <Route exact path="/admin">
+                    <Redirect to="/admin/login" />
+                  </Route>
+                  
+                  <Route path="/forbidden" render={() => (
+                    <Suspense fallback={<LoadingFallback message="Cargando..." />}>
+                      <Forbidden />
+                    </Suspense>
+                  )} />
+                  
+                  <Route path="*">
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </Suspense>
             </main>
             
             <Footer />
