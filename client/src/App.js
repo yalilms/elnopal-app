@@ -129,6 +129,13 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (sectionId) => {
+    const section = sectionRefs[sectionId];
+    if (section && section.current) {
+      section.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleReservaClick = () => {
     navigateAndScroll(history, '/reservaciones', 'reservation-form');
   };
