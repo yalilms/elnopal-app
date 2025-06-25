@@ -14,7 +14,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ReservationProvider } from './context/ReservationContext';
 // Importar componentes de reserva
 import ReservationForm from './components/reservation/ReservationForm';
-// import AdminReservationPanel from './components/admin/AdminReservationPanel'; // Archivo eliminado
+import AdminReservationPanel from './components/admin/AdminReservationPanel';
 import AdminLogin from './components/admin/AdminLogin';
 import Forbidden from './components/admin/Forbidden';
 // Importar PrivateRoute
@@ -465,13 +465,11 @@ function App() {
                 <Route path="/dejar-opinion" component={LeaveReviewPage} />
                 
                 {/* Rutas protegidas */}
-                {/* 
                 <PrivateRoute
                   path="/admin/reservaciones"
                   component={AdminReservationPanel}
                   requireAdmin={true}
                 />
-                */}
                 
                 {/* Ruta para administrar reseñas */}
                 <PrivateRoute
