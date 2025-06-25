@@ -25,8 +25,23 @@
   color: var(--color-dark);
 }
 
+.navbar-links a {
+  color: var(--color-white) !important;
+}
+
+/* Mantener texto blanco siempre */
+.navbar .navbar-links a,
+.navbar.scrolled .navbar-links a {
+  color: var(--color-white) !important;
+}
+
+.navbar-logo img {
+  filter: none; /* Logo blanco por defecto */
+}
+
+/* Logo negro cuando hay scroll (fondo blanco) */
 .navbar.scrolled .navbar-logo img {
-  filter: none;
+  filter: brightness(0) invert(1);
 }
 
 .navbar-container {
@@ -173,9 +188,19 @@
   transition: all 0.3s ease;
   width: 50px;
   height: 50px;
-  display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Ocultar menú móvil en desktop */
+@media (min-width: 769px) {
+  .mobile-menu-icon {
+    display: none !important;
+  }
+  
+  .navbar-mobile {
+    display: none !important;
+  }
 }
 
 .mobile-menu-icon:hover,
@@ -238,6 +263,13 @@
   
   .mobile-menu-icon {
     display: flex;
+  }
+  
+  /* Asegurar que el icono móvil no aparezca en desktop */
+  @media (min-width: 769px) {
+    .mobile-menu-icon {
+      display: none !important;
+    }
   }
   
   .navbar-mobile {

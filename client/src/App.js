@@ -173,9 +173,6 @@ const Home = () => {
             <button onClick={handleReservaClick} className="btn btn-primary btn-lg">
               Reservar Mesa
             </button>
-            <button onClick={() => navigateAndScroll(history, '/menu', 'menu-page')} className="btn btn-outline btn-lg">
-              Ver Menú
-            </button>
           </div>
         </div>
       </section>
