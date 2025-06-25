@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import blogData from '../../data/blogData';
-// import './Blog.css'; // Archivo eliminado - estilos ahora en sistema modular
+import '../../styles/blog.css';
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
