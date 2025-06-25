@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignOutAlt, faCalendarAlt, faCheck, faSearch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import './AdminReviewsPanel.css';
+// import './AdminReviewsPanel.css'; // Archivo eliminado - estilos ahora en sistema modular
 
 // Datos de prueba en caso de que la API no funcione
 const testReviews = [

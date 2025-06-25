@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import './About.css';
+// import './About.css'; // Archivo eliminado - estilos ahora en sistema modular
 import logoElNopal from '../../images/logo_elnopal.png'; // Asegúrate que la ruta al logo sea correcta
 
 const About = () => {

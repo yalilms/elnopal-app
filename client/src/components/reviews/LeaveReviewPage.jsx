@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import ReviewForm from './ReviewForm';
 import { handleHashScroll } from '../../utils/scrollUtils';
-import './LeaveReviewPage.css';
+// import './LeaveReviewPage.css'; // Archivo eliminado - estilos ahora en sistema modular
 
 const LeaveReviewPage = () => {
   const [submitted, setSubmitted] = useState(false);

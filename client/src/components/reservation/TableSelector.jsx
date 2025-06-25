@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './TableSelector.css';
+// import './TableSelector.css'; // Archivo eliminado - estilos ahora en sistema modular
 import { getTables } from '../../services/tableService';
 
 const TableSelector = ({ 

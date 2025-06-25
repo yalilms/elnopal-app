@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useReservation } from '../../context/ReservationContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import './TableMap.css';
+// import './TableMap.css'; // Archivo eliminado - estilos ahora en sistema modular
 
 const TableMap = ({ selectedDate, selectedTime, onTableSelect, partySize }) => {
   const { tables, checkTableAvailability, getReservations } = useReservation();

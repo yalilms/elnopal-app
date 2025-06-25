@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import './ReviewForm.css';
+// import './ReviewForm.css'; // Archivo eliminado - estilos ahora en sistema modular
 
 // Configurar base URL para desarrollo y producción
 const API_BASE_URL = process.env.NODE_ENV === 'production' 

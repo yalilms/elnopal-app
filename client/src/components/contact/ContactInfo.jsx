@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faMapMarkerAlt, faPhone } from '@fortawesome/free-solid-svg-icons';
-import './ContactInfo.css';
+// import './ContactInfo.css'; // Archivo eliminado - estilos ahora en sistema modular
 import logoImage from '../../images/logo_elnopal.png';
 import RestaurantStatusIndicator from '../common/RestaurantStatusIndicator';
 
