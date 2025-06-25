@@ -2,6 +2,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+async function buildOptimized() {
 console.log('🚀 Iniciando build optimizado...');
 
 // 1. Limpiar build anterior
@@ -20,9 +21,16 @@ try {
 // 2. Optimizar imágenes antes del build
 console.log('🖼️  Optimizando imágenes...');
 try {
-  execSync('npm run optimize-images', { stdio: 'inherit' });
+  const optimizeImages = require('./optimize-images.js');
+  await optimizeImages();
 } catch (error) {
-  console.log('⚠️  Error optimizando imágenes, continuando...');
+  console.log('⚠️  Error optimizando imágenes, continuando...', error.message);
+  // Intentar con comando npm como fallback
+  try {
+    execSync('node optimize-images.js', { stdio: 'inherit' });
+  } catch (fallbackError) {
+    console.log('⚠️  Continuando sin optimización de imágenes');
+  }
 }
 
 // 3. Build de React con optimizaciones
@@ -139,4 +147,11 @@ console.log('🎯 Optimizaciones aplicadas:');
 optimizationsLog.optimizations.forEach(opt => console.log(`   ${opt}`));
 console.log('');
 console.log('💡 Para desplegar: copiar contenido de ./build/ al servidor');
-console.log('💡 Asegúrate de que el servidor tenga configurado GZIP'); 
+console.log('💡 Asegúrate de que el servidor tenga configurado GZIP');
+}
+
+// Ejecutar la función
+buildOptimized().catch(error => {
+  console.error('❌ Error en el build optimizado:', error);
+  process.exit(1);
+}); 

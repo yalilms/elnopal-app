@@ -19,9 +19,14 @@ echo "🎨 Actualizando dependencias del cliente..."
 cd ../client
 npm ci
 
-# 4. Construir frontend
-echo "🏗️ Construyendo frontend..."
-npm run build
+# 4. Construir frontend con optimizaciones
+echo "🏗️ Construyendo frontend con optimizaciones..."
+# Verificar si existe el script optimizado
+if npm run | grep -q "build:optimized"; then
+    npm run build:optimized
+else
+    npm run build
+fi
 
 # 5. Reiniciar backend
 echo "🔄 Reiniciando backend..."
