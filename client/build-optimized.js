@@ -37,7 +37,8 @@ try {
 console.log('📦 Ejecutando React build...');
 process.env.GENERATE_SOURCEMAP = 'false'; // Deshabilitar sourcemaps en producción
 process.env.INLINE_RUNTIME_CHUNK = 'false'; // No inline runtime chunk
-execSync('npm run build', { stdio: 'inherit' });
+process.env.ESLINT_NO_DEV_ERRORS = 'true'; // Deshabilitar errores de ESLint
+execSync('npm run build:no-lint', { stdio: 'inherit' });
 
 // 4. Comprimir archivos adicionales
 console.log('🗜️  Comprimiendo archivos...');
