@@ -45,11 +45,31 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   
-  /* Patrón sutil mexicano de fondo */
+  /* Patrón tradicional mexicano de fondo */
   background-image: 
-    radial-gradient(circle at 20% 80%, rgba(214, 40, 40, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 107, 60, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(248, 182, 18, 0.02) 0%, transparent 50%);
+    linear-gradient(45deg, var(--color-light) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-light) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-light) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-light) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-color: var(--color-white);
+  position: relative;
+  
+  /* Overlay decorativo */
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23008C45' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(to right, rgba(228, 0, 43, 0.05), rgba(0, 140, 69, 0.05));
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 main.main-content {

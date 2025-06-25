@@ -1,0 +1,208 @@
+/* =============================================================================
+   FOOTER STYLES - El Nopal
+   ============================================================================= */
+
+.footer {
+  padding-top: var(--spacing-16);
+  padding-bottom: var(--spacing-8);
+  background: var(--color-dark);
+  color: var(--color-light);
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Decoración superior del footer */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-primary),
+    var(--color-primary) 10px,
+    var(--color-secondary) 10px,
+    var(--color-secondary) 20px
+  );
+}
+
+.footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-8);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-8);
+}
+
+@media (max-width: 900px) {
+  .footer-container {
+    padding: 0 var(--spacing-4);
+    gap: var(--spacing-4);
+  }
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding-top: var(--spacing-8);
+    padding-bottom: var(--spacing-4);
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  }
+  .footer-container {
+    padding: 0 var(--spacing-2);
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+}
+
+.footer-section {
+  margin-bottom: var(--spacing-8);
+}
+
+.footer-heading {
+  color: var(--color-accent);
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-4);
+  position: relative;
+  display: inline-block;
+}
+
+.footer-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: var(--color-terra);
+}
+
+.footer-content {
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-relaxed);
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list li {
+  margin-bottom: var(--spacing-2);
+}
+
+.footer-list a {
+  color: var(--color-light);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.footer-list a:hover {
+  color: var(--color-accent);
+  transform: translateX(5px);
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.social-link {
+  color: var(--color-light);
+  font-size: var(--font-size-xl);
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  color: var(--color-accent);
+  transform: translateY(-3px);
+}
+
+.footer-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  color: var(--color-light);
+}
+
+.contact-item .icon {
+  color: var(--color-accent);
+  font-size: var(--font-size-lg);
+}
+
+/* Bottom bar */
+.footer-bottom {
+  margin-top: var(--spacing-8);
+  padding: var(--spacing-4) 0;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+}
+
+.footer-bottom p {
+  color: var(--color-gray-400);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .footer {
+    padding-top: var(--spacing-8);
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    padding: 0 var(--spacing-4);
+  }
+  
+  .footer-section {
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .footer-heading {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Decoración adicional */
+.footer-decoration {
+  position: absolute;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.footer-decoration.cactus {
+  bottom: 0;
+  right: var(--spacing-4);
+  width: 150px;
+  height: 200px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M12 2L8 6h8l-4-4zm0 4v16h2V6h-2zm-2 4L6 14h8l-4-4zm8 0l-4 4h8l-4-4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Animación de hover para elementos interactivos */
+.footer a,
+.footer button {
+  transition: all 0.3s ease;
+}
+
+.footer a:hover,
+.footer button:hover {
+  color: var(--color-accent);
+}

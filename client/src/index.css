@@ -3,6 +3,9 @@
    Archivo principal de estilos - Imports de la nueva estructura modular
    ============================================================================= */
 
+/* Importar fuentes de Google */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Amatic+SC:wght@400;700&family=Lobster&display=swap');
+
 /* Importar variables y configuración base */
 @import './styles/variables.css';
 @import './styles/base.css';
@@ -11,6 +14,11 @@
 @import './styles/components.css';
 @import './styles/layout.css';
 @import './styles/pages.css';
+@import './styles/mexican-theme.css';
+@import './styles/navbar.css';
+@import './styles/contact-form.css';
+@import './styles/footer.css';
+@import './styles/menu-reservation.css';
 
 /* =============================================================================
    ESTILOS GLOBALES ADICIONALES

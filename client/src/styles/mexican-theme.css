@@ -1,0 +1,263 @@
+/* =============================================================================
+   EL NOPAL - RESTAURANTE MEXICANO
+   MEXICAN THEME STYLES - Estilos específicos del tema mexicano
+   ============================================================================= */
+
+/* Botones con estilo mexicano */
+.btn-mexican {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-mexican:hover {
+  background: transparent;
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-mexican);
+}
+
+.btn-mexican::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.btn-mexican:hover::before {
+  left: 100%;
+}
+
+/* Tarjetas con estilo mexicano */
+.card-mexican {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-mexican);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-mexican::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-accent)
+  );
+}
+
+/* === GRIDS Y TARJETAS === */
+.mexican-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-8);
+  margin: var(--spacing-8) 0;
+}
+
+@media (max-width: 900px) {
+  .mexican-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .mexican-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+}
+
+.mexican-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-8) var(--spacing-6);
+  margin: 0 auto;
+  max-width: 420px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mexican-card:hover {
+  box-shadow: var(--shadow-2xl);
+  transform: translateY(-6px) scale(1.01);
+}
+
+.mexican-card img {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-4);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Encabezados decorativos */
+.heading-mexican {
+  font-family: var(--font-family-heading);
+  color: var(--color-dark);
+  position: relative;
+  padding-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.heading-mexican::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--color-terra);
+}
+
+/* Decoración de sección */
+.section-mexican {
+  position: relative;
+  padding: var(--spacing-12) 0;
+}
+
+.section-mexican::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 6l10-6l10 6l10-6l10 6v6H0V6z' fill='%23E4002B' fill-opacity='0.1'/%3E%3C/svg%3E")
+    repeat-x;
+}
+
+/* Menú con estilo mexicano */
+.menu-item-mexican {
+  border-bottom: 1px dashed var(--color-terra);
+  padding: var(--spacing-4) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-item-mexican h3 {
+  font-family: var(--font-family-decorative);
+  color: var(--color-dark);
+  font-size: var(--font-size-xl);
+  margin: 0;
+}
+
+.menu-item-mexican .price {
+  font-family: var(--font-family-accent);
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Iconos y decoraciones */
+.icon-mexican {
+  color: var(--color-terra);
+  font-size: var(--font-size-2xl);
+  margin: var(--spacing-2);
+}
+
+/* Formularios con estilo mexicano */
+.form-mexican input,
+.form-mexican textarea {
+  border: 2px solid var(--color-terra);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-family: var(--font-family-primary);
+  transition: all 0.3s ease;
+}
+
+.form-mexican input:focus,
+.form-mexican textarea:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.1);
+  outline: none;
+}
+
+/* Animaciones y efectos hover */
+.hover-mexican {
+  transition: all 0.3s ease;
+}
+
+.hover-mexican:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-mexican);
+}
+
+/* Fondos decorativos para secciones */
+.bg-pattern-mexican {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23008C45' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-color: var(--color-light);
+}
+
+/* Navegación con estilo mexicano */
+.nav-mexican {
+  background: var(--color-white);
+  box-shadow: var(--shadow-mexican);
+}
+
+.nav-mexican .nav-link {
+  font-family: var(--font-family-accent);
+  color: var(--color-dark);
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-3) var(--spacing-4);
+  transition: all 0.3s ease;
+}
+
+.nav-mexican .nav-link:hover {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+/* Footer con estilo mexicano */
+.footer-mexican {
+  background: var(--color-dark);
+  color: var(--color-light);
+  padding: var(--spacing-12) 0;
+  position: relative;
+}
+
+.footer-mexican::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 6l10-6l10 6l10-6l10 6v6H0V6z' fill='%23E4002B' fill-opacity='0.1'/%3E%3C/svg%3E")
+    repeat-x;
+}

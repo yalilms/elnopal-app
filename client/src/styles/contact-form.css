@@ -1,0 +1,220 @@
+/* =============================================================================
+   CONTACT FORM STYLES - El Nopal
+   ============================================================================= */
+
+.contact-form-container {
+  background-color: var(--color-white);
+  padding: var(--spacing-8);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-mexican);
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-accent)
+  );
+}
+
+/* === FORMULARIO RESPONSIVO === */
+@media (max-width: 600px) {
+  .contact-form-container {
+    padding: var(--spacing-4) var(--spacing-2);
+    max-width: 98vw;
+  }
+}
+
+.contact-form-container {
+  max-width: 520px;
+  margin: var(--spacing-12) auto;
+  padding: var(--spacing-8) var(--spacing-6);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-white);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-4);
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-dark);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-2);
+}
+
+.form-group .input-wrapper {
+  position: relative;
+}
+
+.form-group .icon {
+  position: absolute;
+  left: var(--spacing-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-terra);
+  font-size: var(--font-size-lg);
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-3) var(--spacing-8);
+  border: 2px solid var(--color-terra);
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  transition: all 0.3s ease;
+  background-color: var(--color-light);
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-4) var(--spacing-4) var(--spacing-4) var(--spacing-8);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-2);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.1);
+  background-color: var(--color-white);
+}
+
+.form-control.error {
+  border-color: var(--color-error);
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-1);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.error-message .icon {
+  font-size: var(--font-size-base);
+}
+
+textarea.form-control {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: var(--spacing-4);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: var(--font-size-xl);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-xl);
+  margin-top: var(--spacing-4);
+}
+
+.submit-button:hover {
+  background: var(--color-terra);
+  transform: translateY(-2px);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.3);
+}
+
+.submit-button:disabled {
+  background: var(--color-gray-400);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-button .icon {
+  margin-left: var(--spacing-2);
+}
+
+/* Loading state */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success message */
+.success-message {
+  text-align: center;
+  color: var(--color-success);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+  background-color: rgba(40, 167, 69, 0.1);
+  margin-top: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+}
+
+/* Animations */
+.form-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-form-container {
+    padding: var(--spacing-4);
+    margin: var(--spacing-4);
+  }
+  
+  .form-control {
+    font-size: var(--font-size-base);
+  }
+  
+  .submit-button {
+    padding: var(--spacing-3);
+  }
+}

@@ -4,12 +4,15 @@
 
 :root {
   /* === COLORES PRINCIPALES === */
-  --color-primary: #D62828;        /* Rojo mexicano */
-  --color-secondary: #006B3C;      /* Verde mexicano */
-  --color-accent: #F8B612;         /* Amarillo mexicano */
-  --color-dark: #421f16;           /* Marrón oscuro */
-  --color-light: #FEF9EF;          /* Crema */
+  --color-primary: #E4002B;        /* Rojo mexicano vibrante */
+  --color-secondary: #008C45;      /* Verde mexicano profundo */
+  --color-accent: #FFB627;         /* Amarillo mexicano cálido */
+  --color-dark: #2C1810;           /* Marrón oscuro del barro */
+  --color-terra: #AA4A30;          /* Terracota mexicana */
+  --color-light: #FEF6E4;          /* Crema cálido */
   --color-white: #ffffff;          /* Blanco puro */
+  --color-coral: #FF6B6B;          /* Coral para acentos */
+  --color-turquoise: #40E0D0;      /* Turquesa para detalles */
   
   /* === COLORES DE TEXTO === */
   --text-primary: #2a1f1d;         /* Texto principal */
@@ -44,9 +47,10 @@
   --shadow-mexican: 0 10px 30px rgba(66, 31, 22, 0.1);
   
   /* === TIPOGRAFÍA === */
-  --font-family-primary: 'Montserrat', sans-serif;
-  --font-family-heading: 'Poppins', sans-serif;
-  --font-family-mono: 'Courier New', monospace;
+  --font-family-primary: 'Josefin Sans', sans-serif;
+  --font-family-heading: 'Playfair Display', serif;
+  --font-family-accent: 'Amatic SC', cursive;
+  --font-family-decorative: 'Lobster', cursive;
   
   /* === TAMAÑOS DE FUENTE === */
   --font-size-xs: 0.75rem;         /* 12px */

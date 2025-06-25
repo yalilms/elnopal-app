@@ -631,6 +631,94 @@
   margin-top: var(--spacing-xl);
 }
 
+/* === SECCIONES GENERALES === */
+.page-section {
+  padding: var(--spacing-16) 0;
+  margin-bottom: var(--spacing-12);
+  background: var(--color-light);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .page-section {
+    padding: var(--spacing-8) 0;
+    margin-bottom: var(--spacing-6);
+    border-radius: var(--border-radius-lg);
+  }
+}
+@media (max-width: 600px) {
+  .page-section {
+    padding: var(--spacing-4) 0;
+    margin-bottom: var(--spacing-4);
+    border-radius: var(--border-radius-md);
+  }
+}
+
+/* === GRIDS === */
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-8);
+  margin: var(--spacing-8) 0;
+}
+@media (max-width: 900px) {
+  .page-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .page-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+}
+
+/* === IMÁGENES === */
+.page-image,
+.menu-item-image,
+.card-image {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-4);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* === BOTONES === */
+.page-btn,
+.hero-btn {
+  min-width: 120px;
+  min-height: 44px;
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--border-radius-xl);
+  font-family: var(--font-family-accent);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 1px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: var(--color-primary);
+  color: var(--color-white);
+  position: relative;
+  overflow: hidden;
+}
+.page-btn:hover,
+.page-btn:focus,
+.hero-btn:hover,
+.hero-btn:focus {
+  background: var(--color-accent);
+  color: var(--color-dark);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: var(--shadow-xl);
+}
+
 /* RESPONSIVE PARA PÁGINAS */
 /* ========================================================================= */
 
@@ -1056,4 +1144,4 @@ img {
 .contact-image:hover {
   transform: scale(1.02);
   box-shadow: var(--shadow-lg);
-} 
+}
