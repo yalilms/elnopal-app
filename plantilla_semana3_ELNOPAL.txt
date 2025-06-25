@@ -1,0 +1,77 @@
+SEMANA 3 - REGISTRO DE PRÁCTICAS ELNOPAL
+
+FECHA: Lunes, 29/05/2023
+ACTIVIDADES REALIZADAS:
+• Desarrollo de la funcionalidad de pedidos a domicilio.
+• Implementación de selección de dirección de entrega con integración de mapas.
+• Cálculo de costos de envío según distancia.
+• Estimación de tiempos de entrega.
+• Seguimiento de estado del pedido (preparación, en camino, entregado).
+• Solución de problemas con la API de geolocalización.
+• Pruebas con diferentes direcciones y distancias.
+
+INDICACIONES SOBRE LO APRENDIDO Y LAS DIFICULTADES OBSERVADAS:
+He aprendido a integrar servicios de geolocalización y mapas en aplicaciones web. La implementación de algoritmos para el cálculo de tiempos de entrega basados en distancia fue particularmente interesante. Las mayores dificultades surgieron con la gestión de permisos de ubicación en diferentes navegadores y dispositivos, así como con las limitaciones de las APIs gratuitas de mapas.
+
+FECHA: Martes, 30/05/2023
+ACTIVIDADES REALIZADAS:
+• Implementación del sistema de pagos online.
+• Integración con pasarela de pagos (simulada para desarrollo).
+• Manejo seguro de información de tarjetas.
+• Desarrollo de flujo completo de pago.
+• Generación de comprobantes de pago.
+• Resolución de problemas de seguridad en la transmisión de datos sensibles.
+• Pruebas extensivas del flujo de pago completo.
+
+INDICACIONES SOBRE LO APRENDIDO Y LAS DIFICULTADES OBSERVADAS:
+Profundicé en conocimientos sobre seguridad en transacciones financieras online y protocolos de encriptación. El mayor desafío fue implementar el manejo adecuado de errores durante el proceso de pago, garantizando que no se realicen cobros duplicados o incompletos. También fue complejo desarrollar un sistema de generación de comprobantes que cumpliera con los requisitos legales.
+
+FECHA: Miércoles, 31/05/2023
+ACTIVIDADES REALIZADAS:
+• Desarrollo del módulo de gestión de inventario.
+• Implementación de CRUD para productos e ingredientes.
+• Sistema de alertas para stock bajo.
+• Actualización automática de inventario al procesar pedidos.
+• Integración con el módulo de cocina para consumo de ingredientes.
+• Corrección de errores en la sincronización de datos.
+• Optimización del rendimiento en consultas complejas.
+
+INDICACIONES SOBRE LO APRENDIDO Y LAS DIFICULTADES OBSERVADAS:
+Aprendí a diseñar sistemas de gestión de inventario con actualizaciones automáticas basadas en eventos. El reto principal fue mantener la integridad referencial entre los diferentes módulos del sistema (pedidos, cocina, inventario). Tuve que profundizar en consultas avanzadas a la base de datos para mejorar el rendimiento cuando se gestionan grandes volúmenes de productos e ingredientes.
+
+FECHA: Jueves, 01/06/2023
+ACTIVIDADES REALIZADAS:
+• Mejora general de la interfaz de usuario.
+• Implementación de tema oscuro/claro.
+• Optimización para diferentes tamaños de pantalla.
+• Mejora de accesibilidad según estándares WCAG.
+• Corrección de problemas de rendimiento detectados.
+• Depuración de errores reportados durante las pruebas.
+• Documentación completa de todas las funcionalidades implementadas.
+
+INDICACIONES SOBRE LO APRENDIDO Y LAS DIFICULTADES OBSERVADAS:
+He ampliado mis conocimientos sobre diseño responsive y accesibilidad web. Implementar el tema oscuro/claro resultó ser más complejo de lo esperado debido a la necesidad de mantener la coherencia visual en toda la aplicación. La optimización para diversos dispositivos requirió un enfoque metodológico para identificar y resolver cuellos de botella en el renderizado, especialmente en dispositivos con recursos limitados.
+
+FECHA: Viernes, 02/06/2023
+ACTIVIDADES REALIZADAS:
+• Testing global de la aplicación y corrección de errores finales.
+• Preparación de la aplicación para entorno de producción.
+• Optimización final de rendimiento.
+• Preparación de documentación detallada para entrega.
+• Creación de manual de usuario para diferentes roles.
+• Presentación final del proyecto al equipo supervisor.
+• Evaluación del proceso y retroalimentación sobre el trabajo realizado.
+
+INDICACIONES SOBRE LO APRENDIDO Y LAS DIFICULTADES OBSERVADAS:
+He aprendido la importancia de las pruebas exhaustivas antes del despliegue a producción y las mejores prácticas para documentar proyectos complejos. Las dificultades principales estuvieron en la identificación y resolución de errores que solo aparecían en condiciones específicas o bajo cierta carga. La preparación de la presentación final me permitió desarrollar habilidades de síntesis y comunicación técnica efectiva.
+
+Observaciones sobre el seguimiento:
+En esta tercera y última semana se ha completado con éxito el desarrollo de la aplicación ELNOPAL, implementando todas las funcionalidades requeridas y optimizando la experiencia de usuario. El estudiante ha demostrado excelente capacidad para resolver problemas complejos, especialmente en los módulos de geolocalización, pagos y gestión de inventario. La documentación entregada es completa y detallada, facilitando el mantenimiento futuro del sistema. Se han cumplido todos los objetivos planteados para el período de prácticas.
+
+Responsable laboral
+(Firma)
+Rosa María
+
+Responsable docente
+(Firma)
+Rosa María 
