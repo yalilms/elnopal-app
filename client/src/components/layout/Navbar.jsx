@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
 import { navigateAndScroll } from '../../utils/scrollUtils';
-import logo from '../../images/logo_elnopal.png';
+import logo from '../../images/logo_elnopal_blanco.png';
 
 // CSS eliminado - ahora se maneja en archivos CSS separados
 
@@ -20,7 +20,8 @@ const Navbar = () => {
     
     // Añadir evento de scroll para cambiar estilo de navbar
     const handleScroll = () => {
-      if (window.scrollY > 100) {
+      const offset = window.scrollY;
+      if (offset > 50) {
         setScrolled(true);
       } else {
         setScrolled(false);

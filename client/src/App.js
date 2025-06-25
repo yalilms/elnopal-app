@@ -53,9 +53,6 @@ import platoImage3 from './images/p_s_3.JPG';
 // Componentes de página
 const Home = () => {
   const history = useHistory();
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [showHeroContent, setShowHeroContent] = useState(false);
-  const [animationTriggered, setAnimationTriggered] = useState({});
   const [showVideo, setShowVideo] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedPlato, setSelectedPlato] = useState(null);
@@ -65,15 +62,7 @@ const Home = () => {
     video: useRef(null),
     promociones: useRef(null)
   };
-  
-  // Imágenes para el efecto parallax
-  const heroImages = [
-    heroImage1,
-    heroImage2,
-    heroImage3,
-    heroImage4
-  ];
-  
+
   // Platos de la semana para el carrusel 3D
   const platosDelaSemana = [
     {
@@ -126,114 +115,24 @@ const Home = () => {
       categoria: "Especialidad Jaliciense"
     }
   ];
-  
-  // Efectos de scroll y parallax
-  useEffect(() => {
-    // Cambio de imágenes automático
-    const imageInterval = setInterval(() => {
-      setActiveImageIndex(prev => (prev + 1) % heroImages.length);
-    }, 5000);
 
-    // Mostrar contenido del hero después de cargarse la imagen
-    setTimeout(() => setShowHeroContent(true), 500);
-    
-    // Observador de intersección para animaciones al hacer scroll
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const id = entry.target.id;
-          
-          if (entry.isIntersecting && !animationTriggered[id]) {
-            setAnimationTriggered(prev => ({ ...prev, [id]: true }));
-            
-            // Iniciar la reproducción del video cuando la sección es visible
-            if (id === 'video' && !showVideo) {
-              setShowVideo(true);
-            }
-            
-            // Iniciar la animación de contadores cuando la sección de video sea visible
-            if (id === 'video') {
-              setTimeout(() => {
-                const counters = document.querySelectorAll('.counter');
-                counters.forEach(counter => {
-                  const target = +counter.getAttribute('data-target');
-                  const duration = 1500; // duración en ms
-                  const step = Math.ceil(target / (duration / 15)); // incremento cada 15ms
-                  
-                  let count = 0;
-                  const updateCount = () => {
-                    if (count < target) {
-                      count += step;
-                      if (count > target) count = target;
-                      counter.innerText = count < 10 ? count : count + "+";
-                      requestAnimationFrame(updateCount);
-                    }
-                  };
-                  
-                  updateCount();
-                });
-              }, 1200); // retraso después de la revelación
-            }
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    
-    // Observar elementos para animar
-    Object.values(sectionRefs).forEach(ref => {
-      if (ref.current) observer.observe(ref.current);
-    });
-    
-    // Efecto de parallax en scroll
+  const parallaxRef = useRef();
+
+  useEffect(() => {
     const handleScroll = () => {
-      const scrollPos = window.scrollY;
-      if (sectionRefs.hero.current) {
-        const heroHeight = sectionRefs.hero.current.offsetHeight;
-        const heroSection = sectionRefs.hero.current;
-        const parallaxBg = heroSection.querySelector('.parallax-bg');
-        if (parallaxBg && scrollPos <= heroHeight) {
-          parallaxBg.style.transform = `translateY(${scrollPos * 0.5}px)`;
-        }
+      if (parallaxRef.current) {
+        const offset = window.pageYOffset;
+        parallaxRef.current.style.transform = `translateY(${offset * 0.4}px)`;
       }
     };
-    
     window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      clearInterval(imageInterval);
-      window.removeEventListener('scroll', handleScroll);
-      Object.values(sectionRefs).forEach(ref => {
-        if (ref.current) observer.unobserve(ref.current);
-      });
-    };
-  }, [animationTriggered]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  // Efecto para manejar la tecla Escape en el modal
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && showModal) {
-        closeModal();
-      }
-    };
-
-    if (showModal) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [showModal]);
-  
   const handleReservaClick = () => {
-    history.push('/reservaciones');
+    navigateAndScroll(history, '/reservaciones', 'reservation-form');
   };
-  
+
   const openModal = (plato) => {
     setSelectedPlato(plato);
     setShowModal(true);
@@ -243,83 +142,39 @@ const Home = () => {
     setShowModal(false);
     setSelectedPlato(null);
   };
-  
+
   return (
-    <div className="page home-page">
-      {/* Hero Dinámico con Parallax */}
-      <section id="hero" ref={sectionRefs.hero} className="hero-parallax">
-        <div className="parallax-bg" style={{ backgroundImage: `url(${heroImages[activeImageIndex]})` }}>
-          <div className="parallax-overlay"></div>
+    <div className="home-page">
+      {/* HERO SECTION */}
+      <section ref={sectionRefs.hero} className="hero-section">
+        <div className="hero-background" ref={parallaxRef}>
+          <img src={heroImage1} alt="Auténtica comida mexicana servida en la mesa de El Nopal" />
         </div>
-        <div className={`hero-content ${showHeroContent ? 'fade-in' : ''}`}>
-          <div className="hero-text-animation">
-            <h1 className="hero-title">El Nopal</h1>
-            <div className="animated-subtitle">
-              <h3>Cocina Mexicana Auténtica</h3>
-              <div className="animated-icons">
-                <span className="icon-pepper">🌶️</span>
-                <span className="icon-cactus">🌵</span>
-                <span className="icon-taco">🌮</span>
-                <span className="icon-avocado">🥑</span>
-              </div>
-            </div>
-            <p className="hero-subtitle" style={{color: 'white'}}>Sabores tradicionales de México en el corazón de la ciudad</p>
-            <button onClick={handleReservaClick} className="cta-button pulse-animation">
-              <span style={{color: 'white'}}>¡Reserva Ahora!</span>
-              <i className="fas fa-arrow-right"></i>
+        <div className="hero-overlay"></div>
+        <div className="hero-content">
+          <h1 className="hero-title">Sabor que une, tradición que enamora</h1>
+          <p className="hero-subtitle">
+            Vive una experiencia culinaria inolvidable con los auténticos sabores de México. Cada plato, una historia. Cada bocado, un recuerdo.
+          </p>
+          <div className="hero-buttons">
+            <button onClick={handleReservaClick} className="btn btn-primary btn-lg">
+              Reservar Mesa
+            </button>
+            <button onClick={() => navigateAndScroll(history, '/menu', 'menu-page')} className="btn btn-outline btn-lg">
+              Ver Menú
             </button>
           </div>
         </div>
-      </section>
-      
-      {/* Platos de la Semana con efecto 3D */}
-      <section id="promociones" ref={sectionRefs.promociones} className={`promociones-3d ${animationTriggered.promociones ? 'animate-in' : ''}`}>
-        <h2 className="section-title floating-title">Platos de la Semana</h2>
-        <div className="cards-3d-container">
-          {platosDelaSemana.map((plato, index) => (
-            <div 
-              key={plato.id} 
-              className={`card-3d ${index === 1 ? 'card-center' : ''}`}
-              style={{ 
-                backgroundColor: `${plato.color}10`,
-                borderColor: plato.color
-              }}
-            >
-              <div className="card-3d-inner">
-                <div className="card-3d-front">
-                  <div className="card-3d-image">
-                    <img src={plato.image} alt={plato.title} />
-                    <div className="card-overlay" style={{ backgroundColor: `${plato.color}80` }}></div>
-                  </div>
-                  <h3 style={{ color: 'white' }}>{plato.title}</h3>
-                  
-                  {/* Contenido móvil visible solo en pantallas pequeñas */}
-                  <div className="card-mobile-content">
-                    <p>{plato.description}</p>
-                    <div className="precio">{plato.precio}</div>
-                    <button className="card-mobile-button" onClick={() => openModal(plato)}>
-                      Ver detalles
-                    </button>
-                  </div>
-                </div>
-                <div className="card-3d-back" style={{ backgroundColor: plato.color }}>
-                  <div className="card-3d-content">
-                    <h3 style={{ color: 'white' }}>{plato.title}</h3>
-                    <p style={{ color: 'white' }}>{plato.description}</p>
-                    <div style={{ color: 'white', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                      {plato.precio}
-                    </div>
-                    <button className="card-3d-button" onClick={() => openModal(plato)}>Ver detalles</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="scroll-indicator" onClick={() => scrollToSection('about')}>
+          <p>Descubre más</p>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 17.5L6 11.5L7.4 10.05L12 14.65L16.6 10.05L18 11.5L12 17.5Z" fill="white"/>
+          </svg>
         </div>
       </section>
-      
-      {/* Acerca de El Nopal con estilo mexicano */}
-      <section id="about" ref={sectionRefs.about} className={`about-section-animated ${animationTriggered.about ? 'animate-in' : ''} about-mexican-style`}>
+
+       {/* ABOUT US SECTION */}
+      <section ref={sectionRefs.about} className="home-section bg-mexican-pattern" id="about">
         <div className="about-mexican-container">
           {/* Sombreros mexicanos decorativos */}
           <div className="sombrero-row">
@@ -374,8 +229,8 @@ const Home = () => {
       </section>
       
       {/* Video promocional con efecto de revelación */}
-      <section id="video" ref={sectionRefs.video} className={`video-section-reveal ${animationTriggered.video ? 'reveal-active' : ''}`}>
-        <div className={`promo-text ${animationTriggered.video ? 'fade-in-up' : ''}`}>
+      <section id="video" ref={sectionRefs.video} className={`video-section-reveal`}>
+        <div className={`promo-text`}>
           <h2 className="text-gradient">Vive la experiencia El Nopal</h2>
           <p className="text-appear">
             En El Nopal nos esforzamos por ofrecerte la auténtica gastronomía mexicana, 
@@ -388,13 +243,13 @@ const Home = () => {
         <div className="video-curtain">
           <div className="curtain-left"></div>
           <div className="curtain-right"></div>
-          <div className={`video-container-animated ${animationTriggered.video ? 'glow-effect' : ''}`}>
+          <div className={`video-container-animated`}>
             {!showVideo ? (
               <div 
                 className="video-placeholder"
                 onClick={() => setShowVideo(true)}
                 style={{
-                  backgroundImage: `url(${heroImages[2]})` // Mantenemos solo este estilo inline porque es dinámico
+                  backgroundImage: `url(${heroImage2})` // Mantenemos solo este estilo inline porque es dinámico
                 }}
               >
                 <div className="video-overlay"></div>

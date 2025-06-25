@@ -210,6 +210,12 @@
   --animation-scale-in: scaleIn 0.2s ease-out;
   --animation-bounce: bounce 0.6s ease-out;
   --animation-pulse: pulse 2s infinite;
+  
+  /* Layout & Sizing */
+  --container-max-width: 1280px;
+  --navbar-height-initial: 90px;
+  --navbar-height-scrolled: 70px;
+  --footer-height: 200px;
 }
 
 /* === MODO OSCURO (OPCIONAL) === */
