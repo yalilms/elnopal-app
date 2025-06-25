@@ -3,7 +3,7 @@
    Botones, tarjetas, formularios y elementos interactivos
    ============================================================================= */
 
-/* BOTONES CON ESTILO MEXICANO */
+/* BOTONES MEJORADOS */
 /* ========================================================================= */
 
 .btn {
@@ -11,112 +11,251 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: 2px solid transparent;
-  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: none;
+  border-radius: var(--border-radius-round);
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
-  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: var(--transition-smooth);
   position: relative;
   overflow: hidden;
-  min-height: 44px; /* Mejor accesibilidad táctil */
-  
-  /* Efecto de ondas mexicanas */
-  background-image: 
-    linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.1) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.1) 75%);
-  background-size: 20px 20px;
+  min-height: 44px; /* Accesibilidad touch */
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  white-space: nowrap;
 }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none !important;
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: var(--transition-slow);
+  z-index: 1;
 }
 
-/* Botón primario - Verde y rojo mexicano */
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Botón principal mexicano */
 .btn-primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, 
+    var(--color-primary) 0%,
+    #B71C1C 25%,
+    var(--color-primary) 50%,
+    #FF5722 75%,
+    var(--color-primary) 100%);
+  background-size: 200% 200%;
   color: white;
-  box-shadow: var(--shadow-lg);
+  border: 2px solid transparent;
+  animation: gradientShift 4s ease infinite;
 }
 
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-xl);
-  background: var(--gradient-primary-hover);
+  animation-duration: 2s;
 }
 
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-md);
-}
-
-/* Botón secundario - Amarillo mexicano */
+/* Botón secundario */
 .btn-secondary {
-  background: var(--gradient-secondary);
-  color: var(--color-primary);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, 
+    var(--color-secondary) 0%,
+    #2E7D32 25%,
+    var(--color-secondary) 50%,
+    #4CAF50 75%,
+    var(--color-secondary) 100%);
+  background-size: 200% 200%;
+  color: white;
+  border: 2px solid transparent;
+  animation: gradientShift 4s ease infinite reverse;
 }
 
-.btn-secondary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  background: var(--gradient-secondary-hover);
+.btn-secondary:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Botón accent (amarillo mexicano) */
+.btn-accent {
+  background: linear-gradient(135deg, 
+    var(--color-accent) 0%,
+    #FF8F00 25%,
+    var(--color-accent) 50%,
+    #FFC107 75%,
+    var(--color-accent) 100%);
+  background-size: 200% 200%;
+  color: var(--color-primary-dark);
+  border: 2px solid transparent;
+  animation: gradientShift 4s ease infinite;
+}
+
+.btn-accent:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+  color: var(--color-primary);
 }
 
 /* Botón outline */
 .btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Botón ghost */
+.btn-ghost {
   background: transparent;
   color: var(--color-primary);
+  border: 2px solid transparent;
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: rgba(214, 40, 40, 0.1);
+  color: var(--color-primary-dark);
   border-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
-.btn-outline:hover:not(:disabled) {
-  background: var(--color-primary);
-  color: white;
-  transform: translateY(-1px);
-}
-
-/* Tamaños de botones */
+/* Tamaños */
 .btn-sm {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: var(--font-size-sm);
   min-height: 36px;
 }
 
 .btn-lg {
-  padding: var(--spacing-md) var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-2xl);
   font-size: var(--font-size-lg);
   min-height: 52px;
 }
 
 .btn-xl {
-  padding: var(--spacing-lg) var(--spacing-2xl);
+  padding: var(--spacing-xl) var(--spacing-3xl);
   font-size: var(--font-size-xl);
   min-height: 60px;
 }
 
-.btn-full {
-  width: 100%;
+/* Estados */
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
-/* TARJETAS CON ESTILO MEXICANO */
+.btn:disabled::before,
+.btn.disabled::before {
+  display: none;
+}
+
+.btn.loading {
+  cursor: wait;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Botón con icono */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-icon svg {
+  width: 1.2em;
+  height: 1.2em;
+  transition: var(--transition-fast);
+}
+
+.btn-icon:hover svg {
+  transform: scale(1.1);
+}
+
+/* Efecto mexicano especial */
+.btn-fiesta {
+  background: linear-gradient(45deg, 
+    var(--color-primary) 0%,
+    var(--color-secondary) 25%,
+    var(--color-accent) 50%,
+    var(--color-primary) 75%,
+    var(--color-secondary) 100%);
+  background-size: 400% 400%;
+  animation: fiesta 3s ease infinite;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fiesta {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-fiesta:hover {
+  animation-duration: 1s;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(214, 40, 40, 0.4);
+}
+
+/* TARJETAS MEJORADAS */
 /* ========================================================================= */
 
 .card {
-  background: var(--color-background);
+  background: white;
   border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   transition: var(--transition-smooth);
   position: relative;
-  
-  /* Borde decorativo mexicano */
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background-clip: padding-box;
 }
 
@@ -126,54 +265,283 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: var(--gradient-accent);
-  z-index: 1;
+  bottom: 0;
+  border-radius: var(--border-radius-xl);
+  background: linear-gradient(135deg, 
+    var(--color-primary) 0%,
+    var(--color-secondary) 50%,
+    var(--color-accent) 100%);
+  margin: -3px;
+  z-index: -1;
+  opacity: 0;
+  transition: var(--transition-smooth);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-2xl);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Card con efectos mexicanos */
+.card-mexican {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 182, 18, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(214, 40, 40, 0.1);
+}
+
+.card-mexican::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(214, 40, 40, 0.03) 10deg,
+    transparent 20deg,
+    rgba(0, 107, 60, 0.03) 30deg,
+    transparent 40deg,
+    rgba(248, 182, 18, 0.03) 50deg,
+    transparent 60deg
+  );
+  animation: rotate 20s linear infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: var(--transition-slow);
+}
+
+.card-mexican:hover::after {
+  opacity: 1;
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
 }
 
 .card-header {
   padding: var(--spacing-lg);
-  background: linear-gradient(135deg, 
-    rgba(214, 40, 40, 0.05) 0%, 
-    rgba(0, 107, 60, 0.05) 50%, 
-    rgba(248, 182, 18, 0.05) 100%);
   border-bottom: 1px solid var(--color-border);
-  position: relative;
-  z-index: 2;
+  background: linear-gradient(90deg, 
+    rgba(214, 40, 40, 0.05) 0%,
+    rgba(0, 107, 60, 0.05) 50%,
+    rgba(248, 182, 18, 0.05) 100%);
+}
+
+.card-header h3 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
 }
 
 .card-body {
   padding: var(--spacing-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .card-footer {
   padding: var(--spacing-lg);
   border-top: 1px solid var(--color-border);
-  background: var(--color-background-light);
+  background: rgba(248, 182, 18, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.card-image {
+/* Card de producto/plato */
+.card-product {
+  background: white;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.card-product:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-2xl);
+}
+
+.card-product-image {
+  position: relative;
   width: 100%;
   height: 200px;
-  object-fit: cover;
-  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+  overflow: hidden;
 }
 
-.card-title {
-  font-size: var(--font-size-xl);
+.card-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.card-product:hover .card-product-image img {
+  transform: scale(1.1);
+}
+
+.card-product-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: var(--gradient-primary);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-round);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-product-content {
+  padding: var(--spacing-lg);
+}
+
+.card-product-title {
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   margin-bottom: var(--spacing-sm);
 }
 
-.card-text {
+.card-product-description {
   color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
   line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-product-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-md);
+}
+
+.price {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+}
+
+.price-old {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  margin-left: var(--spacing-sm);
+}
+
+/* Card de estadística */
+.card-stat {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(214, 40, 40, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(214, 40, 40, 0.1);
+  text-align: center;
+  padding: var(--spacing-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradient-accent);
+  transform: scaleX(0);
+  transition: var(--transition-smooth);
+}
+
+.card-stat:hover::before {
+  transform: scaleX(1);
+}
+
+.stat-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: var(--font-weight-black);
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: var(--font-weight-medium);
+}
+
+/* Card con animación mexicana */
+.card-animated {
+  background: white;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.card-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(214, 40, 40, 0.1),
+    rgba(0, 107, 60, 0.1),
+    rgba(248, 182, 18, 0.1),
+    transparent);
+  transition: var(--transition-slow);
+  z-index: 1;
+}
+
+.card-animated:hover::before {
+  left: 100%;
+}
+
+.card-animated > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .card-body,
+  .card-header,
+  .card-footer {
+    padding: var(--spacing-md);
+  }
+  
+  .card-product-content {
+    padding: var(--spacing-md);
+  }
+  
+  .stat-number {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
 }
 
 /* FORMULARIOS ESTILIZADOS */

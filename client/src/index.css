@@ -271,4 +271,258 @@
     box-shadow: none;
     border: 1px solid #000;
   }
+}
+
+/* UTILIDADES ADICIONALES Y EFECTOS ESPECIALES */
+/* ========================================================================= */
+
+/* Efectos de texto mexicanos */
+.text-glow {
+  text-shadow: 
+    0 0 5px rgba(214, 40, 40, 0.3),
+    0 0 10px rgba(214, 40, 40, 0.2),
+    0 0 15px rgba(214, 40, 40, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: textShine 3s ease-in-out infinite;
+}
+
+@keyframes textShine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.text-mexican {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Efectos de hover especiales */
+.hover-lift {
+  transition: var(--transition-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+.hover-bounce:hover {
+  animation: quickBounce 0.6s ease;
+}
+
+@keyframes quickBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg) scale(1.05);
+  transition: var(--transition-smooth);
+}
+
+.hover-glow:hover {
+  box-shadow: 
+    0 0 20px rgba(214, 40, 40, 0.3),
+    0 0 40px rgba(214, 40, 40, 0.2),
+    var(--shadow-xl);
+  transition: var(--transition-smooth);
+}
+
+/* Backgrounds especiales */
+.bg-mexican-pattern {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(214, 40, 40, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(0, 107, 60, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(248, 182, 18, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px, 30px 30px, 15px 15px;
+  background-position: 0 0, 15px 15px, 7.5px 7.5px;
+}
+
+.bg-fiesta {
+  background: linear-gradient(45deg, 
+    rgba(214, 40, 40, 0.1) 0%,
+    rgba(0, 107, 60, 0.1) 25%,
+    rgba(248, 182, 18, 0.1) 50%,
+    rgba(214, 40, 40, 0.1) 75%,
+    rgba(0, 107, 60, 0.1) 100%);
+  background-size: 400% 400%;
+  animation: fiestaBackground 6s ease infinite;
+}
+
+@keyframes fiestaBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Bordes decorativos */
+.border-mexican {
+  border: 3px solid;
+  border-image: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-primary)) 1;
+  border-radius: var(--border-radius-lg);
+}
+
+.border-animated {
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.border-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  margin: -2px;
+  z-index: -1;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  to { transform: rotate(360deg); }
+}
+
+/* Efectos de carga */
+.loading-dots::after {
+  content: '';
+  animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+  100% { content: ''; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, 
+    rgba(214, 40, 40, 0.1) 25%, 
+    rgba(248, 182, 18, 0.2) 50%, 
+    rgba(214, 40, 40, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.5s infinite;
+}
+
+@keyframes skeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Utilidades de espaciado mexicano */
+.section-mexican {
+  padding: var(--spacing-section) 0;
+  position: relative;
+}
+
+.section-mexican::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+.section-mexican::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+/* Scrollbar personalizada mejorada */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, 
+    rgba(214, 40, 40, 0.05) 0%,
+    rgba(0, 107, 60, 0.05) 50%,
+    rgba(248, 182, 18, 0.05) 100%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-primary-dark), var(--color-secondary-dark));
+}
+
+/* Efectos para móviles */
+@media (max-width: 768px) {
+  .hover-lift:hover,
+  .hover-bounce:hover,
+  .hover-rotate:hover,
+  .hover-glow:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .text-gradient {
+    animation-duration: 4s;
+  }
+  
+  .bg-fiesta {
+    animation-duration: 8s;
+  }
+}
+
+/* Reducir animaciones para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient,
+  .bg-fiesta,
+  .skeleton,
+  .border-animated::before,
+  .loading-dots::after {
+    animation: none;
+  }
+  
+  .hover-bounce:hover {
+    animation: none;
+    transform: translateY(-2px);
+  }
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+  .text-glow {
+    text-shadow: none;
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .card {
+    border: 2px solid var(--color-primary);
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
 } 
