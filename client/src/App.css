@@ -2985,21 +2985,21 @@ h2:after {
 
 /* ===== Promociones 3D Mejoradas ===== */
 .promociones-3d .section-title.floating-title {
-    color: var(--secondary, #006B3C) !important;
+    color: var(--primary, #D62828) !important;
     font-size: 2.8rem !important;
     font-weight: 700 !important;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 3rem !important;
+    margin-bottom: 2rem !important;
     visibility: visible !important;
     opacity: 1 !important;
     display: block !important;
 }
 .promociones-3d .section-title.floating-title::after {
-    background-color: var(--primary) !important;
+    background-color: var(--accent, #F8B612) !important;
     width: 90px !important;
     height: 4px !important;
     display: block !important;
-    margin: 1rem auto !important;
+    margin: 2rem auto 0 !important;
 }
 
 .card-3d {
@@ -3153,10 +3153,16 @@ h2:after {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
   margin: 0;
   min-height: auto;
   width: 100%;
+}
+
+/* Solo aplicar overflow hidden en dispositivos de escritorio */
+@media (min-width: 769px) {
+  .about-mexican-style {
+    overflow: hidden;
+  }
 }
 
 .about-mexican-container {
@@ -3265,12 +3271,18 @@ h2:after {
   margin: 0 auto;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.mexican-title img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+/* Desactivar hover en móviles para evitar problemas de scroll */
+@media (hover: hover) and (pointer: fine) {
+  .mexican-title img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .mexican-title img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
 }
 
 /* Texto principal - forzar blanco puro con fondo semi-transparente */

@@ -273,9 +273,9 @@ const footerStyles = `
   .admin-link-improved {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
     font-size: 0.75rem;
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.2rem;
     background: rgba(255, 183, 3, 0.1);
     border: 1px solid rgba(255, 183, 3, 0.3);
     border-radius: 15px;
@@ -674,8 +674,7 @@ const Footer = () => {
         
         <div className="footer-bottom-improved">
           <div className="footer-bottom-links-improved">
-            <Link to="/privacidad">Política de privacidad</Link>
-            <Link to="/terminos">Términos y condiciones</Link>
+            <a href="https://elnopal.es/politica-privacidad" target="_blank" rel="noopener noreferrer">Política de privacidad</a>
             <a href="#" onClick={handleAdminClick} className="admin-link-improved">
               <FontAwesomeIcon icon={faLock} className="admin-icon-improved" /> Administración
             </a>
