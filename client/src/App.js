@@ -159,6 +159,12 @@ const Home = () => {
         </div>
         <div className="hero-overlay"></div>
         <div className="hero-content">
+          <div className="hero-animated-emojis">
+            <span className="emoji taco">🌮</span>
+            <span className="emoji pepper">🌶️</span>
+            <span className="emoji cactus">🌵</span>
+            <span className="emoji avocado">🥑</span>
+          </div>
           <h1 className="hero-title">Sabor que une, tradición que enamora</h1>
           <p className="hero-subtitle">
             Vive una experiencia culinaria inolvidable con los auténticos sabores de México. Cada plato, una historia. Cada bocado, un recuerdo.
@@ -171,12 +177,6 @@ const Home = () => {
               Ver Menú
             </button>
           </div>
-        </div>
-        <div className="scroll-indicator" onClick={() => scrollToSection('about')}>
-          <p>Descubre más</p>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 17.5L6 11.5L7.4 10.05L12 14.65L16.6 10.05L18 11.5L12 17.5Z" fill="white"/>
-          </svg>
         </div>
       </section>
 
