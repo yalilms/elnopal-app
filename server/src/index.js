@@ -23,6 +23,13 @@ const server = http.createServer(app);
 // CONFIGURACIÓN DE TRUST PROXY - CRÍTICO para rate limiting
 app.set('trust proxy', 1); // Confiar en el primer proxy (nginx)
 
+// Optimización de JSON para mejor performance
+app.use(express.json({ 
+  limit: '10mb',
+  strict: true,
+  type: 'application/json'
+}));
+
 // Configuración de CORS segura
 const corsOptions = {
   origin: function (origin, callback) {
@@ -116,7 +123,6 @@ if (process.env.NODE_ENV === 'production') {
 
 // Middleware básico
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging solo en desarrollo
@@ -124,12 +130,17 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Configuración de MongoDB
+// Configuración optimizada de MongoDB
 const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
+  maxPoolSize: 10, // Máximo de conexiones simultáneas
+  minPoolSize: 2, // Mínimo de conexiones en el pool
+  maxIdleTimeMS: 30000, // Cerrar conexiones inactivas después de 30s
+  bufferMaxEntries: 0, // Deshabilitar buffering de mongoose
+  connectTimeoutMS: 10000, // Timeout de conexión
 };
 
 // Configuración de Mongoose para evitar warnings

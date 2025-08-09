@@ -5,7 +5,7 @@
 
 :root {
   /* === COLORES PRINCIPALES MEXICANOS === */
-  --color-primary: #E4002B;        /* Rojo mexicano vibrante */
+  --color-primary: #20B2AA;        /* Turquesa principal como el logo */
   --color-secondary: #008C45;      /* Verde mexicano profundo */
   --color-accent: #FFB627;         /* Amarillo mexicano cálido */
   --color-dark: #1a1a1a;           /* Negro profundo para texto */
@@ -13,7 +13,9 @@
   --color-light: #FEF6E4;          /* Crema cálido */
   --color-white: #ffffff;          /* Blanco puro */
   --color-coral: #FF6B6B;          /* Coral para acentos */
-  --color-turquoise: #40E0D0;      /* Turquesa para detalles */
+  --color-turquoise: #20B2AA;      /* Turquesa principal */
+  --color-turquoise-light: #40E0D0; /* Turquesa más claro para hover */
+  --color-turquoise-dark: #0F8B8D;  /* Turquesa más oscuro para contraste */
   
   /* === COLORES DE TEXTO OPTIMIZADOS PARA CONTRASTE === */
   --text-primary: #1a1a1a;         /* Negro profundo - contraste máximo */
@@ -164,7 +166,7 @@
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* === GRADIENTES SEGUROS === */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #c41e3a 100%);
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-turquoise-dark) 100%);
   --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, #004d2b 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, #e6a000 100%);
   --gradient-mexican: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
