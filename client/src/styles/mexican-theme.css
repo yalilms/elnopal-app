@@ -1419,6 +1419,12 @@
   border-left: 4px solid transparent;
   /* Transición simple */
   transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.schedule-list li strong {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .schedule-list li:hover {
