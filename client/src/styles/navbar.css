@@ -3,9 +3,9 @@
    ============================================================================= */
 
 :root {
-  --navbar-bg: var(--admin-primary, #D62828);
-  --navbar-text: var(--admin-text-inverse, #fff);
-  --navbar-accent: var(--admin-accent, #FCBF49);
+  --navbar-bg: var(--color-turquoise, #20B2AA);
+  --navbar-text: var(--text-light, #fff);
+  --navbar-accent: var(--color-accent, #FFB627);
 }
 
 .navbar, .navbar-main {
@@ -43,7 +43,7 @@
 }
 
 .navbar.scrolled {
-  background: rgba(228, 0, 43, 0.95);
+  background: rgba(32, 178, 170, 0.95);
   box-shadow: var(--shadow-mexican);
   height: 70px;
   backdrop-filter: blur(15px);
@@ -172,7 +172,7 @@
 }
 
 .reserva-btn {
-  background: linear-gradient(135deg, var(--color-primary), #ad1457);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-turquoise-dark));
   color: var(--color-white);
   border: none;
   padding: var(--spacing-3) var(--spacing-6);
@@ -182,7 +182,7 @@
   font-family: var(--font-family-accent);
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(228, 0, 43, 0.3);
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
   text-transform: uppercase;
   letter-spacing: 1px;
   min-width: 160px;
@@ -192,8 +192,8 @@
 .reserva-btn:hover,
 .reserva-btn:focus {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(228, 0, 43, 0.4);
-  background: linear-gradient(135deg, #ad1457, var(--color-primary));
+  box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+  background: linear-gradient(135deg, var(--color-turquoise-dark), var(--color-turquoise-light));
 }
 
 .reserva-btn-desktop {
@@ -208,7 +208,7 @@
 
 .mobile-menu-icon {
   display: none;
-  background: var(--color-primary);
+  background: var(--color-turquoise);
   border: none;
   color: var(--color-white);
   font-size: var(--font-size-2xl);
@@ -352,7 +352,7 @@
   }
   
   .navbar-mobile a.active {
-    background: var(--color-primary);
+    background: var(--color-turquoise);
     color: var(--color-white);
   }
   

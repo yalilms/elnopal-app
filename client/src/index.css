@@ -31,6 +31,11 @@
   75% { transform: rotate(-5deg) scale(1.05); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 @keyframes mexicanWave {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }

@@ -55,7 +55,7 @@
 }
 
 .card-description {
-  color: var(--color-gray-700);
+  color: var(--gray-700);
   font-size: var(--font-size-base);
   margin-bottom: var(--spacing-4);
   text-align: center;
