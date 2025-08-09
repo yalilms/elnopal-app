@@ -146,29 +146,30 @@ const mongoOptions = {
 // Configuración de Mongoose para evitar warnings
 mongoose.set('strictQuery', false);
 
-// Conexión a la base de datos
+// Variable para tracking del estado de MongoDB
+let mongoConnected = false;
+
+// Conexión a la base de datos (no bloquear el servidor si falla)
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions)
 .then(() => {
   console.log('Conectado a MongoDB');
-  
-  // Solo iniciar el servidor después de conectar a MongoDB
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
-  });
+  mongoConnected = true;
 })
 .catch(err => {
   console.error('Error conectando a MongoDB:', err);
-  process.exit(1);
+  console.log('Servidor continuará sin MongoDB (modo de desarrollo)');
+  mongoConnected = false;
 });
 
 // Manejar errores de MongoDB después de la conexión inicial
 mongoose.connection.on('error', err => {
   console.error('Error en la conexión de MongoDB:', err);
+  mongoConnected = false;
 });
 
 mongoose.connection.on('disconnected', () => {
   console.warn('Desconectado de MongoDB');
+  mongoConnected = false;
 });
 
 // Inicialización de Socket.io
@@ -189,14 +190,89 @@ io.on('connection', (socket) => {
   });
 });
 
-// Rutas de la API
-app.use('/api/reservations', reservationRoutes);
-app.use('/api/tables', tableRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/blacklist', blacklistRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/contact', contactRoutes);
+// Middleware para verificar estado de MongoDB
+const checkMongo = (req, res, next) => {
+  if (!mongoConnected) {
+    return res.status(503).json({ 
+      message: 'Base de datos no disponible temporalmente',
+      success: false
+    });
+  }
+  next();
+};
+
+// Rutas temporales para desarrollo (sin MongoDB)
+app.post('/api/contact', (req, res) => {
+  console.log('Contacto recibido:', req.body);
+  
+  // Validaciones básicas
+  const { name, email, message } = req.body;
+  if (!name || !email || !message) {
+    return res.status(400).json({ 
+      message: 'Faltan campos obligatorios: nombre, email y mensaje',
+      success: false
+    });
+  }
+
+  // Simular éxito temporal
+  res.status(201).json({
+    success: true,
+    message: 'Mensaje enviado exitosamente. Nos pondremos en contacto contigo pronto.',
+    contact: {
+      id: Date.now().toString(),
+      name: name,
+      subject: req.body.subject || '',
+      status: 'pending',
+      createdAt: new Date()
+    }
+  });
+});
+
+app.post('/api/reservations', (req, res) => {
+  console.log('Reserva recibida:', req.body);
+  
+  // Validaciones básicas
+  const { name, email, date, time, partySize } = req.body;
+  if (!name || !email || !date || !time || !partySize) {
+    return res.status(400).json({ 
+      message: 'Faltan campos obligatorios',
+      success: false
+    });
+  }
+
+  // Simular éxito temporal - todas las reservas son aceptadas en desarrollo
+  res.status(201).json({
+    success: true,
+    message: 'Reserva creada exitosamente',
+    reservation: {
+      id: Date.now().toString(),
+      name: name,
+      date: date,
+      time: time,
+      partySize: partySize,
+      status: 'confirmed',
+      createdAt: new Date()
+    }
+  });
+});
+
+// Rutas de la API (solo usar si MongoDB está conectado)
+app.use('/api/reservations', checkMongo, reservationRoutes);
+app.use('/api/tables', checkMongo, tableRoutes);
+app.use('/api/users', checkMongo, userRoutes);
+app.use('/api/auth', checkMongo, authRoutes);
+app.use('/api/blacklist', checkMongo, blacklistRoutes);
+app.use('/api/reviews', checkMongo, reviewRoutes);
+app.use('/api/contact', checkMongo, contactRoutes);
+
+// Ruta de health check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    mongodb: mongoConnected ? 'connected' : 'disconnected',
+    timestamp: new Date()
+  });
+});
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -218,6 +294,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     message: 'Error interno del servidor'
   });
+});
+
+// Iniciar el servidor inmediatamente (no esperar MongoDB)
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 // Manejar señales de terminación

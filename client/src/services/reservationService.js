@@ -30,8 +30,22 @@ export const createReservation = async (reservationData) => {
       console.error('Error detallado:', error);
     }
     
-    // En producción, siempre mostrar mensaje amigable
-    throw new Error('Lo sentimos, el restaurante está completo para la fecha y hora seleccionadas. Por favor, intente con otra fecha u horario.');
+    // Manejar diferentes tipos de errores
+    if (error.response) {
+      if (error.response.status === 400) {
+        throw new Error(error.response.data.message || 'Datos de reserva inválidos');
+      } else if (error.response.status === 409) {
+        throw new Error('Lo sentimos, el restaurante está completo para la fecha y hora seleccionadas. Por favor, intente con otra fecha u horario.');
+      } else if (error.response.status === 500) {
+        throw new Error('Error del servidor. Inténtalo de nuevo más tarde.');
+      } else {
+        throw new Error(error.response.data.message || 'Error al procesar la reserva');
+      }
+    } else if (error.request) {
+      throw new Error('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+    } else {
+      throw new Error(error.message || 'Error al procesar la reserva');
+    }
   }
 };
 

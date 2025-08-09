@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Crear instancia de axios optimizada
 const api = axios.create({
-  baseURL: 'https://elnopal.es',
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://elnopal.es' : 'http://localhost:5000',
   timeout: 15000, // Aumentado para conexiones lentas
   headers: {
     'Content-Type': 'application/json',
