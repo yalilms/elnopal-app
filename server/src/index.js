@@ -20,6 +20,9 @@ const contactRoutes = require('./routes/contact');
 const app = express();
 const server = http.createServer(app);
 
+// CONFIGURACIÓN DE TRUST PROXY - CRÍTICO para rate limiting
+app.set('trust proxy', 1); // Confiar en el primer proxy (nginx)
+
 // Configuración de CORS segura
 const corsOptions = {
   origin: function (origin, callback) {
@@ -129,13 +132,16 @@ const mongoOptions = {
   socketTimeoutMS: 45000,
 };
 
+// Configuración de Mongoose para evitar warnings
+mongoose.set('strictQuery', false);
+
 // Conexión a la base de datos
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions)
 .then(() => {
   console.log('Conectado a MongoDB');
   
   // Solo iniciar el servidor después de conectar a MongoDB
-  const PORT = process.env.PORT || 3001;
+  const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
   });

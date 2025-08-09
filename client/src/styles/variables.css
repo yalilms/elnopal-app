@@ -1,54 +1,68 @@
 /* ========================================
    VARIABLES GLOBALES - EL NOPAL
+   Sistema de colores optimizado para contraste perfecto
    ======================================== */
 
 :root {
-  /* === COLORES PRINCIPALES === */
+  /* === COLORES PRINCIPALES MEXICANOS === */
   --color-primary: #E4002B;        /* Rojo mexicano vibrante */
   --color-secondary: #008C45;      /* Verde mexicano profundo */
   --color-accent: #FFB627;         /* Amarillo mexicano cálido */
-  --color-dark: #2C1810;           /* Marrón oscuro del barro */
+  --color-dark: #1a1a1a;           /* Negro profundo para texto */
   --color-terra: #AA4A30;          /* Terracota mexicana */
   --color-light: #FEF6E4;          /* Crema cálido */
   --color-white: #ffffff;          /* Blanco puro */
   --color-coral: #FF6B6B;          /* Coral para acentos */
   --color-turquoise: #40E0D0;      /* Turquesa para detalles */
   
-  /* === COLORES DE TEXTO === */
-  --text-primary: #2a1f1d;         /* Texto principal */
-  --text-secondary: #6c757d;       /* Texto secundario */
-  --text-light: #FEF9EF;           /* Texto claro */
-  --text-muted: #8e8e8e;           /* Texto deshabilitado */
+  /* === COLORES DE TEXTO OPTIMIZADOS PARA CONTRASTE === */
+  --text-primary: #1a1a1a;         /* Negro profundo - contraste máximo */
+  --text-secondary: #4a4a4a;       /* Gris oscuro - muy legible */
+  --text-tertiary: #6c757d;        /* Gris medio - legible */
+  --text-light: #ffffff;           /* Blanco para fondos oscuros */
+  --text-muted: #737373;           /* Gris para texto deshabilitado */
+  --text-inverse: #ffffff;         /* Blanco para fondos de colores */
   
-  /* === COLORES DE ESTADO === */
-  --color-success: #28a745;        /* Verde éxito */
-  --color-warning: #ffc107;        /* Amarillo advertencia */
-  --color-error: #dc3545;          /* Rojo error */
-  --color-info: #17a2b8;           /* Azul información */
+  /* === COLORES DE ESTADO CON CONTRASTE GARANTIZADO === */
+  --color-success: #155724;        /* Verde oscuro éxito */
+  --color-success-bg: #d4edda;     /* Fondo verde claro */
+  --color-warning: #856404;        /* Amarillo oscuro advertencia */
+  --color-warning-bg: #fff3cd;     /* Fondo amarillo claro */
+  --color-error: #721c24;          /* Rojo oscuro error */
+  --color-error-bg: #f8d7da;       /* Fondo rojo claro */
+  --color-info: #055160;           /* Azul oscuro información */
+  --color-info-bg: #d1ecf1;        /* Fondo azul claro */
   
-  /* === GRISES === */
-  --gray-50: #f8f9fa;
-  --gray-100: #e9ecef;
-  --gray-200: #dee2e6;
-  --gray-300: #ced4da;
-  --gray-400: #adb5bd;
-  --gray-500: #6c757d;
-  --gray-600: #495057;
-  --gray-700: #343a40;
-  --gray-800: #212529;
-  --gray-900: #000000;
+  /* === GRISES CON CONTRASTE PERFECTO === */
+  --gray-50: #f8f9fa;   /* Muy claro */
+  --gray-100: #e9ecef;  /* Claro */
+  --gray-200: #dee2e6;  /* Claro medio */
+  --gray-300: #ced4da;  /* Medio */
+  --gray-400: #adb5bd;  /* Medio oscuro */
+  --gray-500: #6c757d;  /* Oscuro */
+  --gray-600: #495057;  /* Muy oscuro */
+  --gray-700: #343a40;  /* Casi negro */
+  --gray-800: #212529;  /* Negro */
+  --gray-900: #000000;  /* Negro puro */
+  
+  /* === FONDOS CON CONTRASTE GARANTIZADO === */
+  --bg-primary: #ffffff;           /* Fondo principal blanco */
+  --bg-secondary: #f8f9fa;         /* Fondo secundario gris muy claro */
+  --bg-dark: #1a1a1a;              /* Fondo oscuro */
+  --bg-light: #ffffff;             /* Fondo claro */
+  --bg-accent: #FEF6E4;            /* Fondo con toque mexicano */
   
   /* === SOMBRAS === */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.12);
   --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
-  --shadow-mexican: 0 10px 30px rgba(66, 31, 22, 0.1);
+  --shadow-mexican: 0 10px 30px rgba(66, 31, 22, 0.15);
   
   /* === TIPOGRAFÍA === */
-  --font-family-primary: 'Josefin Sans', sans-serif;
-  --font-family-heading: 'Playfair Display', serif;
+  --font-family-primary: 'Josefin Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-family-heading: 'Playfair Display', Georgia, serif;
   --font-family-accent: 'Amatic SC', cursive;
   --font-family-decorative: 'Lobster', cursive;
   
@@ -71,6 +85,7 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
+  --font-weight-black: 900;
   
   /* === ALTURAS DE LÍNEA === */
   --line-height-tight: 1.25;
@@ -146,13 +161,15 @@
   --transition-base: 0.3s ease;
   --transition-slow: 0.5s ease;
   --transition-all: all 0.3s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* === GRADIENTES === */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary), #ad1457);
-  --gradient-secondary: linear-gradient(135deg, var(--color-secondary), #004d2b);
-  --gradient-accent: linear-gradient(135deg, var(--color-accent), #e6a000);
-  --gradient-mexican: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  /* === GRADIENTES SEGUROS === */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #c41e3a 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, #004d2b 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, #e6a000 100%);
+  --gradient-mexican: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
   --gradient-hero: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+  --gradient-text-light: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   
   /* === VARIABLES RESPONSIVE ESPECÍFICAS === */
   
@@ -173,38 +190,45 @@
   
   /* === VARIABLES ESPECÍFICAS DE COMPONENTES === */
   
-  /* Navbar */
+  /* Navbar con contraste perfecto */
   --navbar-height: 70px;
   --navbar-height-scrolled: 60px;
-  --navbar-bg: rgba(255, 255, 255, 0.95);
-  --navbar-bg-scrolled: rgba(255, 255, 255, 0.98);
+  --navbar-bg-transparent: rgba(26, 26, 26, 0.95);
+  --navbar-bg-solid: rgba(255, 255, 255, 0.98);
+  --navbar-text-dark: var(--text-primary);
+  --navbar-text-light: var(--text-light);
   
-  /* Cards */
-  --card-bg: var(--color-white);
+  /* Cards con contraste seguro */
+  --card-bg: var(--bg-primary);
+  --card-text: var(--text-primary);
   --card-border: var(--gray-200);
   --card-radius: var(--border-radius-xl);
   --card-shadow: var(--shadow-md);
   --card-shadow-hover: var(--shadow-lg);
   
-  /* Buttons */
+  /* Buttons con contraste garantizado */
   --btn-padding-sm: var(--spacing-2) var(--spacing-4);
   --btn-padding-md: var(--spacing-3) var(--spacing-6);
   --btn-padding-lg: var(--spacing-4) var(--spacing-8);
   --btn-radius: var(--border-radius-full);
   --btn-shadow: var(--shadow-sm);
   --btn-shadow-hover: var(--shadow-md);
+  --btn-text-primary: var(--text-light);
+  --btn-text-secondary: var(--text-primary);
   
-  /* Forms */
-  --form-bg: var(--color-white);
+  /* Forms con legibilidad perfecta */
+  --form-bg: var(--bg-primary);
+  --form-text: var(--text-primary);
   --form-border: var(--gray-300);
   --form-border-focus: var(--color-accent);
   --form-radius: var(--border-radius-lg);
   --form-shadow: var(--shadow-sm);
-  --form-shadow-focus: 0 0 0 3px rgba(248, 182, 18, 0.15);
+  --form-shadow-focus: 0 0 0 3px rgba(248, 182, 18, 0.25);
   
-  /* Modals */
-  --modal-bg: var(--color-white);
-  --modal-backdrop: rgba(0, 0, 0, 0.5);
+  /* Modals seguros */
+  --modal-bg: var(--bg-primary);
+  --modal-text: var(--text-primary);
+  --modal-backdrop: rgba(0, 0, 0, 0.75);
   --modal-radius: var(--border-radius-2xl);
   --modal-shadow: var(--shadow-2xl);
   
@@ -220,50 +244,102 @@
   --navbar-height-initial: 90px;
   --navbar-height-scrolled: 70px;
   --footer-height: 200px;
+  
+  /* === UTILIDADES DE CONTRASTE === */
+  --contrast-ratio-aa: 4.5;        /* WCAG AA estándar */
+  --contrast-ratio-aaa: 7;         /* WCAG AAA premium */
+  --min-touch-target: 44px;        /* Área mínima táctil */
 }
 
-/* === MODO OSCURO (OPCIONAL) === */
+/* === MODO OSCURO OPTIMIZADO === */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-white: #1a1a1a;
-    --color-light: #2d2d2d;
+    /* Fondos oscuros */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-dark: #000000;
+    --bg-light: #2d2d2d;
+    --bg-accent: #2a2520;
+    
+    /* Textos claros para fondos oscuros */
     --text-primary: #ffffff;
-    --text-secondary: #b3b3b3;
+    --text-secondary: #e0e0e0;
+    --text-tertiary: #b3b3b3;
+    --text-light: #ffffff;
+    --text-muted: #999999;
+    --text-inverse: #1a1a1a;
+    
+    /* Grises invertidos */
     --gray-50: #2d2d2d;
     --gray-100: #3d3d3d;
     --gray-200: #4d4d4d;
     --gray-300: #5d5d5d;
+    --gray-400: #6d6d6d;
+    --gray-500: #8d8d8d;
+    --gray-600: #adb5bd;
+    --gray-700: #ced4da;
+    --gray-800: #dee2e6;
+    --gray-900: #f8f9fa;
+    
+    /* Componentes oscuros */
     --card-bg: #2d2d2d;
+    --card-text: #ffffff;
     --card-border: #4d4d4d;
     --form-bg: #2d2d2d;
+    --form-text: #ffffff;
     --form-border: #4d4d4d;
     --modal-bg: #2d2d2d;
-    --navbar-bg: rgba(26, 26, 26, 0.95);
-    --navbar-bg-scrolled: rgba(26, 26, 26, 0.98);
+    --modal-text: #ffffff;
+    --navbar-bg-solid: rgba(26, 26, 26, 0.98);
+    --navbar-text-dark: #ffffff;
   }
 }
 
-/* === VARIABLES ADICIONALES PARA ACCESIBILIDAD === */
+/* === CONTRASTE ALTO PARA ACCESIBILIDAD === */
+@media (prefers-contrast: high) {
+  :root {
+    /* Colores más contrastantes */
+    --text-primary: #000000;
+    --text-secondary: #2d2d2d;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    
+    /* Bordes más gruesos */
+    --border-width-1: 2px;
+    --border-width-2: 3px;
+    --border-width-4: 6px;
+    
+    /* Sombras más marcadas */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+    
+    /* Eliminamos gradientes en favor de colores sólidos */
+    --gradient-primary: var(--color-primary);
+    --gradient-secondary: var(--color-secondary);
+    --gradient-accent: var(--color-accent);
+  }
+}
+
+/* === MOVIMIENTO REDUCIDO === */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --transition-fast: none;
     --transition-base: none;
     --transition-slow: none;
     --transition-all: none;
+    --transition-smooth: none;
     --animation-fade-in: none;
     --animation-slide-up: none;
     --animation-scale-in: none;
     --animation-bounce: none;
     --animation-pulse: none;
   }
-}
-
-@media (prefers-contrast: high) {
-  :root {
-    --border-width-1: 2px;
-    --border-width-2: 3px;
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
+  
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 } 

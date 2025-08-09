@@ -4,7 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignOutAlt, faCalendarAlt, faCheck, faSearch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-// import './AdminReviewsPanel.css'; // Archivo eliminado - estilos ahora en sistema modular
+import api from '../../services/api'; // Importar la instancia de API configurada
+import './AdminReviewsPanel.css'; // Importar estilos del panel
 
 // Datos de prueba en caso de que la API no funcione
 const testReviews = [
@@ -107,30 +108,18 @@ const AdminReviewsPanel = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      // Obtenemos el token directamente del usuario actual
-      const token = currentUser ? currentUser.token : null;
       
-      if (!token) {
-        throw new Error('No hay token de autenticación');
-      }
+      // Usar la instancia de API que ya maneja los tokens automáticamente
+      const response = await api.get('/api/reviews/admin');
       
-      const response = await fetch('/api/reviews/admin', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('No se pudieron cargar las reseñas');
-      }
-      
-      const data = await response.json();
+      const data = response.data;
       // Normalizar las reviews para compatibilidad
-      const normalizedReviews = (data.reviews || []).map(review => normalizeReview(review)).filter(review => review !== null);
+      const normalizedReviews = (data.reviews || data || []).map(review => normalizeReview(review)).filter(review => review !== null);
       setReviews(normalizedReviews);
       
     } catch (error) {
-      toast.error('Error al cargar las reseñas: ' + (error.message || 'Error desconocido'));
+      const errorMessage = error.response?.data?.message || error.message || 'Error desconocido';
+      toast.error('Error al cargar las reseñas: ' + errorMessage);
       console.error('Error al cargar reseñas:', error);
       
       // Usar datos de prueba si hay un error
@@ -147,23 +136,7 @@ const AdminReviewsPanel = () => {
     }
     
     try {
-      // Obtenemos el token directamente del usuario actual
-      const token = currentUser ? currentUser.token : null;
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación');
-      }
-      
-      const response = await fetch(`/api/reviews/${reviewId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('No se pudo eliminar la opinión');
-      }
+      await api.delete(`/api/reviews/${reviewId}`);
       
       // Actualizar la lista de reseñas
       setReviews(reviews.filter(review => review._id !== reviewId));
@@ -175,33 +148,17 @@ const AdminReviewsPanel = () => {
       toast.success('Opinión eliminada con éxito');
       
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'No se pudo eliminar la opinión';
+      toast.error(errorMessage);
     }
   };
   
   const approveReview = async (reviewId) => {
     try {
-      // Obtenemos el token directamente del usuario actual
-      const token = currentUser ? currentUser.token : null;
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación');
-      }
-      
-      const response = await fetch(`/api/reviews/${reviewId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: 'reviewed'
-        })
+      const response = await api.patch(`/api/reviews/${reviewId}/status`, {
+        status: 'reviewed'
       });
       
-      if (!response.ok) {
-        throw new Error('No se pudo actualizar el estado de la opinión');
-      }
       
       // Actualizar el estado de la reseña en la lista
       setReviews(reviews.map(review => 
@@ -217,7 +174,8 @@ const AdminReviewsPanel = () => {
       toast.success('Opinión marcada como atendida');
       
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'No se pudo actualizar el estado';
+      toast.error(errorMessage);
     }
   };
   
@@ -231,29 +189,12 @@ const AdminReviewsPanel = () => {
     setSendingResponse(true);
     
     try {
-      const token = currentUser ? currentUser.token : null;
-      
-      if (!token) {
-        throw new Error('No hay token de autenticación');
-      }
-
-      const response = await fetch(`/api/reviews/admin/${selectedReview._id}/respond`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          response: responseText.trim(),
-          restaurantName: 'El Nopal Restaurant'
-        })
+      const response = await api.post(`/api/reviews/admin/${selectedReview._id}/respond`, {
+        response: responseText.trim(),
+        restaurantName: 'El Nopal Restaurant'
       });
 
-      if (!response.ok) {
-        throw new Error('No se pudo enviar la respuesta');
-      }
-
-      const data = await response.json();
+      const data = response.data;
       
       // Actualizar el estado de la reseña
       setReviews(reviews.map(review => 
@@ -277,7 +218,8 @@ const AdminReviewsPanel = () => {
       toast.success('Respuesta enviada al cliente correctamente');
       
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'No se pudo enviar la respuesta';
+      toast.error(errorMessage);
     } finally {
       setSendingResponse(false);
     }

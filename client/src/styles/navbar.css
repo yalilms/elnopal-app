@@ -2,6 +2,33 @@
    NAVBAR STYLES - El Nopal
    ============================================================================= */
 
+:root {
+  --navbar-bg: var(--admin-primary, #D62828);
+  --navbar-text: var(--admin-text-inverse, #fff);
+  --navbar-accent: var(--admin-accent, #FCBF49);
+}
+
+.navbar, .navbar-main {
+  background: var(--navbar-bg) !important;
+  color: var(--navbar-text) !important;
+}
+
+.navbar a, .navbar-link, .navbar-menu a {
+  color: var(--navbar-text) !important;
+}
+
+.navbar a:hover, .navbar-link:hover {
+  color: var(--navbar-accent) !important;
+}
+
+.navbar .active {
+  color: var(--navbar-accent) !important;
+}
+
+.navbar-shadow, .navbar-title, .navbar-subtitle {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
 .navbar {
   position: fixed;
   top: 0;
@@ -16,34 +43,26 @@
 }
 
 .navbar.scrolled {
-  background: var(--color-white);
+  background: rgba(228, 0, 43, 0.95);
   box-shadow: var(--shadow-mexican);
   height: 70px;
+  backdrop-filter: blur(15px);
 }
 
-/* COLORES DE TEXTO CON MÁXIMA PRIORIDAD */
+/* COLORES DE TEXTO CON MÁXIMA PRIORIDAD - SIEMPRE BLANCO */
 .navbar .navbar-links a,
-.navbar .navbar-links li a {
+.navbar .navbar-links li a,
+.navbar.scrolled .navbar-links a,
+.navbar.scrolled .navbar-links li a {
   color: var(--color-white) !important;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Texto negro cuando hay scroll (fondo blanco) */
-.navbar.scrolled .navbar-links a,
-.navbar.scrolled .navbar-links li a {
-  color: var(--color-dark) !important;
-  text-shadow: none !important;
-}
-
-/* Logo blanco por defecto, negro cuando hay scroll */
-.navbar-logo img {
-  filter: none !important;
-  /* El logo ya es blanco por defecto */
-}
-
+/* Logo blanco siempre (sin cambios al hacer scroll) */
+.navbar-logo img,
 .navbar.scrolled .navbar-logo img {
-  filter: invert(1) !important;
-  /* Invertir a negro cuando hay scroll */
+  filter: none !important;
+  /* Mantener logo blanco siempre */
 }
 
 .navbar-container {

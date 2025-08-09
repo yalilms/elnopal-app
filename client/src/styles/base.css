@@ -140,7 +140,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: var(--font-weight-black);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: none;
 }
 
 h2 {
@@ -363,4 +363,20 @@ select {
   .no-print {
     display: none !important;
   }
-} 
+}
+
+/* Variables de color unificadas */
+:root {
+  --base-bg: var(--admin-light, #F9FAFB);
+  --base-text: var(--admin-text-primary, #1F2937);
+}
+
+body, .base-section, .base-content {
+  background: var(--base-bg) !important;
+  color: var(--base-text) !important;
+}
+
+.base-title, .base-header, .base-subtitle {
+  color: var(--admin-primary, #D62828) !important;
+  text-shadow: none !important;
+}

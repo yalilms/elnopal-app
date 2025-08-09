@@ -2,6 +2,28 @@
    FOOTER STYLES - El Nopal
    ============================================================================= */
 
+:root {
+  --footer-bg: var(--admin-dark, #1F2937);
+  --footer-text: var(--admin-text-inverse, #fff);
+}
+
+.footer, .footer-main {
+  background: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+}
+
+.footer a, .footer-link {
+  color: var(--admin-accent, #FCBF49) !important;
+}
+
+.footer a:hover {
+  color: var(--admin-primary, #D62828) !important;
+}
+
+.footer-title, .footer-subtitle {
+  text-shadow: none !important;
+}
+
 .footer {
   position: relative;
   background: linear-gradient(135deg, var(--color-dark) 0%, #1a0e08 100%);
@@ -240,8 +262,8 @@
 }
 
 .footer-schedule-item:hover .footer-schedule-day {
-  color: var(--color-white) !important;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  color: #ffffff !important;
+  text-shadow: none;
 }
 
 .footer-schedule-item.closed {
@@ -250,25 +272,25 @@
 }
 
 .footer-schedule-item.closed .footer-schedule-day {
-  color: var(--color-white) !important;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  color: #ffffff !important;
+  text-shadow: none;
 }
 
 .footer-schedule-day {
   font-weight: var(--font-weight-semibold);
-  color: var(--color-white) !important;
+  color: #ffffff !important;
   font-size: var(--font-size-base);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: none;
 }
 
 .footer-schedule-time {
-  color: var(--color-accent);
+  color: #ffffff;
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-base);
 }
 
 .footer-schedule-item.closed .footer-schedule-time {
-  color: var(--color-error);
+  color: #ffffff;
 }
 
 /* ===== FOOTER BOTTOM ===== */

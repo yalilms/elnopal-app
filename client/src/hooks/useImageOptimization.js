@@ -103,27 +103,38 @@ export const useImageOptimization = () => {
     };
   }, [getOptimizedImageUrl]);
 
-  // Lazy loading con Intersection Observer
-  const useLazyLoading = useCallback((threshold = 0.1) => {
+  // Lazy loading con Intersection Observer - OPTIMIZADO
+  const useLazyLoading = useCallback((threshold = 0.01) => {
     const [isIntersecting, setIsIntersecting] = useState(false);
     const [ref, setRef] = useState(null);
 
     useEffect(() => {
       if (!ref) return;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setIsIntersecting(true);
+      let observer;
+      const observerCallback = ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true);
+          if (observer) {
             observer.disconnect();
+            observer = null;
           }
-        },
-        { threshold }
-      );
+        }
+      };
+
+      observer = new IntersectionObserver(observerCallback, { 
+        threshold,
+        rootMargin: '50px' // Optimización adicional
+      });
 
       observer.observe(ref);
 
-      return () => observer.disconnect();
+      return () => {
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+      };
     }, [ref, threshold]);
 
     return [setRef, isIntersecting];

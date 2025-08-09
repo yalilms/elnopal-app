@@ -216,25 +216,36 @@ exports.createReservation = async (req, res) => {
       needsWheelchair
     } = req.body;
 
-    // Validaciones básicas
-    if (!name || !email || !phone || !date || !time || !partySize) {
+    // Validaciones básicas (email opcional para admin)
+    const isAdminUser = req.user && req.user.role === 'admin';
+    
+    if (!name || !phone || !date || !time || !partySize) {
       return res.status(400).json({ 
-        message: 'Faltan campos obligatorios: nombre, email, teléfono, fecha, hora y número de personas' 
+        message: 'Faltan campos obligatorios: nombre, teléfono, fecha, hora y número de personas' 
       });
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: 'Formato de email inválido' });
+    // Email obligatorio solo para usuarios normales, opcional para admin
+    if (!isAdminUser && !email) {
+      return res.status(400).json({ 
+        message: 'El email es obligatorio para reservas públicas' 
+      });
     }
 
-    // ⏰ VALIDACIÓN: Máximo 30 minutos antes de la hora solicitada
+    // Validar formato de email solo si se proporciona
+    if (email && email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Formato de email inválido' });
+      }
+    }
+
+    // ⏰ VALIDACIÓN: Máximo 30 minutos antes de la hora solicitada (solo para usuarios normales)
     const reservationDateTime = new Date(`${date}T${time}:00`);
     const now = new Date();
     const timeDifferenceInMinutes = (reservationDateTime - now) / (1000 * 60);
 
-    if (timeDifferenceInMinutes < 30) {
+    if (!isAdminUser && timeDifferenceInMinutes < 30) {
       return res.status(400).json({ 
         message: 'Las reservas deben realizarse con al menos 30 minutos de anticipación. Para reservas inmediatas, por favor llama al restaurante.' 
       });
@@ -311,7 +322,7 @@ exports.createReservation = async (req, res) => {
     const reservation = new Reservation({
       customer: {
         name: name.trim(),
-        email: email.toLowerCase().trim(),
+        email: email ? email.toLowerCase().trim() : `admin-${Date.now()}@elnopal.es`,
         phone: phone.trim()
       },
       date: new Date(date),
@@ -355,50 +366,43 @@ exports.createReservation = async (req, res) => {
       }
     }
 
-    // Enviar correos de confirmación
-    try {
-      console.log('📧 Preparando envío de correos para reserva:', reservation._id);
-      
-      const reservationData = {
-        name: reservation.customer.name,
-        email: reservation.customer.email,
-        phone: reservation.customer.phone,
-        date: reservation.date,
-        time: reservation.time,
-        partySize: reservation.partySize,
-        specialRequests: reservation.specialRequests,
-        needsBabyCart: reservation.needsBabyCart,
-        needsWheelchair: reservation.needsWheelchair
-      };
+    // Enviar correos de confirmación (solo si hay email real)
+    const shouldSendEmails = email && !email.includes('admin-') && !email.includes('@elnopal.es');
+    
+    if (shouldSendEmails) {
+      try {
+        console.log('📧 Preparando envío de correos para reserva:', reservation._id);
+        
+        const reservationData = {
+          name: reservation.customer.name,
+          email: reservation.customer.email,
+          phone: reservation.customer.phone,
+          date: reservation.date,
+          time: reservation.time,
+          partySize: reservation.partySize,
+          specialRequests: reservation.specialRequests,
+          needsBabyCart: reservation.needsBabyCart,
+          needsWheelchair: reservation.needsWheelchair
+        };
 
-      console.log('📧 Datos de correo preparados:', {
-        email: reservationData.email,
-        name: reservationData.name,
-        date: reservationData.date,
-        time: reservationData.time
-      });
-
-      console.log('📧 Llamando a emailService.sendReservationEmails...');
-      const emailResult = await emailService.sendReservationEmails(reservationData);
-      
-      console.log('📧 Resultado del envío de correos:', emailResult);
-      
-      if (emailResult.success) {
-        console.log('✅ Correos enviados exitosamente, marcando en BD...');
-        // Marcar correos como enviados
-        reservation.confirmationEmailSent = true;
-        reservation.confirmationEmailSentAt = new Date();
-        reservation.notificationEmailSent = true;
-        reservation.notificationEmailSentAt = new Date();
-        await reservation.save();
-        console.log('✅ Estado de correos actualizado en BD');
-      } else {
-        console.error('❌ Error en el envío de correos:', emailResult.message, emailResult.error);
+        console.log('📧 Llamando a emailService.sendReservationEmails...');
+        const emailResult = await emailService.sendReservationEmails(reservationData);
+        
+        if (emailResult.success) {
+          console.log('✅ Correos enviados exitosamente');
+          reservation.confirmationEmailSent = true;
+          reservation.confirmationEmailSentAt = new Date();
+          reservation.notificationEmailSent = true;
+          reservation.notificationEmailSentAt = new Date();
+          await reservation.save();
+        } else {
+          console.error('❌ Error en el envío de correos:', emailResult.message);
+        }
+      } catch (emailError) {
+        console.error('❌ Excepción enviando correos de reserva:', emailError);
       }
-    } catch (emailError) {
-      console.error('❌ Excepción enviando correos de reserva:', emailError);
-      console.error('Stack trace:', emailError.stack);
-      // No fallar la reserva por error de correo
+    } else {
+      console.log('📧 Omitiendo envío de correos (reserva admin sin email real)');
     }
 
     res.status(201).json({
@@ -485,118 +489,106 @@ exports.getReservationById = async (req, res) => {
   }
 };
 
-// Actualizar una reserva
+// Actualizar una reserva existente
 exports.updateReservation = async (req, res) => {
   try {
-    const { 
-      name, 
-      email, 
-      phone, 
-      date, 
-      time, 
-      partySize, 
-      tableId, 
-      status, 
-      specialRequests,
-      needsBabyCart,
-      needsWheelchair
-    } = req.body;
-    
-    // Buscar la reserva actual
-    const currentReservation = await Reservation.findById(req.params.id);
-    if (!currentReservation) {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    // Buscar la reserva existente
+    const existingReservation = await Reservation.findById(id);
+    if (!existingReservation) {
       return res.status(404).json({ message: 'Reserva no encontrada' });
     }
 
-    // Si se cambia la mesa, actualizar estados
-    if (tableId && tableId !== currentReservation.table?.toString()) {
-      // Liberar mesa anterior si existía
-      if (currentReservation.table) {
-        await Table.findByIdAndUpdate(currentReservation.table, { 
+    // Validaciones básicas
+    if (updateData.name && !updateData.name.trim()) {
+      return res.status(400).json({ message: 'El nombre no puede estar vacío' });
+    }
+
+    if (updateData.email && updateData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(updateData.email)) {
+        return res.status(400).json({ message: 'Formato de email inválido' });
+      }
+    }
+
+    // Si se cambia la fecha, hora o número de personas, verificar disponibilidad
+    const isTimeChange = updateData.date !== existingReservation.date.toISOString().split('T')[0] || 
+                        updateData.time !== existingReservation.time ||
+                        updateData.partySize !== existingReservation.partySize;
+
+    let newTableId = updateData.tableId;
+
+    if (isTimeChange && !updateData.tableId) {
+      // Reasignar mesa automáticamente
+      try {
+        const assignmentResult = await getAutomaticTableAssignment(
+          updateData.partySize || existingReservation.partySize, 
+          updateData.date || existingReservation.date.toISOString().split('T')[0], 
+          updateData.time || existingReservation.time
+        );
+        
+        if (assignmentResult.success) {
+          newTableId = assignmentResult.tables[0]._id;
+        } else {
+          return res.status(409).json({ 
+            message: assignmentResult.message + '. Por favor, selecciona una mesa manualmente o cambia el horario.'
+          });
+        }
+      } catch (error) {
+        console.error('Error en reasignación automática:', error);
+        return res.status(500).json({ 
+          message: 'Error al verificar disponibilidad. Por favor, selecciona una mesa manualmente.'
+        });
+      }
+    }
+
+    // Preparar datos de actualización
+    const updateFields = {};
+    
+    if (updateData.name) updateFields['customer.name'] = updateData.name.trim();
+    if (updateData.email) updateFields['customer.email'] = updateData.email.toLowerCase().trim();
+    if (updateData.phone) updateFields['customer.phone'] = updateData.phone.trim();
+    if (updateData.date) updateFields.date = new Date(updateData.date);
+    if (updateData.time) {
+      updateFields.time = updateData.time;
+      const [hours, minutes] = updateData.time.split(':').map(Number);
+      updateFields.timeInMinutes = hours * 60 + minutes;
+      updateFields.endTimeInMinutes = updateFields.timeInMinutes + 90;
+      const endHours = Math.floor(updateFields.endTimeInMinutes / 60) % 24;
+      const endMins = updateFields.endTimeInMinutes % 60;
+      updateFields.endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
+    }
+    if (updateData.partySize) updateFields.partySize = parseInt(updateData.partySize);
+    if (newTableId) updateFields.table = newTableId;
+    if (updateData.specialRequests !== undefined) updateFields.specialRequests = updateData.specialRequests.trim();
+    if (updateData.needsBabyCart !== undefined) updateFields.needsBabyCart = updateData.needsBabyCart;
+    if (updateData.needsWheelchair !== undefined) updateFields.needsWheelchair = updateData.needsWheelchair;
+    if (updateData.status) updateFields.status = updateData.status;
+
+    // Actualizar la reserva
+    const updatedReservation = await Reservation.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true, runValidators: true }
+    ).populate('table');
+
+    // Si cambió la mesa, actualizar el estado de las mesas
+    if (newTableId && newTableId !== existingReservation.table?.toString()) {
+      // Liberar mesa anterior
+      if (existingReservation.table) {
+        await Table.findByIdAndUpdate(existingReservation.table, {
           status: 'available',
           currentReservation: null
         });
       }
       
       // Reservar nueva mesa
-      const newTable = await Table.findById(tableId);
-      if (!newTable) {
-        return res.status(404).json({ message: 'Mesa no encontrada' });
-      }
-      
-      if (newTable.capacity < partySize) {
-        return res.status(400).json({ message: 'La mesa seleccionada no tiene capacidad suficiente' });
-      }
-      
-      await Table.findByIdAndUpdate(tableId, { 
+      await Table.findByIdAndUpdate(newTableId, {
         status: 'reserved',
-        currentReservation: currentReservation._id
+        currentReservation: updatedReservation._id
       });
-    }
-
-    // Calcular campos de tiempo si se actualiza la hora
-    let timeInMinutes, endTime, endTimeInMinutes;
-    if (time) {
-      const [hours, minutes] = time.split(':').map(Number);
-      timeInMinutes = hours * 60 + minutes;
-      const duration = 90; // 1.5 horas
-      endTimeInMinutes = timeInMinutes + duration;
-      const endHours = Math.floor(endTimeInMinutes / 60) % 24;
-      const endMins = endTimeInMinutes % 60;
-      endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
-    }
-
-    // Actualizar la reserva
-    const updatedReservation = await Reservation.findByIdAndUpdate(
-      req.params.id,
-      {
-        ...(name && { 'customer.name': name }),
-        ...(email && { 'customer.email': email }),
-        ...(phone && { 'customer.phone': phone }),
-        ...(date && { date: new Date(date) }),
-        ...(time && { 
-          time, 
-          timeInMinutes, 
-          endTime, 
-          endTimeInMinutes 
-        }),
-        ...(partySize && { partySize: parseInt(partySize) }),
-        ...(tableId && { table: tableId }),
-        ...(status && { status }),
-        ...(specialRequests !== undefined && { specialRequests }),
-        ...(needsBabyCart !== undefined && { needsBabyCart }),
-        ...(needsWheelchair !== undefined && { needsWheelchair }),
-        updatedBy: req.user ? req.user.id : null,
-        updatedAt: new Date()
-      },
-      { new: true }
-    ).populate('table');
-
-    // Enviar email de modificación
-    try {
-      console.log('📧 Enviando notificación de modificación de reserva...');
-      
-      const reservationForEmail = {
-        _id: updatedReservation._id,
-        customer: {
-          name: updatedReservation.customer.name,
-          email: updatedReservation.customer.email,
-          phone: updatedReservation.customer.phone
-        },
-        date: updatedReservation.date,
-        time: updatedReservation.time,
-        partySize: updatedReservation.partySize,
-        specialRequests: updatedReservation.specialRequests,
-        status: updatedReservation.status,
-        table: updatedReservation.table?._id,
-        tableName: updatedReservation.table?.number
-      };
-
-      await sendReservationEmails(reservationForEmail, 'updated');
-      console.log('✅ Email de modificación enviado');
-    } catch (emailError) {
-      console.error('❌ Error enviando email de modificación:', emailError);
-      // No fallar la actualización por error de email
     }
 
     res.json({
@@ -604,80 +596,50 @@ exports.updateReservation = async (req, res) => {
       message: 'Reserva actualizada exitosamente',
       reservation: updatedReservation
     });
+
   } catch (error) {
-    console.error('Error al actualizar reserva:', error);
-    res.status(500).json({ 
-      message: 'Error al actualizar la reserva', 
-      error: error.message 
+    console.error('Error actualizando reserva:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
     });
   }
 };
 
-// Cancelar una reserva
-exports.cancelReservation = async (req, res) => {
+// Eliminar una reserva
+exports.deleteReservation = async (req, res) => {
   try {
-    const { reason = 'Cancelada por administrador' } = req.body;
-    
-    const reservation = await Reservation.findById(req.params.id);
+    const { id } = req.params;
+
+    // Buscar la reserva
+    const reservation = await Reservation.findById(id);
     if (!reservation) {
       return res.status(404).json({ message: 'Reserva no encontrada' });
     }
 
-    // Liberar la mesa o mesas si están asignadas
-    if (reservation.tableIds && reservation.tableIds.length > 0) {
-      // Liberar múltiples mesas (reservas de grupo)
-      await Table.updateMany(
-        { _id: { $in: reservation.tableIds } },
-        { 
-          status: 'available',
-          currentReservation: null
-        }
-      );
-    } else if (reservation.table) {
-      // Liberar mesa individual
-      await Table.findByIdAndUpdate(reservation.table, { 
+    // Liberar la mesa asociada
+    if (reservation.table) {
+      await Table.findByIdAndUpdate(reservation.table, {
         status: 'available',
         currentReservation: null
       });
     }
 
-    // Actualizar el estado de la reserva
-    reservation.status = 'cancelled';
-    reservation.cancelledAt = new Date();
-    reservation.cancelReason = reason;
-    reservation.updatedBy = req.user ? req.user.id : null;
-    await reservation.save();
-
-    // Preparar datos para el email
-    const reservationForEmail = {
-      _id: reservation._id,
-      customer: {
-        name: reservation.customer.name,
-        email: reservation.customer.email,
-        phone: reservation.customer.phone
-      },
-      date: reservation.date,
-      time: reservation.time,
-      partySize: reservation.partySize,
-      specialRequests: reservation.specialRequests,
-      cancelReason: reason,
-      tableIds: reservation.tableIds || [],
-      tableName: reservation.tableName
-    };
-
-    // Enviar email de cancelación
-    await sendReservationEmails(reservationForEmail, 'cancelled');
+    // Eliminar la reserva
+    await Reservation.findByIdAndDelete(id);
 
     res.json({
       success: true,
-      message: 'Reserva cancelada exitosamente',
-      reservation
+      message: 'Reserva eliminada exitosamente'
     });
+
   } catch (error) {
-    console.error('Error al cancelar reserva:', error);
-    res.status(500).json({ 
-      message: 'Error al cancelar la reserva', 
-      error: error.message 
+    console.error('Error eliminando reserva:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
     });
   }
 };

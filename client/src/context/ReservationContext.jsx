@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { 
   getAllReservations, 
   createReservation as apiCreateReservation,
@@ -59,15 +60,11 @@ export const ReservationProvider = ({ children }) => {
       setTables(formattedTables);
       setError(null);
     } catch (error) {
-      console.error('Error al cargar mesas:', error);
-      setError('Error al cargar las mesas');
-      
-      // Fallback a datos básicos si no se pueden cargar
-      setTables([
-        { id: 1, number: 1, capacity: 2, zone: 'Principal', status: 'available', reservable: true },
-        { id: 2, number: 2, capacity: 4, zone: 'Principal', status: 'available', reservable: true },
-        { id: 3, number: 3, capacity: 6, zone: 'Principal', status: 'available', reservable: true }
-      ]);
+      console.error('Error al cargar mesas desde la API:', error);
+      const errorMessage = error.response?.data?.message || 'No se pudieron cargar los datos de las mesas desde el servidor. Por favor, contacta con el soporte técnico.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      setTables([]); // Dejar las mesas vacías en caso de error
     } finally {
       setLoading(false);
     }

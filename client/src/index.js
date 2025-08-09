@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // ===== CSS CRÍTICO PRIMERO =====
+import './styles/fonts.css';
 import './styles/critical.css';
 
 // ===== APP PRINCIPAL =====
@@ -9,14 +10,6 @@ import App from './App';
 
 // ===== CSS NO CRÍTICO (LAZY) =====
 const loadNonCriticalCSS = () => {
-  // Cargar CSS no crítico de forma asíncrona
-  const loadCSS = (href) => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    document.head.appendChild(link);
-  };
-
   // Cargar estilos después del primer renderizado
   requestIdleCallback(() => {
     import('./styles/base.css');
@@ -28,8 +21,10 @@ const loadNonCriticalCSS = () => {
     import('./styles/pages.css');
     import('./styles/mexican-theme.css');
     import('./styles/menu-reservation.css');
+    import('./styles/performance-optimizations.css');
     import('./styles/blog.css');
     import('./styles/contact-form.css');
+    import('./styles/reviews.css');
     import('./styles/admin.css');
     import('./index.css');
   }, { timeout: 2000 });
@@ -66,15 +61,11 @@ const renderApp = () => {
   );
 };
 
-// ===== INICIALIZACIÓN =====
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderApp);
-} else {
-  renderApp();
-}
+// ===== INICIALIZAR APP =====
+renderApp();
 
-// Reportar métricas de rendimiento
-reportWebVitals(console.log);
+// ===== MÉTRICAS DE RENDIMIENTO =====
+reportWebVitals();
 
 // ===== SERVICE WORKER (OPCIONAL) =====
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {

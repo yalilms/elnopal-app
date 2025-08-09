@@ -907,3 +907,18 @@
   background: var(--color-primary-dark);
   transform: translateY(-2px);
 }
+
+:root {
+  --layout-bg: var(--admin-light, #F9FAFB);
+  --layout-text: var(--admin-text-primary, #1F2937);
+}
+
+body, .layout-section, .layout-content {
+  background: var(--layout-bg) !important;
+  color: var(--layout-text) !important;
+}
+
+.layout-title, .layout-header, .layout-subtitle {
+  color: var(--admin-primary, #D62828) !important;
+  text-shadow: none !important;
+}

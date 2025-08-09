@@ -56,6 +56,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
+  color: var(--color-dark); /* Asegurar texto oscuro sobre fondo blanco */
 }
 
 .card-mexican::before {
@@ -108,6 +109,7 @@
   transition: box-shadow 0.3s, transform 0.3s;
   position: relative;
   overflow: hidden;
+  color: var(--color-dark); /* Asegurar texto oscuro sobre fondo blanco */
 }
 
 .mexican-card:hover {
@@ -228,6 +230,7 @@
 .nav-mexican {
   background: var(--color-white);
   box-shadow: var(--shadow-mexican);
+  color: var(--color-dark); /* Asegurar texto oscuro sobre fondo blanco */
 }
 
 .nav-mexican .nav-link {
@@ -235,12 +238,25 @@
   color: var(--color-dark);
   font-size: var(--font-size-lg);
   padding: var(--spacing-3) var(--spacing-4);
-  transition: all 0.3s ease;
+  transition: none; /* Quitado la transición */
 }
 
 .nav-mexican .nav-link:hover {
-  color: var(--color-primary);
-  transform: translateY(-2px);
+  color: inherit; /* Quitado el cambio de color en hover */
+  transform: none; /* Quitada la transformación */
+}
+
+/* Logo centrado */
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.navbar-brand img {
+  max-height: 60px;
+  width: auto;
 }
 
 /* Footer con estilo mexicano */
@@ -260,4 +276,2040 @@
   height: 12px;
   background: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 6l10-6l10 6l10-6l10 6v6H0V6z' fill='%23E4002B' fill-opacity='0.1'/%3E%3C/svg%3E")
     repeat-x;
+}
+
+/* ===== SECCIÓN ABOUT COMPLETA - OPTIMIZADA PARA RENDIMIENTO ===== */
+
+/* Contenedor principal de la página About */
+.about-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, 
+    rgba(228, 0, 43, 0.02) 0%, 
+    rgba(255, 255, 255, 0.99) 15%, 
+    rgba(0, 140, 69, 0.02) 35%,
+    rgba(248, 182, 18, 0.02) 65%,
+    rgba(255, 255, 255, 0.99) 85%,
+    rgba(228, 0, 43, 0.02) 100%);
+  position: relative;
+  overflow: hidden; /* Cambiado de overflow-x a overflow */
+}
+
+/* Hero Section de About */
+.about-hero {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.about-hero .parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(214, 40, 40, 0.9) 0%, 
+    rgba(228, 0, 43, 0.7) 50%,
+    rgba(0, 140, 69, 0.8) 100%);
+  z-index: 1;
+}
+
+.about-hero .parallax-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6); /* Aumentado la opacidad del overlay */
+  z-index: 2;
+}
+
+.about-hero .hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 0 var(--spacing-8);
+}
+
+.about-hero .hero-title {
+  font-family: var(--font-family-decorative);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-6);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* Aumentado el shadow */
+  letter-spacing: -0.02em;
+  color: white; /* Asegurar color blanco */
+}
+
+.about-hero .animated-subtitle h3 {
+  font-family: var(--font-family-accent);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-4);
+  color: white; /* Cambiado a blanco */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.about-hero .hero-subtitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  line-height: 1.6;
+  color: white; /* Cambiado a blanco */
+  opacity: 1;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* ===== SECCIÓN ABOUT HOME - DISEÑO RENOVADO MEXICANO ===== */
+
+.about-section-animated {
+  position: relative;
+  padding: var(--spacing-24) 0;
+  background: linear-gradient(145deg, 
+    rgba(214, 40, 40, 0.02) 0%, 
+    rgba(255, 255, 255, 0.99) 15%, 
+    rgba(0, 140, 69, 0.02) 45%,
+    rgba(248, 182, 18, 0.02) 75%,
+    rgba(255, 255, 255, 0.99) 100%);
+  overflow: hidden;
+}
+
+.about-section-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d62828' fill-opacity='0.008'%3E%3Cpath d='M60 15c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15zm0 30c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15zm0 30c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  z-index: 1;
+  animation: gentlePatternMove 25s ease-in-out infinite;
+}
+
+@keyframes gentlePatternMove {
+  0%, 100% { 
+    background-position: 0% 0%; 
+    opacity: 0.6;
+  }
+  50% { 
+    background-position: 50% 50%; 
+    opacity: 0.3;
+  }
+}
+
+/* Contenedor principal con layout moderno */
+.about-mexican-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-8);
+}
+
+/* Header de la sección con título llamativo */
+.about-hero-header {
+  text-align: center;
+  margin-bottom: var(--spacing-16);
+  position: relative;
+}
+
+.about-hero-title {
+  font-family: var(--font-family-decorative);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: var(--font-weight-bold);
+  background: linear-gradient(135deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 30%,
+    var(--color-secondary) 60%,
+    var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: var(--color-primary); /* Fallback */
+  margin-bottom: var(--spacing-4);
+  text-shadow: 0 4px 8px rgba(228, 0, 43, 0.1);
+  position: relative;
+}
+
+.about-hero-title::after {
+  content: '🌵';
+  position: absolute;
+  top: -10px;
+  right: -20px;
+  font-size: 1.5rem;
+  animation: gentleSway 3s ease-in-out infinite;
+}
+
+@keyframes gentleSway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.about-hero-subtitle {
+  font-family: var(--font-family-accent);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--color-dark);
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Layout en grid moderno */
+.mexican-story-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-12);
+  align-items: start;
+  margin-top: var(--spacing-12);
+}
+
+/* Panel izquierdo con elementos visuales */
+.mexican-visual-panel {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.mexican-heritage-card {
+  background: linear-gradient(135deg, 
+    rgba(228, 0, 43, 0.05) 0%, 
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(0, 140, 69, 0.05) 100%);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-8);
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(214, 40, 40, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.mexican-heritage-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--color-primary) 33%,
+    var(--color-white) 33% 66%,
+    var(--color-secondary) 66%);
+}
+
+.heritage-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-4);
+  display: block;
+}
+
+.heritage-title {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-3);
+  font-weight: var(--font-weight-bold);
+}
+
+.heritage-subtitle {
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-base);
+  color: var(--color-dark);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+/* Stats mexicanas */
+.mexican-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--spacing-4);
+  background: rgba(248, 182, 18, 0.1);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(248, 182, 18, 0.2);
+}
+
+.stat-number {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+  display: block;
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-dark);
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Panel derecho con contenido narrativo */
+.mexican-content-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.mexican-story-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-8);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-left: 6px solid var(--color-primary);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mexican-story-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.story-section-icon {
+  position: absolute;
+  top: var(--spacing-6);
+  right: var(--spacing-6);
+  font-size: 1.5rem;
+  opacity: 0.3;
+  color: var(--color-primary);
+}
+
+.story-title {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-4);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.story-content {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-dark);
+  opacity: 0.9;
+}
+
+.story-highlight {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+}
+
+.story-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--color-primary) 20% 80%, 
+    transparent 100%);
+  opacity: 0.3;
+}
+
+/* Sección final con call to action */
+.mexican-invitation {
+  margin-top: var(--spacing-12);
+  text-align: center;
+  background: linear-gradient(135deg, 
+    rgba(0, 140, 69, 0.05) 0%, 
+    rgba(255, 255, 255, 0.98) 30%,
+    rgba(248, 182, 18, 0.05) 70%,
+    rgba(255, 255, 255, 0.98) 100%);
+  padding: var(--spacing-10);
+  border-radius: var(--border-radius-xl);
+  border: 1px solid rgba(0, 140, 69, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.mexican-invitation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--color-secondary) 33%,
+    var(--color-white) 33% 66%,
+    var(--color-accent) 66%);
+}
+
+.invitation-text {
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  color: var(--color-dark);
+  margin-bottom: var(--spacing-6);
+  font-style: italic;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.mexican-flavors {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-6);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-6);
+}
+
+.flavor-badge {
+  background: linear-gradient(135deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 100%);
+  color: white;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  box-shadow: 0 2px 8px rgba(214, 40, 40, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.flavor-badge:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .mexican-story-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+  
+  .mexican-visual-panel {
+    position: static;
+    order: -1;
+  }
+  
+  .mexican-heritage-card {
+    padding: var(--spacing-6);
+  }
+  
+  .mexican-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-mexican-container {
+    padding: 0 var(--spacing-4);
+  }
+  
+  .mexican-story-section {
+    padding: var(--spacing-6);
+  }
+  
+  .mexican-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .mexican-flavors {
+    gap: var(--spacing-3);
+  }
+  
+  .about-hero-title::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .mexican-invitation {
+    padding: var(--spacing-6);
+  }
+  
+  .mexican-flavors {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .heritage-icon {
+    font-size: 2.5rem;
+  }
+}
+
+/* Decoraciones del footer simplificadas */
+.about-footer-decoration {
+  margin-top: var(--spacing-16);
+  text-align: center;
+  position: relative;
+}
+
+.decorative-line {
+  width: 200px;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%);
+  margin: var(--spacing-8) auto;
+  border-radius: 2px;
+  /* Sin animación costosa */
+}
+
+.mexican-icon {
+  font-size: 2rem;
+  margin: 0 var(--spacing-4);
+  display: inline-block;
+  /* Animación muy simple */
+  animation: gentlePulse 4s ease-in-out infinite;
+}
+
+/* Animación muy ligera */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Decoración de sombreros mexicanos */
+.sombrero-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-12);
+  flex-wrap: wrap;
+}
+
+.sombrero {
+  width: 50px;
+  height: 30px;
+  background: linear-gradient(45deg, var(--color-accent) 0%, #DAA520 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.sombrero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 15px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.sombrero:hover {
+  transform: scale(1.1);
+}
+
+/* Contenedor del logo mexicano */
+.mexican-title {
+  text-align: center;
+  margin-bottom: var(--spacing-16);
+  position: relative;
+}
+
+.mexican-title img {
+  max-width: 200px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* Sellos decorativos mexicanos */
+.mexican-stamps {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-16);
+  flex-wrap: wrap;
+}
+
+.stamp {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.stamp.teal {
+  background: linear-gradient(135deg, #008C7A 0%, #00B7A1 100%);
+  border-color: #006B5A;
+}
+
+.stamp.red {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #C41E3A 100%);
+  border-color: #A01728;
+}
+
+.stamp.yellow {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #FFD700 100%);
+  border-color: #CCA000;
+}
+
+.stamp.green {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #228B22 100%);
+  border-color: #1F5F1F;
+}
+
+.stamp:hover {
+  transform: scale(1.15);
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stamp-snowflake::before {
+  content: '❄';
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.stamp-star::before {
+  content: '★';
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== SECCIÓN DE VIDEO - OPTIMIZADA ===== */
+
+.video-section-reveal {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, 
+    rgba(214, 40, 40, 0.03) 0%, 
+    rgba(255, 255, 255, 0.98) 25%, 
+    rgba(0, 140, 69, 0.03) 75%, 
+    rgba(255, 255, 255, 0.98) 100%);
+  padding: var(--spacing-20) var(--spacing-8);
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Patrón de fondo estático */
+.video-section-reveal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23008C45' fill-opacity='0.02'%3E%3Cpath d='M40 40l20-20v40l-20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+/* Texto promocional optimizado */
+.promo-text {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-16);
+  padding: 0 var(--spacing-8);
+  position: relative;
+  z-index: 2;
+}
+
+/* Título con gradiente estático */
+.text-gradient {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  background: linear-gradient(45deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 30%,
+    var(--color-secondary) 60%,
+    var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: var(--color-primary); /* Fallback seguro para navegadores sin soporte */
+  margin-bottom: var(--spacing-6);
+  text-shadow: 0 4px 8px rgba(228, 0, 43, 0.2);
+}
+
+/* Título en negro para mejor legibilidad */
+.text-black-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a !important;
+  margin-bottom: var(--spacing-6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Párrafo en negro para mejor legibilidad */
+.text-black-paragraph {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  line-height: 1.7;
+  color: #1a1a1a !important;
+  margin-bottom: var(--spacing-8);
+  opacity: 1 !important;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Forzar texto negro en contenedor mexican-text */
+.mexican-text p,
+.mexican-text .text-black-paragraph,
+.about-mexican-container p {
+  color: #1a1a1a !important;
+  opacity: 1 !important;
+}
+
+.text-appear {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  line-height: 1.7;
+  color: #1a1a1a !important;
+  margin-bottom: var(--spacing-8);
+  opacity: 1;
+  text-align: center;
+}
+
+/* Sección de Valores */
+.about-values-section {
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 248, 248, 0.95) 50%,
+    rgba(255, 255, 255, 0.98) 100%);
+  padding: var(--spacing-20) var(--spacing-8);
+  margin: var(--spacing-16) 0;
+}
+
+.about-values-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23008C45' fill-opacity='0.02'%3E%3Cpath d='M30 30l15-15v30l-15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.floating-title,
+.section-title {
+  font-family: var(--font-family-decorative);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-12);
+  font-weight: var(--font-weight-bold);
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.floating-title::after,
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%);
+  border-radius: 2px;
+}
+
+/* Grid de valores - 2x2 en ordenador */
+.values-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-8);
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .values-grid-cards {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+}
+
+/* Tarjetas de valores */
+.value-card-item {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98), 
+    rgba(248, 248, 248, 0.95));
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-10) var(--spacing-8);
+  text-align: center;
+  border: 2px solid rgba(214, 40, 40, 0.1);
+  position: relative;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.value-card-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%);
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+}
+
+.value-card-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(214, 40, 40, 0.15);
+  border-color: rgba(214, 40, 40, 0.2);
+}
+
+.value-card-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-6);
+  box-shadow: 0 8px 24px rgba(214, 40, 40, 0.3);
+  transition: all 0.3s ease;
+}
+
+.value-card-icon-wrapper:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(214, 40, 40, 0.4);
+}
+
+.value-card-icon-wrapper i {
+  font-size: 2rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.value-card-item h3 {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-4);
+  font-weight: var(--font-weight-bold);
+}
+
+.value-card-item p {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-dark);
+  opacity: 0.9;
+}
+
+/* Sección de experiencia extra */
+.about-experience-extra {
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(0, 140, 69, 0.03) 0%, 
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(248, 182, 18, 0.03) 100%);
+  padding: var(--spacing-20) var(--spacing-8);
+  margin-top: var(--spacing-16);
+}
+
+.about-experience-extra::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F8B612' fill-opacity='0.02'%3E%3Ccircle cx='40' cy='40' r='15'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* Contenedor de video simplificado - sin cortinas complejas */
+.video-curtain {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-8);
+  z-index: 2;
+}
+
+/* Decoración mexicana simple en los bordes */
+.curtain-left,
+.curtain-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 60px;
+  background: linear-gradient(180deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%);
+  border-radius: var(--border-radius-md);
+  z-index: 3;
+  opacity: 0.8;
+  /* Animación mexicana simple */
+  animation: mexicanPulse 3s ease-in-out infinite;
+}
+
+.curtain-left {
+  left: 10px;
+}
+
+.curtain-right {
+  right: 10px;
+  animation-delay: 1.5s;
+}
+
+/* Animación temática mexicana simple */
+@keyframes mexicanPulse {
+  0%, 100% { 
+    opacity: 0.8; 
+    box-shadow: 0 0 10px rgba(214, 40, 40, 0.3);
+  }
+  50% { 
+    opacity: 1; 
+    box-shadow: 0 0 20px rgba(214, 40, 40, 0.6);
+  }
+}
+
+/* ===== VIDEO SECCIÓN SIMPLIFICADA ===== */
+
+.video-section-simple {
+  position: relative;
+  padding: var(--spacing-20) 0;
+  background: linear-gradient(135deg, 
+    rgba(214, 40, 40, 0.02) 0%, 
+    rgba(255, 255, 255, 0.99) 25%, 
+    rgba(0, 140, 69, 0.02) 75%, 
+    rgba(255, 255, 255, 0.99) 100%);
+  overflow: hidden;
+}
+
+.video-container-simple {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-8);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
+}
+
+.video-player-auto {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+  object-fit: cover;
+  border-radius: var(--border-radius-lg);
+}
+
+/* Contenedor de video simplificado */
+.video-container-animated {
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(214, 40, 40, 0.1) 0%, 
+    rgba(248, 182, 18, 0.1) 100%);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  border: 3px solid rgba(214, 40, 40, 0.2);
+  transition: all 0.6s ease;
+}
+
+.video-container-animated:hover {
+  border-color: rgba(214, 40, 40, 0.4);
+  box-shadow: 0 16px 64px rgba(214, 40, 40, 0.2);
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85); /* Overlay blanco semitransparente para texto oscuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+.video-placeholder:hover .video-overlay {
+  background: rgba(255, 255, 255, 0.92); /* Más opaco en hover para mayor contraste */
+}
+
+.video-content {
+  text-align: center;
+  color: var(--color-primary); /* Rojo mexicano sobre fondo claro - excelente contraste */
+  z-index: 2;
+  font-weight: var(--font-weight-bold);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8); /* Sombra clara para mejor definición */
+}
+
+.pulse-icon {
+  font-size: 4rem;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-4);
+  /* Pulso mexicano suave */
+  animation: mexicanIconPulse 2.5s ease-in-out infinite;
+  text-shadow: 0 2px 8px rgba(214, 40, 40, 0.4);
+}
+
+/* Animación de pulso mexicana */
+@keyframes mexicanIconPulse {
+  0%, 100% { 
+    transform: scale(1); 
+    color: var(--color-primary);
+  }
+  50% { 
+    transform: scale(1.1); 
+    color: var(--color-accent);
+  }
+}
+
+/* ===== SECCIÓN COMBINADA HORARIO Y OPINIONES - OPTIMIZADA ===== */
+
+.home-combined-section {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, 
+    rgba(248, 182, 18, 0.04) 0%, 
+    rgba(255, 255, 255, 0.98) 20%, 
+    rgba(0, 140, 69, 0.04) 80%, 
+    rgba(255, 255, 255, 0.98) 100%);
+  padding: var(--spacing-20) var(--spacing-8);
+  width: 100%;
+}
+
+/* Patrón de fondo estático */
+.home-combined-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d62828' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.combined-content,
+.combined-section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-16);
+  position: relative;
+  z-index: 2;
+}
+
+/* Contenedor de horario simplificado */
+.schedule-container {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98), 
+    rgba(248, 248, 248, 0.95));
+  border-radius: var(--border-radius-2xl);
+  padding: var(--spacing-12);
+  border: 2px solid rgba(214, 40, 40, 0.1);
+  /* Sin animaciones costosas */
+  transition: box-shadow 0.4s ease;
+}
+
+.schedule-container:hover {
+  box-shadow: 0 16px 64px rgba(214, 40, 40, 0.15);
+}
+
+.schedule-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%);
+  border-radius: var(--border-radius-2xl) var(--border-radius-2xl) 0 0;
+}
+
+.schedule-container h3 {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-10);
+  font-weight: var(--font-weight-bold);
+}
+
+.schedule-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  margin-bottom: var(--spacing-3);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid transparent;
+  /* Transición simple */
+  transition: all 0.3s ease;
+}
+
+.schedule-list li:hover {
+  background: rgba(214, 40, 40, 0.05);
+  border-left-color: var(--color-primary);
+  transform: translateX(4px);
+}
+
+.schedule-list li::before {
+  content: '🕐';
+  margin-right: var(--spacing-3);
+  font-size: 1.2rem;
+}
+
+.schedule-list .day {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+
+.schedule-list .time {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+/* Contenedor de opiniones optimizado */
+.review-container {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98), 
+    rgba(248, 248, 248, 0.95));
+  border-radius: var(--border-radius-2xl);
+  padding: var(--spacing-12);
+  border: 2px solid rgba(0, 140, 69, 0.1);
+  position: relative;
+  transition: box-shadow 0.4s ease;
+}
+
+.review-container:hover {
+  box-shadow: 0 16px 64px rgba(0, 140, 69, 0.15);
+}
+
+.review-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    var(--color-secondary) 0%, 
+    var(--color-accent) 50%,
+    var(--color-primary) 100%);
+  border-radius: var(--border-radius-2xl) var(--border-radius-2xl) 0 0;
+}
+
+.review-decoration {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.review-decoration h3 {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-2xl);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-6);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Estrellas simplificadas */
+.stars-decoration {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-8);
+}
+
+.stars-decoration span {
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  /* Animación muy simple */
+  animation: starTwinkle 3s ease-in-out infinite;
+}
+
+.stars-decoration span:nth-child(1) { animation-delay: 0s; }
+.stars-decoration span:nth-child(2) { animation-delay: 0.2s; }
+.stars-decoration span:nth-child(3) { animation-delay: 0.4s; }
+.stars-decoration span:nth-child(4) { animation-delay: 0.6s; }
+.stars-decoration span:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Iconos mexicanos estáticos */
+.mexican-icons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-6);
+  margin: var(--spacing-8) 0;
+}
+
+.mexican-icons span {
+  font-size: 2rem;
+  opacity: 0.8;
+  /* Sin animaciones costosas */
+}
+
+.review-benefits {
+  margin-bottom: var(--spacing-8);
+}
+
+.review-benefits h4 {
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-4);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+}
+
+.review-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.review-benefits li,
+.review-benefits .benefit-item {
+  padding: var(--spacing-2) var(--spacing-4);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-dark); /* Cambiar a texto oscuro para mejor contraste */
+  font-size: var(--font-size-base);
+  position: relative;
+  /* Transición simple */
+  transition: color 0.3s ease;
+}
+
+.review-benefits li:hover,
+.review-benefits .benefit-item:hover {
+  color: var(--color-primary); /* Cambiar a rojo mexicano en hover */
+}
+
+.review-benefits li::before {
+  content: '✅';
+  margin-right: var(--spacing-3);
+  font-size: 1rem;
+}
+
+/* Estilos para review content */
+.review-description,
+.review-content p {
+  color: var(--color-dark);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-6);
+  text-align: center;
+}
+
+.review-quote {
+  background: rgba(0, 140, 69, 0.05);
+  border-left: 4px solid var(--color-secondary);
+  padding: var(--spacing-6);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-8);
+  font-style: italic;
+  color: var(--color-primary); /* Cambiar a rojo mexicano para mejor contraste */
+  text-align: center;
+  font-size: var(--font-size-lg); /* Aumentar tamaño para mejor legibilidad */
+  line-height: 1.6;
+  font-weight: var(--font-weight-semibold); /* Hacer más bold para mejor visibilidad */
+}
+
+.review-quote blockquote {
+  color: var(--color-primary); /* Asegurar que las blockquotes también tengan buen contraste */
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+/* Títulos de las secciones */
+.schedule-container h2,
+.review-container h2,
+.schedule-container .section-title,
+.review-container .section-title {
+  font-family: var(--font-family-decorative);
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Botón optimizado */
+.leave-review-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) var(--spacing-8);
+  background: linear-gradient(135deg, 
+    var(--color-secondary) 0%, 
+    #006b2f 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  /* Transición simple */
+  transition: all 0.4s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0, 140, 69, 0.3);
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.leave-review-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0, 140, 69, 0.4);
+}
+
+/* ===== RESPONSIVE OPTIMIZADO - ABOUT ===== */
+@media (max-width: 768px) {
+  .about-hero {
+    height: 60vh;
+    min-height: 400px;
+  }
+  
+  .about-hero .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+  
+  .about-hero .animated-subtitle h3 {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+  }
+  
+  .sombrero-row {
+    gap: var(--spacing-4);
+  }
+  
+  .sombrero {
+    width: 40px;
+    height: 25px;
+  }
+  
+  .mexican-title img {
+    max-width: 150px;
+  }
+  
+  .values-grid-cards {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+  
+  .value-card-item {
+    padding: var(--spacing-8) var(--spacing-6);
+  }
+  
+  .value-card-icon-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .value-card-icon-wrapper i {
+    font-size: 1.8rem;
+  }
+  
+  .mexican-stamps {
+    gap: var(--spacing-3);
+  }
+  
+  .stamp {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .stamp-snowflake::before,
+  .stamp-star::before {
+    font-size: 1.2rem;
+  }
+
+  .combined-content,
+  .combined-section-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-12);
+  }
+  
+  .schedule-container,
+  .review-container {
+    padding: var(--spacing-8);
+  }
+  
+  .mexican-icons {
+    gap: var(--spacing-4);
+  }
+  
+  .mexican-icons span {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero {
+    height: 50vh;
+    min-height: 350px;
+  }
+  
+  .about-mexican-container,
+  .about-values-section,
+  .about-experience-extra {
+    padding: var(--spacing-12) var(--spacing-4);
+  }
+  
+  .mexican-text {
+    padding: var(--spacing-8) var(--spacing-6);
+  }
+  
+  .sombrero {
+    width: 35px;
+    height: 20px;
+  }
+  
+  .mexican-title img {
+    max-width: 120px;
+  }
+  
+  .value-card-item {
+    padding: var(--spacing-6) var(--spacing-4);
+  }
+  
+  .value-card-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .value-card-icon-wrapper i {
+    font-size: 1.5rem;
+  }
+  
+  .stamp {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .stamp-snowflake::before,
+  .stamp-star::before {
+    font-size: 1rem;
+  }
+  
+  .floating-title,
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .home-combined-section {
+    padding: var(--spacing-12) var(--spacing-4);
+  }
+  
+  .schedule-container,
+  .review-container {
+    padding: var(--spacing-6);
+  }
+  
+  .schedule-list li {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+  
+  .review-quote {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+  
+  .leave-review-btn {
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* ===== PÁGINA DE CONTACTO COMPLETA ===== */
+
+/* Contenedor principal de la página Contact */
+.contact-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    rgba(228, 0, 43, 0.02) 0%,
+    rgba(255, 255, 255, 0.99) 20%,
+    rgba(0, 140, 69, 0.02) 40%,
+    rgba(248, 182, 18, 0.02) 60%,
+    rgba(255, 255, 255, 0.99) 80%,
+    rgba(228, 0, 43, 0.02) 100%
+  );
+  position: relative;
+  overflow-x: hidden;
+}
+
+.contact-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E4002B' fill-opacity='0.01'%3E%3Cpath d='M60 60c0-16.569-13.431-30-30-30s-30 13.431-30 30 13.431 30 30 30 30-13.431 30-30zm30 0c0-16.569-13.431-30-30-30s-30 13.431-30 30 13.431 30 30 30 30-13.431 30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  animation: floatContactPagePattern 35s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes floatContactPagePattern {
+  0%, 100% { 
+    background-position: 0% 0%; 
+    transform: rotate(0deg);
+    opacity: 0.5;
+  }
+  25% { 
+    background-position: 25% 25%; 
+    transform: rotate(90deg);
+    opacity: 0.7;
+  }
+  50% { 
+    background-position: 50% 50%; 
+    transform: rotate(180deg);
+    opacity: 0.3;
+  }
+  75% { 
+    background-position: 75% 25%; 
+    transform: rotate(270deg);
+    opacity: 0.6;
+  }
+}
+
+/* === ESTILOS PARA CONTACT INFO === */
+
+/* Contenedor principal de ContactInfo */
+.contact-info-container {
+  position: relative;
+  z-index: 2;
+  padding: var(--spacing-20) var(--spacing-8);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Secciones de contacto */
+.contact-section {
+  margin-bottom: var(--spacing-20);
+  position: relative;
+}
+
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-primary) 20%,
+    var(--color-accent) 40%,
+    var(--color-secondary) 60%,
+    var(--color-accent) 80%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* === SECCIÓN DE HORARIOS === */
+.detailed-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-6);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-8) 0;
+}
+
+.schedule-item {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(248, 248, 248, 0.95)
+  );
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  text-align: center;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(0, 140, 69, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--color-secondary) 0%,
+    var(--color-accent) 50%,
+    var(--color-secondary) 100%
+  );
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.schedule-item:hover::before {
+  transform: scaleX(1);
+}
+
+.schedule-item:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 140, 69, 0.15);
+  border-color: rgba(0, 140, 69, 0.2);
+}
+
+.schedule-item-closed {
+  border-color: rgba(228, 0, 43, 0.2);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 245, 245, 0.98),
+    rgba(248, 240, 240, 0.95)
+  );
+}
+
+.schedule-item-closed::before {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    #c41e3a 50%,
+    var(--color-primary) 100%
+  );
+}
+
+.schedule-item-closed:hover {
+  border-color: rgba(228, 0, 43, 0.3);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(228, 0, 43, 0.15);
+}
+
+.schedule-item-inner h3 {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-4);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.schedule-item-inner p {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  color: #4a4a4a;
+  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-weight-medium);
+}
+
+.schedule-item-closed .schedule-item-inner h3 {
+  color: var(--color-primary);
+}
+
+.schedule-item-closed .schedule-item-inner p {
+  color: #666;
+  font-style: italic;
+}
+
+/* === SECCIÓN DE UBICACIÓN === */
+.location-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-8) 0;
+}
+
+.location-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-12);
+}
+
+.location-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(248, 248, 248, 0.95)
+  );
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-8);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  position: relative;
+  transition: all 0.4s ease;
+  border: 2px solid rgba(248, 182, 18, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.location-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-primary) 25%,
+    var(--color-secondary) 50%,
+    var(--color-primary) 75%,
+    var(--color-accent) 100%
+  );
+  background-size: 400% 400%;
+  border-radius: var(--border-radius-xl);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: borderGlow 8s ease-in-out infinite;
+}
+
+.location-card:hover::before {
+  opacity: 1;
+}
+
+.location-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(248, 182, 18, 0.2);
+}
+
+.location-icon {
+  font-size: 2rem;
+  color: var(--color-primary);
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { 
+    transform: scale(1); 
+    color: var(--color-primary);
+  }
+  50% { 
+    transform: scale(1.1); 
+    color: var(--color-accent);
+  }
+}
+
+.location-text {
+  flex: 1;
+}
+
+.location-text p {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  color: #4a4a4a;
+  margin-bottom: var(--spacing-2);
+  line-height: 1.5;
+}
+
+.location-text p:last-child {
+  margin-bottom: 0;
+}
+
+.location-text strong {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.phone-link {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  transition: all 0.3s ease;
+}
+
+.phone-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
+/* === MAPA === */
+.map-container {
+  position: relative;
+  border-radius: var(--border-radius-2xl);
+  overflow: hidden;
+  box-shadow: 
+    0 16px 64px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, var(--color-primary), var(--color-accent), var(--color-secondary)) border-box;
+  transition: all 0.6s ease;
+}
+
+.map-container:hover {
+  transform: scale(1.02);
+  box-shadow: 
+    0 24px 80px rgba(0, 0, 0, 0.2),
+    0 12px 40px rgba(248, 182, 18, 0.3);
+}
+
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(
+    45deg,
+    rgba(228, 0, 43, 0.3),
+    rgba(248, 182, 18, 0.3),
+    rgba(0, 140, 69, 0.3),
+    rgba(228, 0, 43, 0.3)
+  );
+  background-size: 400% 400%;
+  border-radius: var(--border-radius-2xl);
+  z-index: -1;
+  animation: glowRotate 8s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.glow-effect:hover::before {
+  opacity: 1;
+}
+
+@keyframes glowRotate {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* === ANIMACIONES DE ENTRADA === */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card 3D effect */
+.card-3d {
+  perspective: 1000px;
+}
+
+.card-3d:hover .schedule-item-inner {
+  transform: rotateY(5deg) rotateX(5deg);
+}
+
+.schedule-item-inner {
+  transition: transform 0.4s ease;
+  transform-origin: center center;
+}
+
+/* === RESPONSIVE PARA CONTACT INFO === */
+@media (max-width: 768px) {
+  .contact-info-container {
+    padding: var(--spacing-16) var(--spacing-4);
+  }
+  
+  .detailed-schedule {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--spacing-4);
+  }
+  
+  .schedule-item {
+    padding: var(--spacing-4);
+  }
+  
+  .schedule-item-inner h3 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .schedule-item-inner p {
+    font-size: var(--font-size-sm);
+  }
+  
+  .location-info {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+  
+  .location-card {
+    padding: var(--spacing-6);
+  }
+  
+  .location-icon {
+    font-size: 1.5rem;
+  }
+  
+  .location-text p {
+    font-size: var(--font-size-sm);
+  }
+  
+  .phone-link {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-info-container {
+    padding: var(--spacing-12) var(--spacing-2);
+  }
+  
+  .detailed-schedule {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+  
+  .schedule-item {
+    padding: var(--spacing-3);
+  }
+  
+  .location-card {
+    padding: var(--spacing-4);
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-3);
+  }
+  
+  .mexican-stamps {
+    gap: var(--spacing-3);
+  }
+  
+  .stamp {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .map-container {
+    border-radius: var(--border-radius-xl);
+  }
+}
+
+/* === INTEGRACIÓN CON FORMULARIO === */
+#contact-form {
+  position: relative;
+  z-index: 3;
+}
+
+#contact-info {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(228, 0, 43, 0.1);
+}
+
+/* Transición suave entre secciones */
+.contact-page section {
+  position: relative;
+}
+
+.contact-page section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-accent) 50%,
+    transparent 100%
+  );
+  opacity: 0.3;
 }

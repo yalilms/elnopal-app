@@ -7,116 +7,162 @@ const OptimizedImage = ({
   priority = false, 
   sizes = '100vw',
   loading = 'lazy',
+  width,
+  height,
+  style = {},
+  fetchPriority = 'auto',
   ...props 
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
+  const [hasError, setHasError] = useState(false);
   const imgRef = useRef();
 
-  // Generar rutas para diferentes formatos
-  const getImageSources = (originalSrc) => {
-    const basePath = originalSrc.replace(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/i, '');
-    const extension = originalSrc.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/i)?.[1]?.toLowerCase();
+  // Dimensiones por defecto para diferentes tipos de imagen
+  const getImageDimensions = () => {
+    if (width && height) return { width, height };
     
-    return {
-      webp: `/static/media/webp/${basePath.split('/').pop()}.webp`,
-      optimized: `/static/media/optimized/${basePath.split('/').pop()}.${extension}`,
-      original: originalSrc
-    };
+    if (className?.includes('hero-image')) {
+      return { width: 1920, height: 1080 };
+    }
+    if (className?.includes('logo')) {
+      return { width: 200, height: 100 };
+    }
+    return {};
   };
 
-  const sources = getImageSources(src);
+  const dimensions = getImageDimensions();
 
-  // Lazy loading observer
+  // Preload inmediato para imágenes críticas
   useEffect(() => {
-    if (priority || loading !== 'lazy') {
-      setImageSrc(sources.original);
-      return;
+    if (priority) {
+      // Preload explícito para LCP
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = src;
+      preloadLink.fetchPriority = 'high';
+      document.head.appendChild(preloadLink);
+
+      return () => {
+        if (document.head.contains(preloadLink)) {
+          document.head.removeChild(preloadLink);
+        }
+      };
     }
+  }, [priority, src]);
+
+  // Intersection Observer optimizado para lazy loading
+  useEffect(() => {
+    if (priority || !imgRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setImageSrc(sources.original);
-          observer.disconnect();
+          const img = entry.target;
+          
+          // Solo cargar si no se ha cargado ya
+          if (!img.src) {
+            img.src = src;
+            img.onload = () => {
+              setIsLoaded(true);
+              img.classList.add('loaded');
+            };
+            img.onerror = () => setHasError(true);
+          }
+          
+          observer.unobserve(img);
         }
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
     );
 
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
+    observer.observe(imgRef.current);
 
-    return () => observer.disconnect();
-  }, [sources.original, priority, loading]);
+    return () => {
+      if (imgRef.current) {
+        observer.unobserve(imgRef.current);
+      }
+    };
+  }, [src, priority]);
 
-  // Preload para imágenes críticas
-  useEffect(() => {
-    if (priority) {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = sources.webp || sources.optimized || sources.original;
-      document.head.appendChild(link);
-
-      return () => {
-        if (document.head.contains(link)) {
-          document.head.removeChild(link);
-        }
-      };
-    }
-  }, [priority, sources]);
-
-  const handleLoad = () => {
-    setIsLoaded(true);
+  // Estilos optimizados para evitar CLS
+  const imageStyle = {
+    aspectRatio: dimensions.width && dimensions.height 
+      ? `${dimensions.width}/${dimensions.height}` 
+      : undefined,
+    objectFit: 'cover',
+    width: '100%',
+    height: 'auto',
+    transition: 'opacity 0.3s ease',
+    opacity: isLoaded || priority ? 1 : 0,
+    ...style
   };
 
-  const handleError = () => {
-    // Fallback a imagen original si WebP falla
-    if (imageSrc === sources.webp) {
-      setImageSrc(sources.optimized || sources.original);
-    } else if (imageSrc === sources.optimized) {
-      setImageSrc(sources.original);
-    }
+  // Placeholder para evitar CLS
+  const placeholderStyle = {
+    backgroundColor: '#f0f0f0',
+    background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+    backgroundSize: '200% 100%',
+    animation: !isLoaded && !hasError ? 'shimmer 1.5s infinite' : 'none',
+    aspectRatio: dimensions.width && dimensions.height 
+      ? `${dimensions.width}/${dimensions.height}` 
+      : '16/9',
+    width: '100%',
+    height: style.height || 'auto',
+    display: isLoaded ? 'none' : 'block'
   };
+
+  if (hasError) {
+    return (
+      <div 
+        className={`image-error ${className}`}
+        style={{
+          ...placeholderStyle,
+          backgroundColor: '#f5f5f5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#666',
+          fontSize: '14px'
+        }}
+      >
+        Error al cargar imagen
+      </div>
+    );
+  }
 
   return (
-    <div className={`image-container ${className}`} ref={imgRef}>
-      <picture>
-        {/* WebP para navegadores compatibles */}
-        <source 
-          srcSet={sources.webp} 
-          type="image/webp"
-          sizes={sizes}
-        />
-        
-        {/* Imagen optimizada */}
-        <source 
-          srcSet={sources.optimized || sources.original} 
-          type={`image/${sources.original.split('.').pop()?.toLowerCase()}`}
-          sizes={sizes}
-        />
-        
-        {/* Fallback */}
-        <img
-          src={imageSrc || (priority ? sources.original : '')}
-          alt={alt}
-          loading={loading}
-          onLoad={handleLoad}
-          onError={handleError}
-          className={`optimized-image ${isLoaded ? 'loaded' : 'loading'}`}
-          decoding={priority ? 'sync' : 'async'}
-          {...props}
-        />
-      </picture>
+    <div className={`optimized-image-container ${className}`} style={{ position: 'relative' }}>
+      {/* Placeholder para evitar CLS */}
+      <div style={placeholderStyle} />
       
-      {/* Placeholder mientras carga */}
-      {!isLoaded && (
-        <div className="image-placeholder">
-          <div className="placeholder-shimmer"></div>
-        </div>
-      )}
+      {/* Imagen real */}
+      <img
+        ref={imgRef}
+        src={priority ? src : undefined} // Solo cargar inmediatamente si es prioritaria
+        alt={alt}
+        className={`optimized-image ${className} ${isLoaded ? 'loaded' : ''}`}
+        loading={priority ? 'eager' : loading}
+        decoding={priority ? 'sync' : 'async'}
+        fetchPriority={fetchPriority}
+        sizes={sizes}
+        style={{
+          ...imageStyle,
+          position: isLoaded ? 'static' : 'absolute',
+          top: 0,
+          left: 0
+        }}
+        {...dimensions}
+        {...props}
+        onLoad={() => {
+          setIsLoaded(true);
+          imgRef.current?.classList.add('loaded');
+        }}
+        onError={() => setHasError(true)}
+      />
     </div>
   );
 };

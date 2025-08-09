@@ -9,8 +9,8 @@ import {
   faClock, 
   faUsers, 
   faCheckCircle,
-  faTimes,
-  faCheck,
+  // faTimes, // Comentado porque no se usa
+  // faCheck, // Comentado porque no se usa
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -109,7 +109,7 @@ const ReservationForm = () => {
       case 'partySize':
         const size = parseInt(value);
         if (!value) return 'El número de personas es requerido';
-        if (size < 1 || size > 12) return 'Entre 1 y 12 personas';
+        if (size < 1 || size > 8) return 'Entre 1 y 8 personas';
         return '';
         
       default:
@@ -205,7 +205,18 @@ const ReservationForm = () => {
       setSuccess(true);
       setLoading(false);
     } catch (err) {
-      setErrors({ submit: err.message || 'Error al realizar la reserva' });
+      // Mostrar el mensaje de error en un lugar visible
+      setErrors({ 
+        submit: err.message,
+        date: 'Por favor, seleccione otra fecha',
+        time: 'Por favor, seleccione otro horario'
+      });
+      // Limpiar los campos de fecha y hora
+      setFormData(prev => ({
+        ...prev,
+        date: '',
+        time: ''
+      }));
       setLoading(false);
     }
   };
@@ -263,7 +274,7 @@ const ReservationForm = () => {
                   {formData.needsWheelchair && <p>♿ Silla de ruedas</p>}
               </div>
             )}
-          </div>
+            </div>
             
             <p>Hemos enviado un correo electrónico con los detalles de su reserva.</p>
             
@@ -304,7 +315,7 @@ const ReservationForm = () => {
               </div>
             )}
 
-            {/* Información personal */}
+            {/* Información Personal */}
             <div style={{marginBottom: 'var(--spacing-xl)'}}>
               <h3 style={{color: 'var(--color-primary)', marginBottom: 'var(--spacing-md)'}}>
                 Información Personal
@@ -313,56 +324,56 @@ const ReservationForm = () => {
               <div className="form-group">
                 <label htmlFor="name" className="form-label required">
                   <FontAwesomeIcon icon={faUser} /> Nombre completo
-            </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
                   className={`form-control ${errors.name ? 'error' : touched.name && !errors.name ? 'success' : ''}`}
-                value={formData.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                  value={formData.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Tu nombre completo"
                 />
                 {errors.name && <div className="form-error">{errors.name}</div>}
-        </div>
+              </div>
 
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)'}}>
+              <div className="form-grid-desktop" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-md)'}}>
                 <div className="form-group">
                   <label htmlFor="email" className="form-label required">
                     <FontAwesomeIcon icon={faEnvelope} /> Email
-            </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
                     className={`form-control ${errors.email ? 'error' : touched.email && !errors.email ? 'success' : ''}`}
-                value={formData.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                    value={formData.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="tu@email.com"
-              />
+                  />
                   {errors.email && <div className="form-error">{errors.email}</div>}
-            </div>
+                </div>
 
                 <div className="form-group">
                   <label htmlFor="phone" className="form-label required">
                     <FontAwesomeIcon icon={faPhone} /> Teléfono
-            </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
                     className={`form-control ${errors.phone ? 'error' : touched.phone && !errors.phone ? 'success' : ''}`}
-                value={formData.phone}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder="+34 123 456 789"
-              />
+                    value={formData.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="+34 123 456 789"
+                  />
                   {errors.phone && <div className="form-error">{errors.phone}</div>}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
             {/* Detalles de la reserva */}
             <div style={{marginBottom: 'var(--spacing-xl)'}}>
@@ -370,19 +381,19 @@ const ReservationForm = () => {
                 Detalles de la Reserva
               </h3>
               
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-md)'}}>
+              <div className="form-grid-desktop" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-md)'}}>
                 <div className="form-group">
                   <label htmlFor="date" className="form-label required">
                     <FontAwesomeIcon icon={faCalendarAlt} /> Fecha
-            </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
+                  </label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
                     className={`form-control ${errors.date ? 'error' : touched.date && !errors.date ? 'success' : ''}`}
-                value={formData.date}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                    value={formData.date}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                     min={getMinDate()}
                   />
                   {errors.date && <div className="form-error">{errors.date}</div>}
@@ -410,31 +421,36 @@ const ReservationForm = () => {
                   {availableTimeSlots.length === 0 && formData.date && (
                     <div className="form-error">No hay horarios disponibles para esta fecha</div>
                   )}
-        </div>
+                </div>
 
                 <div className="form-group">
                   <label htmlFor="partySize" className="form-label required">
                     <FontAwesomeIcon icon={faUsers} /> Número de personas
-            </label>
-              <select
-                id="partySize"
-                name="partySize"
+                  </label>
+                  <select
+                    id="partySize"
+                    name="partySize"
                     className={`form-control form-select ${errors.partySize ? 'error' : touched.partySize && !errors.partySize ? 'success' : ''}`}
-                value={formData.partySize}
-                onChange={handleChange}
-                onBlur={handleBlur}
+                    value={formData.partySize}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
                     <option value="">Selecciona</option>
-                    {[...Array(12)].map((_, i) => (
+                    {[...Array(8)].map((_, i) => (
                       <option key={i + 1} value={i + 1}>
                         {i + 1} {i + 1 === 1 ? 'persona' : 'personas'}
                       </option>
                     ))}
-              </select>
+                  </select>
                   {errors.partySize && <div className="form-error">{errors.partySize}</div>}
+                  <div className="form-info-note">
+                    <p style={{fontSize: '0.9rem', color: 'var(--color-primary)', marginTop: '0.5rem', fontWeight: '500'}}>
+                      ℹ️ Para grupos de más de 8 personas, contactanos por teléfono <strong>+34 653 73 31 11</strong> o a través de nuestra <a href="/contacto" style={{color: 'var(--color-secondary)', textDecoration: 'underline'}}>página de contacto</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
             {/* Preferencias adicionales */}
             <div style={{marginBottom: 'var(--spacing-xl)'}}>
@@ -444,68 +460,68 @@ const ReservationForm = () => {
               
               <div className="form-group">
                 <label htmlFor="specialRequests" className="form-label">
-            Peticiones especiales
-          </label>
-            <textarea
-              id="specialRequests"
-              name="specialRequests"
+                  Peticiones especiales
+                </label>
+                <textarea
+                  id="specialRequests"
+                  name="specialRequests"
                   className="form-control form-textarea"
-              value={formData.specialRequests}
-              onChange={handleChange}
+                  value={formData.specialRequests}
+                  onChange={handleChange}
                   placeholder="Alergias, preferencias de mesa, celebraciones especiales..."
                   rows="4"
-              maxLength="500"
-            />
+                  maxLength="500"
+                />
                 <div style={{fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-xs)'}}>
                   {formData.specialRequests.length}/500 caracteres
-          </div>
-        </div>
+                </div>
+              </div>
 
               <div className="form-group">
                 <label className="form-label">Necesidades de accesibilidad</label>
                 <div style={{display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)'}}>
                   <label className="form-checkbox">
-              <input
-                type="checkbox"
-                name="needsBabyCart"
-                checked={formData.needsBabyCart}
-                onChange={handleChange}
-              />
+                    <input
+                      type="checkbox"
+                      name="needsBabyCart"
+                      checked={formData.needsBabyCart}
+                      onChange={handleChange}
+                    />
                     <span>🍼 Necesito espacio para carrito de bebé</span>
-              </label>
+                  </label>
                   
                   <label className="form-checkbox">
-              <input
-                type="checkbox"
-                name="needsWheelchair"
-                checked={formData.needsWheelchair}
-                onChange={handleChange}
-              />
+                    <input
+                      type="checkbox"
+                      name="needsWheelchair"
+                      checked={formData.needsWheelchair}
+                      onChange={handleChange}
+                    />
                     <span>♿ Necesito acceso para silla de ruedas</span>
-              </label>
+                  </label>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
             {/* Botón de envío */}
             <div style={{textAlign: 'center'}}>
-          <button
-            type="submit"
+              <button
+                type="submit"
                 className="btn btn-primary btn-lg btn-full"
                 disabled={loading || Object.keys(validateForm()).length > 0}
-          >
-            {loading ? (
-              <>
+              >
+                {loading ? (
+                  <>
                     <div className="spinner" style={{marginRight: 'var(--spacing-sm)'}}></div>
-                Procesando reserva...
-              </>
-            ) : (
-              <>
+                    Procesando reserva...
+                  </>
+                ) : (
+                  <>
                     <FontAwesomeIcon icon={faCheckCircle} />
-                Confirmar Reserva
-              </>
-            )}
-          </button>
+                    Confirmar Reserva
+                  </>
+                )}
+              </button>
             </div>
           </form>
         </div>

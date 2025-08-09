@@ -1,300 +1,109 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+import * as reservationService from '../../services/reservationService';
 
-
-const CancelReservationModal = ({ isOpen, onClose, onConfirm, reservationData }) => {
-  const [reason, setReason] = useState('');
+const CancelReservationModal = ({ reservation, onClose, onReservationCancelled }) => {
   const [loading, setLoading] = useState(false);
-  const [customReason, setCustomReason] = useState('');
-  const [reasonError, setReasonError] = useState('');
+  const [reason, setReason] = useState('');
 
-  const predefinedReasons = [
-    'Cliente no se presentó',
-    'Cliente canceló por teléfono',
-    'Problema con la mesa asignada',
-    'Overbooking - error del sistema',
-    'Emergencia del restaurante',
-    'Cliente solicitó cancelación',
-    'Otro motivo (especificar abajo)'
-  ];
-
-  const validateReason = (value) => {
-    if (!value.trim()) {
-      return 'Debe seleccionar o escribir un motivo para la cancelación';
-    }
-    if (value.length < 5) {
-      return 'El motivo debe tener al menos 5 caracteres';
-    }
-    if (value.length > 200) {
-      return 'El motivo no puede tener más de 200 caracteres';
-    }
-    return '';
-  };
-
-  const handleConfirm = async () => {
-    const finalReason = reason === 'Otro motivo (especificar abajo)' ? customReason : reason;
-    const error = validateReason(finalReason);
-    
-    if (error) {
-      setReasonError(error);
+  const handleCancel = async () => {
+    if (!reason.trim()) {
+      toast.error('Por favor, proporciona una razón para la cancelación');
       return;
     }
 
     setLoading(true);
     try {
-      await onConfirm(finalReason);
-      setReason('');
-      setCustomReason('');
-      setReasonError('');
+      await reservationService.updateReservation(reservation._id, {
+        status: 'cancelled',
+        cancellationReason: reason
+      });
+      
+      toast.success('Reserva cancelada exitosamente');
+      onReservationCancelled();
       onClose();
     } catch (error) {
-      console.error('Error al cancelar reserva:', error);
-      setReasonError('Error al cancelar la reserva. Inténtalo de nuevo.');
+      console.error('Error cancelling reservation:', error);
+      toast.error('Error al cancelar la reserva');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleReasonSelect = (selectedReason) => {
-    setReason(selectedReason);
-    setReasonError('');
-    
-    if (selectedReason !== 'Otro motivo (especificar abajo)') {
-      setCustomReason('');
-    }
-  };
-
-  const handleCustomReasonChange = (e) => {
-    const value = e.target.value;
-    setCustomReason(value);
-    setReasonError('');
-    
-    if (reason === 'Otro motivo (especificar abajo)') {
-      const error = validateReason(value);
-      if (error) {
-        setReasonError(error);
-      }
-    }
-  };
-
-  const getFinalReason = () => {
-    return reason === 'Otro motivo (especificar abajo)' ? customReason : reason;
-  };
-
-  const isFormValid = () => {
-    const finalReason = getFinalReason();
-    return finalReason.trim().length >= 5 && finalReason.length <= 200;
-  };
-
-  const getCharacterCount = () => {
-    if (reason === 'Otro motivo (especificar abajo)') {
-      return customReason.length;
-    }
-    return reason.length;
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <div className="cancel-modal-overlay">
-      <div className="cancel-modal">
-        <div className="cancel-modal-header">
-          <div className="cancel-modal-title">
-            <FontAwesomeIcon icon={faExclamationTriangle} className="warning-icon" />
-            <h3>Cancelar Reserva</h3>
-          </div>
-          <button className="cancel-modal-close" onClick={onClose} disabled={loading}>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>
+            <FontAwesomeIcon icon={faExclamationTriangle} />
+            Cancelar Reserva
+          </h3>
+          <button className="modal-close" onClick={onClose}>
             <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>
 
-        <div className="cancel-modal-content">
-          {reservationData && (
-            <div className="reservation-info">
-              <h4>Datos de la reserva a cancelar:</h4>
-              <div className="reservation-details">
-                <p><strong>Cliente:</strong> {reservationData.name}</p>
-                <p><strong>Fecha:</strong> {reservationData.date}</p>
-                <p><strong>Hora:</strong> {reservationData.time}</p>
-                <p><strong>Personas:</strong> {reservationData.partySize}</p>
-                {reservationData.tableName && (
-                  <p><strong>Mesa:</strong> {reservationData.tableName}</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="reason-selection">
-            <h4>
-              Motivo de la cancelación: <span style={{color: '#dc3545'}}>*</span>
-              <span style={{fontSize: '0.8rem', color: '#666', marginLeft: '5px'}}>
-                (5-200 caracteres)
-              </span>
-            </h4>
-            <div className="predefined-reasons">
-              {predefinedReasons.map((predefinedReason, index) => (
-                <button
-                  key={index}
-                  className={`reason-button ${reason === predefinedReason ? 'selected' : ''}`}
-                  onClick={() => handleReasonSelect(predefinedReason)}
-                  disabled={loading}
-                  style={{
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <span>{predefinedReason}</span>
-                  {reason === predefinedReason && (
-                    <FontAwesomeIcon 
-                      icon={faCheck} 
-                      style={{color: 'white', fontSize: '14px'}} 
-                    />
-                  )}
-                </button>
-              ))}
+        <div className="modal-body">
+          <div style={{ marginBottom: '1rem' }}>
+            <p><strong>Cliente:</strong> {reservation.customer?.name}</p>
+            <p><strong>Fecha:</strong> {new Date(reservation.date).toLocaleDateString()}</p>
+            <p><strong>Hora:</strong> {reservation.time}</p>
+            <p><strong>Personas:</strong> {reservation.partySize}</p>
             </div>
 
-            <div className="custom-reason">
-              <label htmlFor="custom-reason-input">
-                Motivo específico o detalles adicionales:
-                {reason === 'Otro motivo (especificar abajo)' && (
-                  <span style={{color: '#dc3545'}}> *</span>
-                )}
+          <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="reason" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Razón de cancelación *
               </label>
-              <div style={{position: 'relative'}}>
                 <textarea
-                  id="custom-reason-input"
-                  value={customReason}
-                  onChange={handleCustomReasonChange}
-                  placeholder="Escribe el motivo de la cancelación..."
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Explica el motivo de la cancelación..."
                   rows="3"
-                  maxLength="200"
-                  disabled={loading}
                   style={{
-                    borderColor: reasonError ? '#dc3545' : (reason === 'Otro motivo (especificar abajo)' && customReason.length >= 5 ? '#28a745' : '#e0e0e0'),
-                    boxShadow: reasonError ? '0 0 0 2px rgba(220, 53, 69, 0.1)' : 
-                               (reason === 'Otro motivo (especificar abajo)' && customReason.length >= 5 ? '0 0 0 2px rgba(40, 167, 69, 0.1)' : 'none')
-                  }}
-                />
-                {reason === 'Otro motivo (especificar abajo)' && customReason.length >= 5 && !reasonError && (
-                  <FontAwesomeIcon 
-                    icon={faCheck} 
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      top: '12px',
-                      color: '#28a745',
-                      fontSize: '14px'
-                    }} 
-                  />
-                )}
-              </div>
-              
-              {/* Contador de caracteres */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: '0.4rem'
-              }}>
-                <div style={{
-                  fontSize: '0.75rem',
-                  color: getCharacterCount() > 160 ? '#dc3545' : '#666'
-                }}>
-                  {getCharacterCount()}/200 caracteres
-                </div>
-                {reason === 'Otro motivo (especificar abajo)' && customReason.length < 5 && (
-                  <div style={{
-                    fontSize: '0.75rem',
-                    color: '#F8B612'
-                  }}>
-                    Mínimo 5 caracteres
-                  </div>
-                )}
-              </div>
-
-              {/* Mensaje de error */}
-              {reasonError && (
-                <div style={{
-                  color: '#dc3545',
-                  fontSize: '0.85rem',
-                  marginTop: '0.4rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.3rem'
-                }}>
-                  <FontAwesomeIcon icon={faExclamationTriangle} style={{fontSize: '12px'}} />
-                  {reasonError}
-                </div>
-              )}
-            </div>
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ced4da',
+                borderRadius: '4px',
+                resize: 'vertical'
+              }}
+            />
           </div>
 
-          <div className="warning-message">
-            <FontAwesomeIcon icon={faExclamationTriangle} />
-            <p>
-              Se enviará un correo de notificación al cliente y al administrador 
-              con el motivo especificado.
-            </p>
-          </div>
-
-          {/* Indicador de validez del formulario */}
-          <div style={{
-            padding: '0.8rem',
-            backgroundColor: isFormValid() ? 'rgba(40, 167, 69, 0.05)' : 'rgba(248, 182, 18, 0.05)',
-            borderRadius: '8px',
-            border: `1px solid ${isFormValid() ? 'rgba(40, 167, 69, 0.2)' : 'rgba(248, 182, 18, 0.2)'}`,
-            marginBottom: '1rem'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              color: isFormValid() ? '#28a745' : '#F8B612'
-            }}>
-              <FontAwesomeIcon 
-                icon={isFormValid() ? faCheck : faExclamationTriangle} 
-                style={{fontSize: '14px'}} 
-              />
-              <span style={{fontSize: '0.9rem', fontWeight: '600'}}>
-                {isFormValid() ? 'Formulario completado correctamente' : 'Selecciona o escribe un motivo válido'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="cancel-modal-actions">
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
           <button 
-            className="btn btn-secondary" 
+              type="button"
             onClick={onClose}
             disabled={loading}
+              style={{
+                padding: '0.75rem 1.5rem',
+                border: '1px solid #ced4da',
+                borderRadius: '4px',
+                background: 'white',
+                cursor: 'pointer'
+              }}
           >
             Cancelar
           </button>
           <button 
-            className="btn btn-danger" 
-            onClick={handleConfirm}
-            disabled={loading || !isFormValid()}
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
             style={{
-              opacity: isFormValid() ? 1 : 0.6,
-              cursor: isFormValid() ? 'pointer' : 'not-allowed'
+                padding: '0.75rem 1.5rem',
+                border: 'none',
+                borderRadius: '4px',
+                background: '#dc3545',
+                color: 'white',
+                cursor: 'pointer'
             }}
           >
-            {loading ? (
-              <>
-                <span style={{marginRight: '8px'}}>⏳</span>
-                Cancelando...
-              </>
-            ) : (
-              <>
-                <span style={{marginRight: '8px'}}>❌</span>
-                Confirmar Cancelación
-              </>
-            )}
+              {loading ? 'Cancelando...' : 'Confirmar Cancelación'}
           </button>
+          </div>
         </div>
       </div>
     </div>

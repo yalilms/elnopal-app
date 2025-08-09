@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../../context/AuthContext';
 import { navigateAndScroll } from '../../utils/scrollUtils';
+import OptimizedImage from '../common/OptimizedImage';
 import logo from '../../images/logo_elnopal_blanco.png';
 
 // CSS eliminado - ahora se maneja en archivos CSS separados
@@ -21,17 +21,25 @@ const Navbar = () => {
     // Añadir evento de scroll para cambiar estilo de navbar
     const handleScroll = () => {
       const offset = window.scrollY;
-      if (offset > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      setScrolled(offset > 50);
+    };
+
+    // Throttle para mejor rendimiento
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
       }
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledScroll);
     };
   }, [location]);
 
@@ -50,7 +58,15 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-logo">
           <Link to="/">
-            <img src={logo} alt="El Nopal Logo" />
+            <OptimizedImage 
+              src={logo} 
+              alt="El Nopal Logo"
+              className="logo-image"
+              width={160}
+              height={60}
+              priority={true}
+              loading="eager"
+            />
           </Link>
         </div>
         

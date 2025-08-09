@@ -39,7 +39,7 @@ router.get('/', authenticateJWT, reservationController.getAllReservations);
 router.get('/date/:date', authenticateJWT, reservationController.getReservationsByDate);
 router.get('/:id', authenticateJWT, reservationController.getReservationById);
 router.put('/:id', authenticateJWT, updateReservationValidation, reservationController.updateReservation);
-router.patch('/:id/cancel', authenticateJWT, reservationController.cancelReservation);
 router.patch('/:id/no-show', authenticateJWT, reservationController.markNoShow);
+router.delete('/:id', authenticateJWT, reservationController.deleteReservation);
 
 module.exports = router; 

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faMapMarkerAlt, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faPhone } from '@fortawesome/free-solid-svg-icons';
 // import './ContactInfo.css'; // Archivo eliminado - estilos ahora en sistema modular
-import logoImage from '../../images/logo_elnopal.png';
 import RestaurantStatusIndicator from '../common/RestaurantStatusIndicator';
 
 const ContactInfo = () => {
@@ -33,10 +32,6 @@ const ContactInfo = () => {
 
   return (
     <div className="contact-info-container">
-      <div className="logo-section animate-on-scroll">
-        <img src={logoImage} alt="El Nopal Logo" className="contact-logo" />
-      </div>
-
       <div className="contact-section animate-on-scroll">
         <h2 className="section-title floating-title">Horario</h2>
         <RestaurantStatusIndicator />

@@ -26,6 +26,7 @@
   transition: box-shadow 0.3s, transform 0.3s;
   position: relative;
   overflow: hidden;
+  color: var(--color-dark); /* Asegurar texto oscuro sobre fondo blanco */
 }
 
 .card:hover,
@@ -385,7 +386,14 @@
 
 .form-checkbox:hover,
 .form-radio:hover {
-  background: var(--color-background-light);
+  background: rgba(214, 40, 40, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(214, 40, 40, 0.1);
+}
+
+.form-checkbox:hover span,
+.form-radio:hover span {
+  color: inherit !important;
 }
 
 .form-checkbox input,

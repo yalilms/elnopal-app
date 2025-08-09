@@ -1,14 +1,9 @@
 import axios from 'axios';
 
-// Configurar base URL para desarrollo y producción
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://elnopal.es'
-  : 'http://localhost:5000';
-
 // Crear instancia de axios
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000, // 10 segundos timeout
+  baseURL: 'https://elnopal.es',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   }
@@ -21,9 +16,9 @@ let authToken = null;
 export const setAuthToken = (token) => {
   authToken = token;
   if (token) {
-    api.defaults.headers.common['x-auth-token'] = token;
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
-    delete api.defaults.headers.common['x-auth-token'];
+    delete api.defaults.headers.common['Authorization'];
   }
 };
 
@@ -34,27 +29,24 @@ export const getAuthToken = () => authToken;
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expirado o inválido
-      console.log('Token inválido o expirado, limpiando autenticación');
-      setAuthToken(null);
-      // Emitir evento personalizado para que AuthContext pueda reaccionar
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      localStorage.removeItem('authToken');
+      window.dispatchEvent(new Event('auth:logout'));
     }
     return Promise.reject(error);
   }
 );
 
-// Interceptor de solicitud para logging en desarrollo
+// Interceptor de solicitud
 api.interceptors.request.use(
   (config) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );

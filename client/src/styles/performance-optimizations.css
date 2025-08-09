@@ -1,0 +1,748 @@
+/* ===== OPTIMIZACIONES DE RENDIMIENTO CSS ===== */
+
+/* Eliminar animaciones costosas para usuarios con preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimización global: Usar will-change solo cuando sea necesario */
+.optimized-animation {
+  will-change: transform, opacity;
+}
+
+.optimized-animation.animation-complete {
+  will-change: auto;
+}
+
+/* Simplificar animaciones complejas de patrones de fondo */
+.about-mexican-container::before,
+.video-section-reveal::before,
+.home-combined-section::before,
+.about-page::before {
+  animation-duration: 20s !important; /* Reducir frecuencia */
+  animation-fill-mode: both;
+  animation-play-state: running;
+}
+
+/* Pausar animaciones cuando el elemento no es visible */
+.about-mexican-container:not(.in-viewport)::before,
+.video-section-reveal:not(.in-viewport)::before,
+.home-combined-section:not(.in-viewport)::before {
+  animation-play-state: paused;
+}
+
+/* Optimizar gradientes animados - eliminar background-size costoso */
+.text-gradient {
+  background-size: 100% 100% !important; /* Estático */
+  animation: none !important; /* Eliminar animación de gradiente */
+}
+
+/* Simplificar animaciones de bordes */
+.mexican-text::before,
+.card::before,
+.contact-form-card::before,
+.reservation-form-card::before {
+  animation-duration: 8s !important;
+  animation-timing-function: ease-in-out;
+}
+
+/* Optimizar rotaciones costosas en sellos y stamps */
+.stamp {
+  animation-duration: 20s !important; /* Más lento */
+  animation-timing-function: ease-in-out;
+}
+
+/* Simplificar hover effects costosos */
+.value-card-item:hover,
+.form-group:hover,
+.form-control:focus {
+  transform: translateY(-2px) !important; /* Solo Y, sin scale */
+}
+
+/* Eliminar animaciones de pseudo-elementos costosas */
+.floating-title::before,
+.floating-title::after {
+  animation-duration: 6s !important;
+}
+
+/* Optimizar parallax - usar transform3d para GPU */
+.parallax-element {
+  transform: translateZ(0); /* Forzar capa de composición */
+  will-change: transform;
+}
+
+/* Reducir complejidad de sombras animadas */
+.card:hover,
+.form-control:focus,
+.btn:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Optimizar iconos flotantes */
+.mexican-icon {
+  animation-duration: 6s !important;
+  animation-timing-function: ease-in-out;
+}
+
+/* Eliminar transforms costosos en hover de texto */
+.mexican-text p:hover {
+  transform: none !important;
+  color: var(--color-dark);
+}
+
+/* Optimizar pulsos y brillos */
+.pulse-icon,
+.gentle-pulse,
+.star-twinkle {
+  animation-duration: 3s !important;
+  animation-timing-function: ease-in-out;
+}
+
+/* Optimización específica para formularios */
+.form-control,
+.form-select,
+.form-textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-textarea:focus {
+  transform: none !important; /* Eliminar translateY costoso */
+}
+
+/* Optimizar efectos de error */
+@keyframes optimizedShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.form-control.error,
+.form-select.error,
+.form-textarea.error {
+  animation: optimizedShake 0.4s ease-in-out !important;
+}
+
+/* Optimización de lazy loading */
+.lazy-loading {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Optimizar animaciones de entrada */
+@keyframes optimizedFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in-element {
+  animation: optimizedFadeIn 0.5s ease-out;
+}
+
+/* Reducir complejidad de gradientes */
+.gradient-bg {
+  background: linear-gradient(135deg, 
+    var(--color-primary) 0%, 
+    var(--color-secondary) 100%) !important;
+  background-size: 100% 100% !important;
+}
+
+/* Optimizar cortinas de video */
+.curtain-left,
+.curtain-right {
+  transition: transform 0.6s ease !important;
+  will-change: transform;
+}
+
+.video-curtain:hover .curtain-left,
+.video-curtain:hover .curtain-right {
+  will-change: auto;
+}
+
+/* Optimización de intersection observer elements */
+.observe-element {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px;
+}
+
+/* Optimizar menú móvil */
+.mobile-menu {
+  transition: transform 0.3s ease !important;
+  will-change: transform;
+}
+
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-menu.closed {
+  transform: translateX(-100%);
+  will-change: auto;
+}
+
+/* Optimización específica para dispositivos móviles */
+@media (max-width: 768px) {
+  /* Reducir animaciones en móviles */
+  .mexican-text::before,
+  .card::before,
+  .about-mexican-container::before {
+    animation-duration: 15s !important;
+  }
+  
+  /* Eliminar efectos hover en táctil */
+  .schedule-list li:hover,
+  .form-checkbox:hover,
+  .value-card-item:hover {
+    transform: none !important;
+  }
+  
+  /* Simplificar sombras en móviles */
+  .card,
+  .form-control,
+  .btn {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+/* Optimización para dispositivos de bajo rendimiento */
+@media (max-width: 480px) {
+  /* Eliminar la mayoría de animaciones en dispositivos pequeños */
+  .stamp,
+  .floating-title,
+  .mexican-icon {
+    animation: none !important;
+  }
+  
+  /* Usar transiciones más rápidas */
+  .form-control,
+  .btn,
+  .card {
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Simplificar gradientes */
+  .text-gradient,
+  .gradient-text {
+    background: var(--color-primary) !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    color: var(--color-primary) !important;
+  }
+}
+
+/* Optimización para dispositivos con GPU limitada */
+@media (max-resolution: 150dpi) {
+  .parallax-element {
+    transform: none !important;
+  }
+  
+  .card::before,
+  .mexican-text::before {
+    display: none !important;
+  }
+}
+
+/* Forzar aceleración por hardware solo donde sea beneficioso */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Cleanup de will-change después de animaciones */
+.animation-cleanup {
+  will-change: auto !important;
+}
+
+/* ===== REEMPLAZO OPTIMIZADO DE AOS ANIMATIONS ===== */
+
+/* Estados iniciales de elementos animados */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Estado activo cuando el elemento es visible */
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto; /* Cleanup automático */
+}
+
+/* Variantes específicas para diferentes tipos de entrada */
+.animate-on-scroll.fade-up {
+  transform: translateY(50px);
+}
+
+.animate-on-scroll.fade-up.animate-in {
+  transform: translateY(0);
+}
+
+.animate-on-scroll.fade-down {
+  transform: translateY(-30px);
+}
+
+.animate-on-scroll.fade-down.animate-in {
+  transform: translateY(0);
+}
+
+.animate-on-scroll.zoom-in {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.animate-on-scroll.zoom-in.animate-in {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.animate-on-scroll.slide-left {
+  transform: translateX(-50px);
+}
+
+.animate-on-scroll.slide-left.animate-in {
+  transform: translateX(0);
+}
+
+.animate-on-scroll.slide-right {
+  transform: translateX(50px);
+}
+
+.animate-on-scroll.slide-right.animate-in {
+  transform: translateX(0);
+}
+
+/* Optimización: Delay escalonado para elementos hermanos */
+.animate-on-scroll:nth-child(1) { transition-delay: 0ms; }
+.animate-on-scroll:nth-child(2) { transition-delay: 100ms; }
+.animate-on-scroll:nth-child(3) { transition-delay: 200ms; }
+.animate-on-scroll:nth-child(4) { transition-delay: 300ms; }
+.animate-on-scroll:nth-child(5) { transition-delay: 400ms; }
+
+/* ===== OPTIMIZACIÓN DE PAGES.CSS PROBLEMÁTICAS ===== */
+
+/* Simplificar animaciones del header de páginas */
+.page-header::before,
+.page-header::after {
+  animation-duration: 12s !important;
+  animation-timing-function: ease-in-out !important;
+}
+
+/* Optimizar patrones de fondo de páginas */
+.pages-container::before {
+  animation-duration: 25s !important;
+  animation-timing-function: ease-in-out !important;
+}
+
+/* Simplificar gradientes de página */
+.page-header h1 {
+  background-size: 100% 100% !important;
+  animation: none !important;
+}
+
+/* Optimizar elementos flotantes */
+.page-section::before,
+.page-section::after {
+  animation-duration: 8s !important;
+}
+
+/* Reducir complejidad de efectos hover en páginas */
+.page-section:hover {
+  transform: none !important;
+}
+
+.feature-card:hover,
+.team-member:hover {
+  transform: translateY(-4px) !important; /* Simplificado */
+}
+
+/* Optimizar iconos de páginas */
+.feature-icon,
+.team-member-photo {
+  animation-duration: 4s !important;
+  animation-timing-function: ease-in-out !important;
+}
+
+/* ===== OPTIMIZACIÓN ESPECÍFICA PARA ABOUT PAGE ===== */
+
+/* Optimizar sellos mexicanos - reducir complejidad */
+.stamp {
+  animation: simpleStampRotate 15s ease-in-out infinite !important;
+}
+
+@keyframes simpleStampRotate {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+}
+
+/* Optimizar sombreros */
+.sombrero {
+  animation: gentleBounce 6s ease-in-out infinite !important;
+}
+
+@keyframes gentleBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Optimizar título flotante */
+.floating-title {
+  animation: subtleFloat 8s ease-in-out infinite !important;
+}
+
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Optimizar parallax del hero */
+.hero-parallax .parallax-bg {
+  animation: none !important; /* Eliminar parallax costoso */
+}
+
+/* Reducir efectos en value cards */
+.value-card-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.value-card-item:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ===== OPTIMIZACIÓN DE BLOG PAGES ===== */
+
+/* Optimizar tarjetas de blog */
+.blog-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.blog-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* Simplificar efectos de carga */
+.blog-loading,
+.blog-post-loading {
+  animation: simpleBlinking 2s ease-in-out infinite !important;
+}
+
+@keyframes simpleBlinking {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ===== LIMPIEZA FINAL ===== */
+
+/* Eliminar animaciones problemáticas detectadas */
+.problematic-animation {
+  animation: none !important;
+  transition: opacity 0.3s ease !important;
+}
+
+/* Optimización global para intersection observers */
+.in-viewport {
+  /* Elementos visibles - optimizaciones activas */
+}
+
+.out-of-viewport {
+  /* Elementos fuera de vista - pausar efectos costosos */
+}
+
+.out-of-viewport * {
+  animation-play-state: paused !important;
+}
+
+/* ===== OPTIMIZACIONES ESPECÍFICAS PARA GOOGLE PAGESPEED ===== */
+
+/* 1. OPTIMIZACIÓN LCP (LARGEST CONTENTFUL PAINT) */
+
+/* Hero image - crítico para LCP */
+.hero-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 1920px 1080px;
+  /* Preload crítico */
+  font-display: swap;
+  /* Evitar reflow */
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  width: 100% !important;
+  height: 100vh !important;
+}
+
+/* Preload de recursos críticos */
+.critical {
+  content-visibility: auto;
+  contain-intrinsic-size: auto;
+}
+
+/* Optimizar renderizado inicial */
+.above-the-fold {
+  contain: layout style paint;
+}
+
+/* 2. OPTIMIZACIÓN CLS (CUMULATIVE LAYOUT SHIFT) */
+
+/* Dimensiones fijas para evitar shifts */
+.hero-section {
+  min-height: 100vh;
+  height: 100vh;
+  position: relative;
+  contain: layout;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Placeholders con dimensiones fijas */
+.loading-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  contain: strict;
+}
+
+/* Navbar fijo para evitar shift */
+.navbar {
+  height: 80px; /* Altura fija */
+  contain: layout;
+}
+
+.navbar-container {
+  height: 80px; /* Altura fija */
+  min-height: 80px;
+}
+
+/* Footer con altura mínima */
+.footer {
+  min-height: 200px;
+  contain: layout;
+}
+
+/* Evitar shift en cards */
+.blog-card,
+.value-card-item,
+.feature-card {
+  min-height: 300px;
+  aspect-ratio: 1/1.2;
+  contain: layout;
+}
+
+/* Formularios con altura fija */
+.contact-form-card,
+.reservation-form-card {
+  min-height: 600px;
+  contain: layout;
+}
+
+/* 3. OPTIMIZACIÓN SPEED INDEX */
+
+/* Críticos first */
+.critical {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Lazy loading mejorado */
+.lazy-element {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
+}
+
+/* Reducir trabajo del main thread */
+.non-critical {
+  content-visibility: auto;
+  contain: layout style;
+}
+
+/* Optimizar fonts para Speed Index */
+@font-face {
+  font-family: 'PrimaryFont';
+  font-display: swap; /* Evita FOIT */
+  font-loading: swap;
+}
+
+/* 4. OPTIMIZACIONES ESPECÍFICAS DE IMÁGENES */
+
+/* WebP y AVIF support */
+.optimized-image {
+  content-visibility: auto;
+  contain-intrinsic-size: auto;
+  aspect-ratio: attr(width) / attr(height);
+}
+
+/* Placeholder mientras carga */
+.image-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 5. OPTIMIZACIÓN DE RECURSOS CRÍTICOS */
+
+/* Preload hints para recursos críticos */
+.resource-hint {
+  /* Se manejará via HTML head */
+}
+
+/* Optimizar CSS crítico */
+.above-fold-content * {
+  contain: layout style paint;
+}
+
+/* 6. OPTIMIZACIÓN JAVASCRIPT */
+
+/* Defer para JS no crítico */
+.defer-js {
+  /* Se manejará via script loading */
+}
+
+/* 7. OPTIMIZACIÓN ESPECÍFICA PARA MÓVILES */
+
+@media (max-width: 768px) {
+  .hero-section {
+    height: 70vh; /* Reducir en móviles */
+    min-height: 70vh;
+  }
+  
+  .hero-image {
+    height: 70vh !important;
+    contain-intrinsic-size: 768px 543px;
+  }
+  
+  /* Reducir complejidad en móviles */
+  .complex-animation {
+    animation: none !important;
+  }
+  
+  /* CLS específico para móviles */
+  .mobile-layout {
+    contain: layout;
+    min-height: auto;
+  }
+}
+
+/* 8. CONTENIDO ABOVE THE FOLD OPTIMIZADO */
+
+/* Solo lo esencial visible inmediatamente */
+.above-the-fold {
+  critical-resource-hint: preload;
+}
+
+.below-the-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* 9. OPTIMIZACIÓN DE LAYOUT SHIFTS ESPECÍFICOS */
+
+/* Evitar shifts por fonts */
+.font-loading {
+  font-display: swap;
+  font-feature-settings: "kern" 1;
+  font-kerning: auto;
+  text-rendering: optimizeSpeed;
+}
+
+/* Evitar shifts por iconos */
+.icon-placeholder {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 10. OPTIMIZACIÓN DE THIRD-PARTY SCRIPTS */
+
+/* FontAwesome optimizado */
+.fa-icon {
+  font-display: swap;
+  contain: strict;
+}
+
+/* Google Maps optimizado */
+.map-container {
+  aspect-ratio: 16/9;
+  min-height: 400px;
+  contain: layout;
+}
+
+/* ===== OPTIMIZACIONES AVANZADAS PARA 90+ SCORE ===== */
+
+/* Resource hints críticos */
+.preload-critical {
+  /* Se aplicará via HTML */
+}
+
+/* Optimizar renderizado */
+.render-optimized {
+  transform: translateZ(0);
+  will-change: auto;
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Eliminar layout thrashing */
+.no-layout-thrash {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+/* Optimizar compositing */
+.gpu-layer {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+.gpu-layer.animation-complete {
+  will-change: auto;
+}
+
+/* ===== OPTIMIZACIONES FINALES PARA PRODUCTION ===== */
+
+/* Critical CSS inline */
+.critical-css {
+  /* Estos estilos deben ir inline en el HTML */
+}
+
+/* Defer non-critical CSS */
+.non-critical-css {
+  /* Se cargará después del FCP */
+}
+
+/* Optimizar todo el viewport inicial */
+.initial-viewport {
+  contain: strict;
+  content-visibility: auto;
+}
+
+/* Progressive enhancement */
+.enhanced {
+  content-visibility: auto;
+  contain: layout style paint;
+}
+
+/* ===== OPTIMIZACIONES ESPECÍFICAS CSS ===== */ 

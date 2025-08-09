@@ -1,22 +1,59 @@
 const nodemailer = require('nodemailer');
 
+// Verificar configuración de correo
+const verifyEmailConfig = () => {
+  const requiredEnvVars = [
+    'EMAIL_HOST',
+    'EMAIL_PORT',
+    'EMAIL_USER',
+    'EMAIL_PASS',
+    'EMAIL_FROM',
+    'ADMIN_EMAIL'
+  ];
+
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.error('❌ Error: Faltan variables de entorno necesarias:', missingVars);
+    return false;
+  }
+  return true;
+};
+
 // Configuración del transportador de correo
 const createTransporter = () => {
+  if (!verifyEmailConfig()) {
+    throw new Error('Configuración de correo incompleta. Revise las variables de entorno.');
+  }
+
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: process.env.EMAIL_PORT || 587,
-    secure: false, // true para 465, false para otros puertos
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT),
+    secure: process.env.EMAIL_PORT === '465', // true para puerto 465, false para otros
     auth: {
-      user: process.env.EMAIL_USER || 'reservas@elnopal.es',
-      pass: process.env.EMAIL_PASS || 'mexicanoelnopal.es'
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     },
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: true // Activar verificación SSL
     }
   });
 };
 
-// Plantilla base HTML mejorada con logo y tematización mexicana
+// Función para probar la conexión
+const testEmailConnection = async () => {
+  try {
+    const transporter = createTransporter();
+    const result = await transporter.verify();
+    console.log('✅ Conexión de correo verificada:', result);
+    return { success: true, message: 'Conexión exitosa' };
+  } catch (error) {
+    console.error('❌ Error verificando conexión de correo:', error);
+    return { success: false, message: error.message };
+  }
+};
+
+// Plantilla base HTML con la temática exacta de la web El Nopal
 const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
   return `
     <!DOCTYPE html>
@@ -26,31 +63,37 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${title}</title>
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Amatic+SC:wght@400;700&display=swap');
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
         
         body {
-          font-family: 'Inter', 'Arial', sans-serif;
+          font-family: 'Josefin Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
           line-height: 1.6;
-          color: #333333;
+          color: #1a1a1a;
           max-width: 650px;
           margin: 0 auto;
           padding: 0;
-          background: linear-gradient(135deg, #F8B612 0%, #FFD700 50%, #F8B612 100%);
+          background: linear-gradient(135deg, #E4002B 0%, #008C45 50%, #FFB627 100%);
           min-height: 100vh;
         }
         
         .email-wrapper {
           background-color: #ffffff;
           margin: 20px;
-          border-radius: 20px;
+          border-radius: 24px;
           overflow: hidden;
-          box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-          border: 3px solid #D62828;
+          box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+          border: 3px solid #E4002B;
         }
         
         .header {
-          background: linear-gradient(135deg, #D62828 0%, #E63946 50%, #D62828 100%);
-          color: white;
+          background: linear-gradient(135deg, #E4002B 0%, #c41e3a 100%);
+          color: #ffffff;
           text-align: center;
           padding: 40px 30px;
           position: relative;
@@ -83,14 +126,15 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
           width: 80px;
           height: 80px;
           border-radius: 50%;
-          border: 4px solid #F8B612;
-          background-color: white;
+          border: 4px solid #FFB627;
+          background-color: #ffffff;
           padding: 10px;
           margin-bottom: 15px;
-          box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+          box-shadow: 0 10px 30px rgba(66, 31, 22, 0.15);
         }
         
         .restaurant-name {
+          font-family: 'Playfair Display', Georgia, serif;
           font-size: 32px;
           font-weight: 700;
           margin: 15px 0 5px 0;
@@ -99,7 +143,8 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
         }
         
         .tagline {
-          font-size: 16px;
+          font-family: 'Amatic SC', cursive;
+          font-size: 18px;
           opacity: 0.95;
           font-weight: 400;
           font-style: italic;
@@ -109,23 +154,25 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
         .content {
           padding: 40px 35px;
           background-color: #ffffff;
+          color: #1a1a1a;
         }
         
         .mexican-border {
           height: 8px;
           background: linear-gradient(90deg, 
-            #D62828 0%, #F8B612 25%, #28A745 50%, #F8B612 75%, #D62828 100%);
+            #E4002B 0%, #FFB627 25%, #008C45 50%, #FFB627 75%, #E4002B 100%);
           margin: 0;
         }
         
         .highlight {
-          background: linear-gradient(135deg, #FFF8DC 0%, #FFFACD 100%);
-          border: 2px solid #F8B612;
-          border-radius: 12px;
-          padding: 20px;
-          margin: 25px 0;
+          background: linear-gradient(135deg, #FEF6E4 0%, #fff3cd 100%);
+          border: 2px solid #FFB627;
+          border-radius: 16px;
+          padding: 24px;
+          margin: 24px 0;
           position: relative;
           overflow: hidden;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
         }
         
         .highlight::before {
@@ -138,45 +185,47 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
         }
         
         .details {
-          background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
-          border-left: 6px solid #D62828;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 25px 0;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          border-left: 6px solid #E4002B;
+          border-radius: 12px;
+          padding: 24px;
+          margin: 24px 0;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
         }
         
         .details h3 {
-          color: #D62828;
+          color: #E4002B;
           margin-top: 0;
-          margin-bottom: 15px;
-          font-size: 18px;
+          margin-bottom: 16px;
+          font-size: 20px;
           font-weight: 600;
+          font-family: 'Playfair Display', Georgia, serif;
         }
         
         .footer {
-          background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-          color: white;
-          padding: 35px 30px;
+          background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+          color: #ffffff;
+          padding: 40px 30px;
           text-align: center;
         }
         
         .mexican-decoration {
-          font-size: 24px;
-          margin: 20px 0;
+          font-size: 32px;
+          margin: 24px 0;
           letter-spacing: 8px;
         }
         
         .contact-info {
-          margin: 25px 0;
+          margin: 24px 0;
           line-height: 1.8;
         }
         
         .contact-info strong {
-          color: #F8B612;
+          color: #FFB627;
           font-size: 18px;
           display: block;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
+          font-family: 'Playfair Display', Georgia, serif;
         }
         
         .contact-item {
@@ -187,75 +236,80 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
         
         .button {
           display: inline-block;
-          background: linear-gradient(135deg, #D62828 0%, #E63946 100%);
-          color: white;
+          background: linear-gradient(135deg, #E4002B 0%, #c41e3a 100%);
+          color: #ffffff;
           padding: 15px 30px;
           text-decoration: none;
           border-radius: 50px;
-          margin: 15px 0;
+          margin: 16px 0;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 1px;
           transition: all 0.3s ease;
-          box-shadow: 0 6px 20px rgba(214, 40, 40, 0.3);
+          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.12);
         }
         
         .button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(214, 40, 40, 0.4);
+          box-shadow: 0 8px 25px rgba(228, 0, 43, 0.4);
         }
         
         .status-badge {
           display: inline-block;
-          padding: 8px 16px;
-          border-radius: 20px;
+          padding: 12px 20px;
+          border-radius: 25px;
           font-weight: 600;
           font-size: 14px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
         }
         
         .status-confirmed {
-          background: linear-gradient(135deg, #28A745 0%, #34CE57 100%);
-          color: white;
+          background: linear-gradient(135deg, #008C45 0%, #004d2b 100%);
+          color: #ffffff;
         }
         
         .status-cancelled {
-          background: linear-gradient(135deg, #DC3545 0%, #E74C3C 100%);
-          color: white;
+          background: linear-gradient(135deg, #E4002B 0%, #c41e3a 100%);
+          color: #ffffff;
         }
         
         .info-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 15px;
-          margin: 20px 0;
+          gap: 16px;
+          margin: 24px 0;
         }
         
         .info-item {
-          background: rgba(248, 182, 18, 0.1);
-          padding: 15px;
-          border-radius: 8px;
-          border-left: 4px solid #F8B612;
+          background: rgba(255, 182, 39, 0.1);
+          padding: 16px;
+          border-radius: 12px;
+          border-left: 4px solid #FFB627;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .info-label {
           font-weight: 600;
-          color: #D62828;
+          color: #E4002B;
           font-size: 14px;
-          margin-bottom: 5px;
+          margin-bottom: 6px;
+          font-family: 'Playfair Display', Georgia, serif;
         }
         
         .info-value {
           font-size: 16px;
-          color: #333333;
+          color: #1a1a1a;
+          font-weight: 500;
         }
         
         .divider {
-          height: 2px;
-          background: linear-gradient(90deg, transparent 0%, #F8B612 50%, transparent 100%);
-          margin: 30px 0;
+          height: 3px;
+          background: linear-gradient(90deg, transparent 0%, #FFB627 50%, transparent 100%);
+          margin: 32px 0;
           border: none;
+          border-radius: 2px;
         }
         
         @media (max-width: 600px) {
@@ -300,11 +354,12 @@ const getBaseTemplate = (content, title = 'El Nopal Restaurant') => {
           <div class="mexican-decoration">🌶️ 🌵 🥑 🌮 🌯 🇲🇽</div>
           <div class="contact-info">
             <strong>🌮 EL NOPAL RESTAURANT</strong>
-            <div class="contact-item">📍 Calle de la Tradición, 123 - Granada, España</div>
-            <div class="contact-item">📞 +34 958 123 456</div>
+            <div class="contact-item">📍 C. Martínez Campos, 23 - Granada, España</div>
+            <div class="contact-item">📞 +34 653 73 31 11</div>
             <div class="contact-item">🌐 www.elnopal.es</div>
             <div class="contact-item">📧 reservas@elnopal.es</div>
-            <div class="contact-item">🕒 Abierto: Lun-Dom 12:00-00:00</div>
+            <div class="contact-item">🕒 Mar-Sáb: 13:00-16:30 y 20:00-23:45 | Dom: 13:00-16:30</div>
+            <div class="contact-item" style="color: #FFB627; font-style: italic;">Lunes: Cerrado</div>
           </div>
           <hr class="divider">
           <p style="margin: 15px 0 0 0; font-size: 12px; opacity: 0.7;">
@@ -330,21 +385,21 @@ const getReservationConfirmationTemplate = (reservationData) => {
   });
   
   const content = `
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h2 style="color: #D62828; font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <h2 style="color: #E4002B; font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-family: 'Playfair Display', Georgia, serif;">
         ¡RESERVA CONFIRMADA! 🎉
       </h2>
-      <p style="color: #F8B612; font-size: 16px; font-weight: 600; margin: 10px 0 0 0;">
+      <p style="color: #FFB627; font-size: 18px; font-weight: 600; margin: 12px 0 0 0; font-family: 'Amatic SC', cursive;">
         ¡Te esperamos para una experiencia gastronómica inolvidable!
       </p>
     </div>
 
-    <p style="font-size: 18px; color: #333333; margin-bottom: 25px;">
-      Estimado/a <strong style="color: #D62828;">${reservationData.name}</strong>,
+    <p style="font-size: 18px; color: #1a1a1a; margin-bottom: 24px; line-height: 1.6;">
+      Estimado/a <strong style="color: #E4002B; font-family: 'Playfair Display', Georgia, serif;">${reservationData.name}</strong>,
     </p>
     
-    <p style="font-size: 16px; line-height: 1.7; margin-bottom: 25px;">
-      ¡Qué emoción! 🇲🇽 Hemos confirmado tu reserva en <strong>El Nopal Restaurant</strong>. 
+    <p style="font-size: 16px; line-height: 1.7; margin-bottom: 24px; color: #4a4a4a;">
+      ¡Qué emoción! 🇲🇽 Hemos confirmado tu reserva en <strong style="color: #E4002B;">El Nopal Restaurant</strong>. 
       Nuestro equipo está preparando todo para ofrecerte una auténtica experiencia culinaria mexicana 
       que despertará todos tus sentidos.
     </p>
@@ -379,57 +434,57 @@ const getReservationConfirmationTemplate = (reservationData) => {
       </div>
       
       ${reservationData.specialRequests ? `
-        <div style="background: rgba(40, 167, 69, 0.1); padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28A745;">
+        <div style="background: rgba(0, 140, 69, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #008C45; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
           <div class="info-label">📝 Peticiones Especiales</div>
-          <div class="info-value" style="font-style: italic;">"${reservationData.specialRequests}"</div>
+          <div class="info-value" style="font-style: italic; color: #4a4a4a;">"${reservationData.specialRequests}"</div>
         </div>
       ` : ''}
       
       ${(reservationData.needsBabyCart || reservationData.needsWheelchair) ? `
-        <div style="background: rgba(248, 182, 18, 0.15); padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F8B612;">
+        <div style="background: rgba(255, 182, 39, 0.15); padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #FFB627; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
           <div class="info-label">♿ Servicios de Accesibilidad Solicitados</div>
           <div style="margin-top: 10px;">
-            ${reservationData.needsBabyCart ? '<div style="margin: 5px 0;"><span style="margin-right: 8px;">👶</span> Trona para bebé disponible</div>' : ''}
-            ${reservationData.needsWheelchair ? '<div style="margin: 5px 0;"><span style="margin-right: 8px;">♿</span> Mesa accesible para silla de ruedas</div>' : ''}
+            ${reservationData.needsBabyCart ? '<div style="margin: 6px 0; color: #1a1a1a;"><span style="margin-right: 8px;">👶</span> Trona para bebé disponible</div>' : ''}
+            ${reservationData.needsWheelchair ? '<div style="margin: 6px 0; color: #1a1a1a;"><span style="margin-right: 8px;">♿</span> Mesa accesible para silla de ruedas</div>' : ''}
           </div>
         </div>
       ` : ''}
     </div>
 
     <div class="highlight">
-      <h3 style="margin-top: 0; color: #D62828; font-size: 20px;">⏰ Información Importante para tu Visita</h3>
-      <ul style="margin: 15px 0; padding-left: 20px; line-height: 1.8;">
-        <li><strong>Puntualidad:</strong> Te pedimos llegar 10 minutos antes de tu hora reservada para una mejor experiencia</li>
-        <li><strong>Cambios/Cancelaciones:</strong> Si necesitas modificar tu reserva, contáctanos con al menos 2 horas de anticipación</li>
-        <li><strong>Tiempo de espera:</strong> Mantenemos tu mesa reservada por 15 minutos después de la hora acordada</li>
-        <li><strong>Código de vestimenta:</strong> Casual elegante (sin requisitos especiales)</li>
-        <li><strong>Menú especial:</strong> Pregunta por nuestras especialidades del chef del día</li>
+      <h3 style="margin-top: 0; color: #E4002B; font-size: 20px; font-family: 'Playfair Display', Georgia, serif;">⏰ Información Importante para tu Visita</h3>
+      <ul style="margin: 16px 0; padding-left: 20px; line-height: 1.8; color: #4a4a4a;">
+        <li><strong style="color: #1a1a1a;">Puntualidad:</strong> Te pedimos llegar 10 minutos antes de tu hora reservada para una mejor experiencia</li>
+        <li><strong style="color: #1a1a1a;">Cambios/Cancelaciones:</strong> Si necesitas modificar tu reserva, contáctanos con al menos 2 horas de anticipación</li>
+        <li><strong style="color: #1a1a1a;">Tiempo de espera:</strong> Mantenemos tu mesa reservada por 15 minutos después de la hora acordada</li>
+        <li><strong style="color: #1a1a1a;">Código de vestimenta:</strong> Casual elegante (sin requisitos especiales)</li>
+        <li><strong style="color: #1a1a1a;">Menú especial:</strong> Pregunta por nuestras especialidades del chef del día</li>
       </ul>
     </div>
 
-    <div style="background: linear-gradient(135deg, #E8F5E8 0%, #F0FFF0 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0;">
-      <h3 style="color: #28A745; margin: 0 0 15px 0; font-size: 22px;">🌶️ ¿Qué te espera en El Nopal?</h3>
-      <p style="margin: 0; line-height: 1.6; font-size: 16px;">
+    <div style="background: linear-gradient(135deg, rgba(0, 140, 69, 0.1) 0%, rgba(0, 140, 69, 0.05) 100%); padding: 24px; border-radius: 16px; text-align: center; margin: 32px 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12); border: 2px solid #008C45;">
+      <h3 style="color: #008C45; margin: 0 0 16px 0; font-size: 22px; font-family: 'Playfair Display', Georgia, serif;">🌶️ ¿Qué te espera en El Nopal?</h3>
+      <p style="margin: 0; line-height: 1.6; font-size: 16px; color: #4a4a4a;">
         Platillos auténticos preparados con ingredientes frescos importados directamente de México, 
         un ambiente acogedor que te transportará a las cantinas tradicionales, y un servicio excepcional 
-        que hará de tu velada una experiencia memorable. <strong>¡Prepárate para un viaje culinario único!</strong>
+        que hará de tu velada una experiencia memorable. <strong style="color: #E4002B;">¡Prepárate para un viaje culinario único!</strong>
       </p>
     </div>
 
-    <div style="text-align: center; margin: 35px 0;">
-      <p style="font-size: 18px; color: #D62828; font-weight: 600; margin-bottom: 15px;">
+    <div style="text-align: center; margin: 40px 0;">
+      <p style="font-size: 18px; color: #E4002B; font-weight: 600; margin-bottom: 16px; font-family: 'Playfair Display', Georgia, serif;">
         ¡Nos emociona recibirte en nuestra familia mexicana! 🇲🇽
       </p>
-      <a href="tel:+34958123456" class="button">
+      <a href="tel:+34653733111" class="button">
         📞 ¿Dudas? Llámanos
       </a>
     </div>
 
     <hr class="divider">
     
-    <p style="text-align: center; font-size: 16px; color: #666; margin: 20px 0 0 0;">
-      <strong>¡Gracias por elegir El Nopal Restaurant!</strong><br>
-      <em>Donde cada plato cuenta una historia de México</em> 🌮✨
+    <p style="text-align: center; font-size: 16px; color: #6c757d; margin: 24px 0 0 0; line-height: 1.6;">
+      <strong style="color: #E4002B; font-family: 'Playfair Display', Georgia, serif;">¡Gracias por elegir El Nopal Restaurant!</strong><br>
+      <em style="color: #FFB627; font-family: 'Amatic SC', cursive; font-size: 18px;">Donde cada plato cuenta una historia de México</em> 🌮✨
     </p>
   `;
   
@@ -1196,100 +1251,98 @@ const getContactNotificationTemplate = (contactData) => {
 // Funciones principales para enviar correos
 
 const sendReservationEmails = async (reservationData) => {
+  if (!verifyEmailConfig()) {
+    return { success: false, message: 'Configuración de correo incompleta' };
+  }
+
   const transporter = createTransporter();
   
   try {
     // Correo de confirmación al cliente
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
+      from: process.env.EMAIL_FROM,
       to: reservationData.email,
       subject: '🌮 Confirmación de Reserva - El Nopal Restaurant',
       html: getReservationConfirmationTemplate(reservationData)
     });
 
-    // Notificación al restaurante
+    // Notificación al restaurante (asegurarse de que llegue a ambos correos)
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
-      to: process.env.ADMIN_EMAIL || 'reservas@elnopal.es',
+      from: process.env.EMAIL_FROM,
+      to: [process.env.ADMIN_EMAIL, process.env.EMAIL_USER],
       subject: `🔔 Nueva Reserva - ${reservationData.name} - ${reservationData.date} ${reservationData.time}`,
       html: getReservationNotificationTemplate(reservationData)
     });
 
-    console.log('Correos de reserva enviados exitosamente');
+    console.log('✅ Correos de reserva enviados exitosamente');
     return { success: true, message: 'Correos enviados exitosamente' };
   } catch (error) {
-    console.error('Error enviando correos de reserva:', error);
+    console.error('❌ Error enviando correos de reserva:', error);
     return { success: false, message: 'Error enviando correos', error: error.message };
   }
 };
 
 const sendReviewEmails = async (reviewData) => {
+  if (!verifyEmailConfig()) {
+    return { success: false, message: 'Configuración de correo incompleta' };
+  }
+
   const transporter = createTransporter();
   
   try {
     // Agradecimiento al cliente
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
+      from: process.env.EMAIL_FROM,
       to: reviewData.email,
       subject: '🙏 Gracias por su Opinión - El Nopal Restaurant',
       html: getReviewThankYouTemplate(reviewData)
     });
 
-    // Notificación al restaurante
+    // Notificación al restaurante (asegurarse de que llegue a ambos correos)
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
-      to: process.env.ADMIN_EMAIL || 'reservas@elnopal.es',
+      from: process.env.EMAIL_FROM,
+      to: [process.env.ADMIN_EMAIL, process.env.EMAIL_USER],
       subject: `💬 Nueva Opinión ${reviewData.rating}⭐ - ${reviewData.name}`,
       html: getReviewNotificationTemplate(reviewData)
     });
 
-    console.log('Correos de opinión enviados exitosamente');
+    console.log('✅ Correos de opinión enviados exitosamente');
     return { success: true, message: 'Correos enviados exitosamente' };
   } catch (error) {
-    console.error('Error enviando correos de opinión:', error);
+    console.error('❌ Error enviando correos de opinión:', error);
     return { success: false, message: 'Error enviando correos', error: error.message };
   }
 };
 
 const sendContactEmails = async (contactData) => {
+  if (!verifyEmailConfig()) {
+    return { success: false, message: 'Configuración de correo incompleta' };
+  }
+
   const transporter = createTransporter();
   
   try {
     // Confirmación al cliente
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
+      from: process.env.EMAIL_FROM,
       to: contactData.email,
       subject: '📧 Mensaje Recibido - El Nopal Restaurant',
       html: getContactConfirmationTemplate(contactData)
     });
 
-    // Notificación al restaurante
+    // Notificación al restaurante (asegurarse de que llegue a ambos correos)
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"El Nopal Restaurant" <reservas@elnopal.es>',
-      to: process.env.ADMIN_EMAIL || 'reservas@elnopal.es',
+      from: process.env.EMAIL_FROM,
+      to: [process.env.ADMIN_EMAIL, process.env.EMAIL_USER],
       subject: `📨 Nuevo Contacto - ${contactData.name} - ${contactData.subject || 'Consulta'}`,
       html: getContactNotificationTemplate(contactData)
     });
 
-    console.log('Correos de contacto enviados exitosamente');
+    console.log('✅ Correos de contacto enviados exitosamente');
     return { success: true, message: 'Correos enviados exitosamente' };
   } catch (error) {
-    console.error('Error enviando correos de contacto:', error);
+    console.error('❌ Error enviando correos de contacto:', error);
     return { success: false, message: 'Error enviando correos', error: error.message };
-  }
-};
-
-// Función de prueba
-const testEmailConnection = async () => {
-  const transporter = createTransporter();
-  
-  try {
-    await transporter.verify();
-    console.log('✅ Conexión de correo verificada exitosamente');
-    return { success: true, message: 'Conexión de correo exitosa' };
-  } catch (error) {
-    console.error('❌ Error en la conexión de correo:', error);
-    return { success: false, message: 'Error en la conexión de correo', error: error.message };
   }
 };
 

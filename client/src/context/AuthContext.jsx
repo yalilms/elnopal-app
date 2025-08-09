@@ -81,9 +81,19 @@ export const AuthProvider = ({ children }) => {
         
         console.log("Login exitoso:", userData);
         
+        // Guardar token en localStorage
+        localStorage.setItem('authToken', token);
+        
         // Establecer token y usuario en el estado
         setAuthTokenState(token);
-        setCurrentUser(userData);
+        
+        // Crear objeto de usuario completo con token incluido
+        const fullUserData = {
+          ...userData,
+          token: token
+        };
+        
+        setCurrentUser(fullUserData);
         
         toast.success(`¡Bienvenido ${userData.name || userData.email}!`);
         return true;
@@ -101,7 +111,8 @@ export const AuthProvider = ({ children }) => {
       setError(errorMessage);
       toast.error(errorMessage);
       
-      // Limpiar estado en caso de error
+      // Limpiar estado y localStorage en caso de error
+      localStorage.removeItem('authToken');
       setAuthTokenState(null);
       setCurrentUser(null);
       
@@ -159,11 +170,10 @@ export const AuthProvider = ({ children }) => {
 
   // Función para cerrar sesión
   const logout = () => {
-    setCurrentUser(null);
+    localStorage.removeItem('authToken');
     setAuthTokenState(null);
-    setError(null);
-    
-    toast.info('Sesión cerrada correctamente');
+    setCurrentUser(null);
+    toast.info('Has cerrado sesión');
   };
 
   // Verificar si el usuario es administrador

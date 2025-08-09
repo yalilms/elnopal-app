@@ -3,39 +3,78 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
-    <meta name="theme-color" content="#D62828" />
-    <meta name="description" content="El Nopal - Restaurante Mexicano Auténtico" />
+    <meta name="theme-color" content="#E4002B" />
+    <meta name="description" content="El Nopal - Auténtica cocina mexicana en Granada. Reserva tu mesa y disfruta de los mejores sabores de México en un ambiente acogedor." />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico?v=1" />
     <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/logo192.png?v=1" />
     <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/logo192.png?v=1" />
     <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/logo192.png?v=1" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>El Nopal - Restaurante Mexicano</title>
+    <title>El Nopal - Auténtica Cocina Mexicana en Granada | Reservas</title>
     
     <!-- ===== PRELOADS CRÍTICOS PARA RENDIMIENTO ===== -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
     
     <!-- Preload imagen crítica del hero -->
-    <link rel="preload" as="image" href="/static/media/NOPAL_UNITY-50.9e08b17275cac29852b5.JPG" type="image/jpeg">
+    <link rel="preload" as="image" href="/static/media/NOPAL_UNITY-50.jpg" type="image/jpeg" fetchpriority="high">
     
     <!-- DNS Prefetch para recursos externos -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//images.unsplash.com">
     
     <!-- Optimizaciones de rendering -->
-    <meta name="theme-color" content="#D62828">
+    <meta name="theme-color" content="#E4002B">
     <meta name="color-scheme" content="light">
     
-    <!-- Critical CSS inline será insertado aquí por el build -->
+    <!-- Critical CSS inline para rendimiento óptimo y CLS -->
     <style>
-      /* CSS Crítico inline para First Paint más rápido */
-      :root{--color-primary:#F8B612;--color-secondary:#008C45;--color-accent:#CD212A;--color-dark:#2C1810;--color-light:#F5F3F0;--font-primary:'Montserrat',sans-serif;--font-secondary:'Poppins',sans-serif;--font-size-xl:20px;--font-size-lg:18px;--spacing-lg:24px;--spacing-xl:32px;--spacing-2xl:48px;--shadow-md:0 4px 6px rgba(0,0,0,0.1);--shadow-lg:0 10px 25px rgba(0,0,0,0.15)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-primary);line-height:1.6;color:var(--color-dark);background-color:var(--color-light);overflow-x:hidden}.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:80px;background:linear-gradient(135deg,rgba(44,24,16,0.95) 0%,rgba(44,24,16,0.98) 100%);backdrop-filter:blur(10px);transition:all 0.3s ease;padding:0 var(--spacing-lg)}.hero-section{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center}.hero-background{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}.hero-background img,.hero-background .optimized-image{width:100%;height:100%;object-fit:cover;object-position:center}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(44,24,16,0.7) 0%,rgba(205,33,42,0.3) 50%,rgba(0,140,69,0.6) 100%);z-index:2}.hero-content{position:relative;z-index:3;text-align:center;color:white;max-width:800px;padding:var(--spacing-2xl)}.hero-title{font-size:clamp(2.5rem,6vw,4rem);font-weight:700;margin-bottom:var(--spacing-lg);text-shadow:2px 2px 4px rgba(0,0,0,0.7);line-height:1.2}
+      /* CSS Crítico inline para First Paint más rápido y evitar CLS */
+      :root{--color-primary:#F8B612;--color-secondary:#008C45;--color-accent:#CD212A;--color-dark:#2C1810;--color-light:#F5F3F0;--font-primary:'Montserrat',sans-serif;--font-secondary:'Poppins',sans-serif;--font-size-xl:20px;--font-size-lg:18px;--spacing-lg:24px;--spacing-xl:32px;--spacing-2xl:48px;--shadow-md:0 4px 6px rgba(0,0,0,0.1);--shadow-lg:0 10px 25px rgba(0,0,0,0.15)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-primary);line-height:1.6;color:var(--color-dark);background-color:var(--color-light);overflow-x:hidden}
+      
+      /* Animaciones críticas */
+      @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+      
+             /* Navbar crítico */
+       .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:80px;background:linear-gradient(to bottom,rgba(0,0,0,0.8),rgba(0,0,0,0.6));backdrop-filter:blur(10px);transition:all 0.3s ease;padding:0 var(--spacing-lg)}.navbar-container{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:100%}.navbar-logo{height:50px;width:auto;transition:transform 0.3s ease}.navbar-links a,.navbar-links li a,.navbar-item a{color:white !important;text-decoration:none;font-weight:500;font-size:16px;transition:all 0.3s ease;position:relative;text-shadow:1px 1px 3px rgba(0,0,0,0.5) !important}.navbar-links ul,.navbar-desktop{display:flex;align-items:center;gap:24px;list-style:none;margin:0;padding:0}.navbar.scrolled{background:white;box-shadow:0 10px 25px rgba(0,0,0,0.15)}.navbar.scrolled .navbar-links a,.navbar.scrolled .navbar-links li a,.navbar.scrolled .navbar-item a{color:#2C1810 !important;text-shadow:none !important}
+      
+      /* Hero optimizado para LCP */
+      .hero-section{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center}.hero-background{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}.hero-background img,.hero-background .optimized-image{width:100%;height:100%;object-fit:cover;object-position:center;aspect-ratio:16/9}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(44,24,16,0.7) 0%,rgba(205,33,42,0.3) 50%,rgba(0,140,69,0.6) 100%);z-index:2}.hero-content{position:relative;z-index:3;text-align:center;color:white;max-width:800px;padding:var(--spacing-2xl);animation:fadeIn 1s ease-out 0.5s both}.hero-title{font-size:clamp(2.5rem,6vw,4rem);font-weight:700;margin-bottom:var(--spacing-lg);text-shadow:2px 2px 4px rgba(0,0,0,0.7);line-height:1.2;font-display:swap}
+      
+      /* Contenedor de imagen optimizado para CLS */
+      .image-container{display:block;position:relative;width:100%;height:auto}.image-container.hero-image{width:100%;height:100%;aspect-ratio:16/9}.optimized-image{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:opacity 0.3s ease}.optimized-image.loading{opacity:0}.optimized-image.loaded{opacity:1}
+      
+      /* Placeholder para evitar CLS */
+      .image-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;background-color:#f0f0f0;display:flex;align-items:center;justify-content:center;z-index:1}.placeholder-shimmer{width:100%;height:100%;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+      
+      /* Logo optimizado */
+      .logo-image{width:auto;height:40px;aspect-ratio:2/1}
     </style>
 </head>
 <body>
     <noscript>Necesitas habilitar JavaScript para ejecutar esta aplicación.</noscript>
-    <div id="root"></div>
+    <div id="root">
+        <!-- Loader inicial mientras carga React -->
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+    
+    <!-- Service Worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
 </body>
 </html> 

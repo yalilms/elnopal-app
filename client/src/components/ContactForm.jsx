@@ -9,6 +9,8 @@ import {
   faCheckCircle,
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
+import '../styles/contact-form.css';
+import { sendContactMessage } from '../services/contactService';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -45,7 +47,7 @@ const ContactForm = () => {
         
       case 'subject':
         if (!value.trim()) return 'El asunto es requerido';
-        if (value.trim().length < 5) return 'El asunto debe tener al menos 5 caracteres';
+        // No validar longitud para opciones predefinidas del dropdown
         return '';
         
       case 'message':
@@ -127,9 +129,10 @@ const ContactForm = () => {
     }
     
     try {
-      // Simular envío del formulario
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Enviar el formulario usando la API real
+      const result = await sendContactMessage(formData);
       
+      if (result.success) {
       setSuccess(true);
       setLoading(false);
       
@@ -145,10 +148,14 @@ const ContactForm = () => {
         setErrors({});
         setTouched({});
         setSuccess(false);
-      }, 3000);
+        }, 5000); // Aumentado a 5 segundos para que el usuario vea el mensaje
+      } else {
+        throw new Error('Error al enviar el mensaje');
+      }
       
     } catch (err) {
-      setErrors({ submit: 'Error al enviar el mensaje. Inténtalo de nuevo.' });
+      console.error('Error enviando formulario de contacto:', err);
+      setErrors({ submit: err.message || 'Error al enviar el mensaje. Inténtalo de nuevo.' });
       setLoading(false);
     }
   };
@@ -166,106 +173,100 @@ const ContactForm = () => {
   ];
 
   return (
-    <div className="container section" id="contact-form">
-      <div className="card elevation-2">
-        <div className="card-header text-center">
-          <h2 className="gradient-text">Contáctanos</h2>
-          <p>¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
+    <div className="contact-form-container">
+      <div className="contact-form-card">
+        <div className="contact-form-header">
+          <h2 className="contact-form-title">Contáctanos</h2>
+          <p className="contact-form-subtitle">¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
         </div>
         
-        <div className="card-body">
           {success && (
-            <div className="alert alert-success">
+          <div className="form-status-message success">
               <FontAwesomeIcon icon={faCheckCircle} />
               ¡Mensaje enviado correctamente! Te contactaremos pronto.
           </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+        <form className="contact-form" onSubmit={handleSubmit}>
             {errors.submit && (
-              <div className="alert alert-error">
+            <div className="form-status-message error">
                 <FontAwesomeIcon icon={faExclamationCircle} />
                 {errors.submit}
         </div>
             )}
 
             {/* Información personal */}
-            <div style={{marginBottom: 'var(--spacing-xl)'}}>
-              <h3 style={{color: 'var(--color-primary)', marginBottom: 'var(--spacing-md)'}}>
-                Información de Contacto
-              </h3>
-              
-        <div className="form-group">
+          <div className="form-group full">
                 <label htmlFor="name" className="form-label required">
-                  <FontAwesomeIcon icon={faUser} /> Nombre completo
+                  Nombre completo
                 </label>
+            <div className="form-group with-icon">
           <input
             type="text"
                   id="name"
                   name="name"
-                  className={`form-control ${errors.name ? 'error' : touched.name && !errors.name ? 'success' : ''}`}
+                className={`form-input ${errors.name ? 'error' : touched.name && !errors.name ? 'success' : ''}`}
                   value={formData.name}
             onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="Tu nombre completo"
                   disabled={loading || success}
                 />
-                {errors.name && <div className="form-error">{errors.name}</div>}
+              <FontAwesomeIcon icon={faUser} className="form-icon" />
+            </div>
+            {errors.name && <div className="form-error-message">{errors.name}</div>}
         </div>
 
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)'}}>
-        <div className="form-group">
+          <div className="form-group half">
                   <label htmlFor="email" className="form-label required">
-                    <FontAwesomeIcon icon={faEnvelope} /> Email
+                    Email
                   </label>
+            <div className="form-group with-icon">
           <input
             type="email"
             id="email"
             name="email"
-                    className={`form-control ${errors.email ? 'error' : touched.email && !errors.email ? 'success' : ''}`}
+                className={`form-input ${errors.email ? 'error' : touched.email && !errors.email ? 'success' : ''}`}
             value={formData.email}
             onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="tu@email.com"
                     disabled={loading || success}
                   />
-                  {errors.email && <div className="form-error">{errors.email}</div>}
+              <FontAwesomeIcon icon={faEnvelope} className="form-icon" />
+            </div>
+            {errors.email && <div className="form-error-message">{errors.email}</div>}
         </div>
         
-        <div className="form-group">
+          <div className="form-group half">
                   <label htmlFor="phone" className="form-label">
-                    <FontAwesomeIcon icon={faPhone} /> Teléfono (opcional)
+                    Teléfono (opcional)
                   </label>
+            <div className="form-group with-icon">
           <input
                     type="tel"
                     id="phone"
                     name="phone"
-                    className={`form-control ${errors.phone ? 'error' : touched.phone && !errors.phone && formData.phone ? 'success' : ''}`}
+                className={`form-input ${errors.phone ? 'error' : touched.phone && !errors.phone && formData.phone ? 'success' : ''}`}
                     value={formData.phone}
             onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="+34 123 456 789"
                     disabled={loading || success}
                   />
-                  {errors.phone && <div className="form-error">{errors.phone}</div>}
-                </div>
-              </div>
+              <FontAwesomeIcon icon={faPhone} className="form-icon" />
             </div>
-
-            {/* Mensaje */}
-            <div style={{marginBottom: 'var(--spacing-xl)'}}>
-              <h3 style={{color: 'var(--color-primary)', marginBottom: 'var(--spacing-md)'}}>
-                Tu Mensaje
-              </h3>
+            {errors.phone && <div className="form-error-message">{errors.phone}</div>}
+          </div>
               
-              <div className="form-group">
+          <div className="form-group full">
                 <label htmlFor="subject" className="form-label required">
-                  <FontAwesomeIcon icon={faComment} /> Asunto
+                  Asunto
                 </label>
                 <select
                   id="subject"
                   name="subject"
-                  className={`form-control form-select ${errors.subject ? 'error' : touched.subject && !errors.subject ? 'success' : ''}`}
+              className={`form-select ${errors.subject ? 'error' : touched.subject && !errors.subject ? 'success' : ''}`}
                   value={formData.subject}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -276,17 +277,17 @@ const ContactForm = () => {
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
-                {errors.subject && <div className="form-error">{errors.subject}</div>}
+            {errors.subject && <div className="form-error-message">{errors.subject}</div>}
         </div>
 
-        <div className="form-group">
+          <div className="form-group full">
                 <label htmlFor="message" className="form-label required">
                   Mensaje
                 </label>
           <textarea
                   id="message"
                   name="message"
-                  className={`form-control form-textarea ${errors.message ? 'error' : touched.message && !errors.message ? 'success' : ''}`}
+              className={`form-textarea ${errors.message ? 'error' : touched.message && !errors.message ? 'success' : ''}`}
                   value={formData.message}
             onChange={handleChange}
                   onBlur={handleBlur}
@@ -295,51 +296,50 @@ const ContactForm = () => {
                   maxLength="1000"
                   disabled={loading || success}
                 />
-                <div style={{fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-xs)'}}>
+            <div className="character-count">
                   {formData.message.length}/1000 caracteres
                 </div>
-                {errors.message && <div className="form-error">{errors.message}</div>}
-              </div>
+            {errors.message && <div className="form-error-message">{errors.message}</div>}
             </div>
 
             {/* Información adicional */}
-            <div className="mexican-highlight" style={{marginBottom: 'var(--spacing-lg)'}}>
+          <div className="contact-form-info">
               <h4>💡 Información útil</h4>
-              <ul style={{marginBottom: 0, paddingLeft: 'var(--spacing-lg)'}}>
-                <li>Respondemos en un plazo máximo de 24 horas</li>
-                <li>Para reservas urgentes, llama al +34 653 73 31 11</li>
-                <li>También puedes visitarnos en C. Martínez Campos, 23, Granada</li>
-              </ul>
+            <p>• Respondemos en un plazo máximo de 24 horas</p>
+            <p>• Para reservas urgentes, llama al +34 653 73 31 11</p>
+            <p>• También puedes visitarnos en C. Martínez Campos, 23, Granada</p>
         </div>
 
             {/* Botón de envío */}
-            <div style={{textAlign: 'center'}}>
               <button
                 type="submit"
-                className="btn btn-primary btn-lg"
+            className={`form-submit-button ${loading ? 'loading' : ''}`}
                 disabled={loading || success || Object.keys(validateForm()).length > 0}
-                style={{minWidth: '200px'}}
               >
                 {loading ? (
                   <>
-                    <div className="spinner" style={{marginRight: 'var(--spacing-sm)'}}></div>
+                <FontAwesomeIcon icon={faPaperPlane} className="form-submit-icon" />
                     Enviando...
                   </>
                 ) : success ? (
                   <>
-                    <FontAwesomeIcon icon={faCheckCircle} />
+                <FontAwesomeIcon icon={faCheckCircle} className="form-submit-icon" />
                     ¡Enviado!
                   </>
                 ) : (
                   <>
-                    <FontAwesomeIcon icon={faPaperPlane} />
+                <FontAwesomeIcon icon={faPaperPlane} className="form-submit-icon" />
                     Enviar Mensaje
                   </>
                 )}
           </button>
+
+          <div className="privacy-notice">
+            <small>
+              Al enviar este formulario aceptas nuestra <a href="#privacy">Política de Privacidad</a> y el tratamiento de tus datos personales.
+            </small>
         </div>
       </form>
-        </div>
       </div>
     </div>
   );

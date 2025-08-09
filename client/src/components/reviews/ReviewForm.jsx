@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import api from '../../services/api'; // Importar la instancia de axios
 // import './ReviewForm.css'; // Archivo eliminado - estilos ahora en sistema modular
-
-// Configurar base URL para desarrollo y producción
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://elnopal.es' // En producción, usar HTTPS del dominio principal (nginx manejará el proxy)
-  : 'http://localhost:5000'; // En desarrollo, puerto del backend
 
 const ReviewForm = ({ onReviewSubmitted }) => {
   const [formData, setFormData] = useState({
@@ -42,25 +38,15 @@ const ReviewForm = ({ onReviewSubmitted }) => {
     try {
       setIsSubmitting(true);
       
-      const response = await fetch(`${API_BASE_URL}/api/reviews`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.nombre,
-          email: formData.email,
-          rating: formData.calificacion,
-          comment: formData.comentario,
-          fecha: new Date().toLocaleDateString()
-        })
+      const response = await api.post('/reviews', {
+        name: formData.nombre,
+        email: formData.email,
+        rating: formData.calificacion,
+        comment: formData.comentario,
+        fecha: new Date().toLocaleDateString()
       });
       
-      if (!response.ok) {
-        throw new Error('Error al enviar la reseña');
-      }
-      
-      const data = await response.json();
+      const data = response.data;
       
       toast.success("¡Gracias por compartir tu opinión!");
       setFormData({
@@ -75,7 +61,8 @@ const ReviewForm = ({ onReviewSubmitted }) => {
       }
       
     } catch (error) {
-      toast.error(error.message || "Hubo un error al enviar tu reseña. Inténtalo de nuevo.");
+      const errorMessage = error.response?.data?.message || error.message || "Hubo un error al enviar tu reseña. Inténtalo de nuevo.";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -94,7 +81,7 @@ const ReviewForm = ({ onReviewSubmitted }) => {
             value={formData.nombre}
             onChange={handleChange}
             required
-            placeholder="Tu nombre"
+            placeholder="Tu nombre completo"
           />
         </div>
         
@@ -107,13 +94,13 @@ const ReviewForm = ({ onReviewSubmitted }) => {
             value={formData.email}
             onChange={handleChange}
             required
-            placeholder="tu@email.com"
+            placeholder="tu.email@ejemplo.com"
           />
-          <small>Tu email no será publicado</small>
+          <small>Tu email no será publicado ni compartido</small>
         </div>
         
         <div className="form-group">
-          <label>Calificación*</label>
+          <label>¿Cómo calificarías tu experiencia?*</label>
           <div className="rating-input">
             {[5, 4, 3, 2, 1].map(star => (
               <button
@@ -121,23 +108,31 @@ const ReviewForm = ({ onReviewSubmitted }) => {
                 type="button"
                 className={`star-btn ${formData.calificacion >= star ? 'active' : ''}`}
                 onClick={() => handleRatingChange(star)}
+                title={`${star} estrella${star > 1 ? 's' : ''}`}
               >
                 ★
               </button>
             ))}
           </div>
+          <p style={{ textAlign: 'center', marginTop: '8px', fontSize: '14px', color: '#666' }}>
+            {formData.calificacion === 5 && '¡Excelente! 🌟'}
+            {formData.calificacion === 4 && 'Muy bueno 👍'}
+            {formData.calificacion === 3 && 'Bueno 👌'}
+            {formData.calificacion === 2 && 'Regular 😐'}
+            {formData.calificacion === 1 && 'Necesita mejorar 😔'}
+          </p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="comentario">Tu opinión*</label>
+          <label htmlFor="comentario">Comparte tu experiencia*</label>
           <textarea
             id="comentario"
             name="comentario"
             value={formData.comentario}
             onChange={handleChange}
             required
-            placeholder="Cuéntanos sobre tu experiencia..."
-            rows="5"
+            placeholder="Cuéntanos sobre tu experiencia en El Nopal: ¿qué platillos probaste? ¿cómo fue el servicio? ¿qué te gustó más?"
+            rows="6"
           ></textarea>
         </div>
         

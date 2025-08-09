@@ -1,24 +1,37 @@
-/* ===== CSS CRÍTICO - ABOVE THE FOLD ===== */
+/* =============================================================================
+   EL NOPAL - ESTILOS CRÍTICOS
+   Estilos que se cargan inmediatamente para evitar FOUC
+   ============================================================================= */
 
-/* Variables críticas */
+/* VARIABLES CSS GLOBALES */
 :root {
-  --color-primary: #F8B612;
-  --color-secondary: #008C45;
-  --color-accent: #CD212A;
-  --color-dark: #2C1810;
-  --color-light: #F5F3F0;
+  /* Colores mexicanos tradicionales */
+  --color-primary: #F8B612;    /* Amarillo mexicano */
+  --color-secondary: #008C45;  /* Verde bandera */
+  --color-accent: #CD212A;     /* Rojo bandera */
+  --color-dark: #2C1810;       /* Marrón chocolate */
+  --color-light: #F5F3F0;      /* Crema cálido */
+  
+  /* Tipografía */
   --font-primary: 'Montserrat', sans-serif;
   --font-secondary: 'Poppins', sans-serif;
   --font-size-xl: 20px;
   --font-size-lg: 18px;
+  
+  /* Espaciado */
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
+  
+  /* Sombras */
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  
+  --critical-bg: var(--admin-light, #F9FAFB);
+  --critical-text: var(--admin-text-primary, #1F2937);
 }
 
-/* Reset crítico */
+/* RESET BÁSICO */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -33,6 +46,22 @@ body {
   overflow-x: hidden;
 }
 
+body, .critical-section, .critical-content {
+  background: var(--critical-bg) !important;
+  color: var(--critical-text) !important;
+}
+
+/* ANIMACIONES CRÍTICAS */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* NAVBAR CRÍTICO */
 .navbar {
   position: fixed;
@@ -41,67 +70,117 @@ body {
   right: 0;
   z-index: 1000;
   height: 80px;
-  background: linear-gradient(135deg, rgba(44, 24, 16, 0.95) 0%, rgba(44, 24, 16, 0.98) 100%);
+  background: linear-gradient(135deg, 
+    rgba(44, 24, 16, 0.95) 0%, 
+    rgba(44, 24, 16, 0.98) 100%);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   padding: 0 var(--spacing-lg);
 }
 
-.navbar.scrolled {
-  background: linear-gradient(135deg, rgba(245, 243, 240, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
-  box-shadow: var(--shadow-md);
-}
-
 .navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
 }
 
-.navbar-brand img {
+.navbar-logo {
   height: 50px;
   width: auto;
-  filter: brightness(0) invert(1);
-  transition: filter 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
-.navbar.scrolled .navbar-brand img {
-  filter: brightness(0) invert(0);
+.navbar-logo:hover {
+  transform: scale(1.05);
 }
 
-.navbar-menu {
+.navbar-menu,
+.navbar-links,
+.navbar-desktop,
+.navbar-links ul {
   display: flex;
-  list-style: none;
-  gap: var(--spacing-xl);
   align-items: center;
+  gap: var(--spacing-lg);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar-item a {
+.navbar-links .reserva-btn {
   color: white !important;
+  background: linear-gradient(135deg, var(--color-primary), #ad1457);
+  padding: 12px 24px;
+  border-radius: 50px;
   text-decoration: none;
-  font-size: var(--font-size-xl);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  padding: 8px 16px;
   transition: all 0.3s ease;
 }
 
-.navbar.scrolled .navbar-item a {
-  color: var(--color-dark) !important;
+.navbar-item a,
+.navbar-links a,
+.navbar-links li a {
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.navbar-item a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.navbar-item a:hover::after,
+.navbar-item a.active::after {
+  width: 100%;
 }
 
 .navbar-item a:hover,
-.navbar-item a.active {
+.navbar-item a.active,
+.navbar-links a:hover,
+.navbar-links a.active,
+.navbar-links li a:hover,
+.navbar-links li a.active {
   color: var(--color-primary) !important;
-  text-shadow: 0 0 10px rgba(248, 182, 18, 0.5);
+  text-shadow: 0 0 10px rgba(248, 182, 18, 0.5) !important;
 }
 
-/* HERO SECTION CRÍTICO */
+/* Estados para navbar con scroll */
+.navbar.scrolled {
+  background: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.navbar.scrolled .navbar-links a,
+.navbar.scrolled .navbar-links li a,
+.navbar.scrolled .navbar-item a {
+  color: var(--color-dark) !important;
+  text-shadow: none !important;
+}
+
+.navbar.scrolled .navbar-links a:hover,
+.navbar.scrolled .navbar-links a.active,
+.navbar.scrolled .navbar-links li a:hover,
+.navbar.scrolled .navbar-links li a.active,
+.navbar.scrolled .navbar-item a:hover,
+.navbar.scrolled .navbar-item a.active {
+  color: var(--color-primary) !important;
+  text-shadow: 0 0 10px rgba(248, 182, 18, 0.5) !important;
+}
+
+/* HERO SECTION CRÍTICO - OPTIMIZADO PARA LCP */
 .hero-section {
   position: relative;
   height: 100vh;
@@ -127,6 +206,62 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  /* Dimensiones explícitas para evitar CLS */
+  aspect-ratio: 16/9;
+}
+
+/* Contenedor de imagen optimizado para evitar CLS */
+.image-container {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.image-container.hero-image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+}
+
+/* Imagen optimizada */
+.optimized-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.optimized-image.loading {
+  opacity: 0;
+}
+
+.optimized-image.loaded {
+  opacity: 1;
+}
+
+/* Placeholder para evitar CLS */
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.placeholder-shimmer {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
 .hero-overlay {
@@ -149,6 +284,7 @@ body {
   color: white;
   max-width: 800px;
   padding: var(--spacing-2xl);
+  animation: fadeIn 1s ease-out 0.5s both;
 }
 
 .hero-title {
@@ -157,6 +293,8 @@ body {
   margin-bottom: var(--spacing-lg);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   line-height: 1.2;
+  /* Evitar CLS con font-display */
+  font-display: swap;
 }
 
 .hero-subtitle {
@@ -164,6 +302,7 @@ body {
   margin-bottom: var(--spacing-2xl);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   opacity: 0.95;
+  line-height: 1.5;
 }
 
 .hero-buttons {
@@ -174,6 +313,7 @@ body {
   flex-wrap: wrap;
 }
 
+/* BOTONES CRÍTICOS */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -189,6 +329,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  min-height: 56px; /* Evitar CLS */
 }
 
 .btn-primary {
@@ -198,8 +339,88 @@ body {
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(248, 182, 18, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(248, 182, 18, 0.4);
+}
+
+/* LOADING SPINNER CRÍTICO */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: var(--spacing-2xl);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.mexican-spinner {
+  font-size: 2rem;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner-emoji {
+  display: inline-block;
+  animation: bounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-10px); }
+}
+
+.loading-text {
+  color: var(--color-dark);
+  font-size: var(--font-size-lg);
+  opacity: 0.8;
+}
+
+/* OPTIMIZACIONES PARA RENDIMIENTO */
+/* Preload de fuentes críticas */
+@font-face {
+  font-family: 'Montserrat';
+  font-display: swap;
+  src: local('Montserrat');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-display: swap;
+  src: local('Poppins');
+}
+
+/* Contenido arriba del fold */
+.above-the-fold {
+  contain: layout style paint;
+}
+
+/* Mejoras para imágenes de logo */
+.logo-image {
+  width: auto;
+  height: 40px;
+  aspect-ratio: 2/1;
+}
+
+/* Error de imagen */
+.image-error {
+  background-color: #f8f8f8;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 /* EMOTICONOS ANIMADOS */
@@ -291,4 +512,4 @@ body {
     padding: 14px 28px;
     font-size: 16px;
   }
-} 
+}

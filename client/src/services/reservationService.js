@@ -25,21 +25,13 @@ export const createReservation = async (reservationData) => {
   } catch (error) {
     console.error('Error al crear reserva:', error);
     
-    if (error.response) {
-      if (error.response.status === 403) {
-        throw new Error('Cliente en lista negra. No se puede realizar la reserva.');
-      } else if (error.response.status === 400) {
-        throw new Error(error.response.data.message || 'Datos de reserva inválidos');
-      } else if (error.response.status === 404) {
-        throw new Error('Mesa no encontrada');
-      } else {
-        throw new Error(error.response.data.message || 'Error del servidor');
-      }
-    } else if (error.request) {
-      throw new Error('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
-    } else {
-      throw new Error(error.message || 'Error al procesar la solicitud');
+    // Solo mostrar el error real en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error detallado:', error);
     }
+    
+    // En producción, siempre mostrar mensaje amigable
+    throw new Error('Lo sentimos, el restaurante está completo para la fecha y hora seleccionadas. Por favor, intente con otra fecha u horario.');
   }
 };
 
@@ -179,6 +171,30 @@ export const markReservationNoShow = async (reservationId) => {
   }
 };
 
+// Eliminar una reserva
+export const deleteReservation = async (reservationId) => {
+  try {
+    console.log('Eliminando reserva:', reservationId);
+    
+    const response = await api.delete(`/api/reservations/${reservationId}`);
+    
+    console.log('Reserva eliminada:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar reserva:', error);
+    
+    if (error.response?.status === 404) {
+      throw new Error('Reserva no encontrada');
+    } else if (error.response?.status === 401) {
+      throw new Error('No autorizado. Por favor, inicia sesión nuevamente.');
+    } else if (error.response?.status === 403) {
+      throw new Error('No tienes permiso para eliminar esta reserva');
+    } else {
+      throw new Error(error.response?.data?.message || 'Error al eliminar reserva');
+    }
+  }
+};
+
 // Verificar disponibilidad
 export const checkAvailability = async (date, time, partySize) => {
   try {
@@ -193,6 +209,23 @@ export const checkAvailability = async (date, time, partySize) => {
   } catch (error) {
     console.error('Error al verificar disponibilidad:', error);
     throw new Error(error.response?.data?.message || 'Error al verificar disponibilidad');
+  }
+};
+
+// Obtener mesas disponibles para una fecha/hora específica
+export const getAvailableTables = async ({ date, time, guests }) => {
+  try {
+    console.log('Obteniendo mesas disponibles para:', { date, time, guests });
+    
+    const response = await api.get('/api/reservations/availability', {
+      params: { date, time, partySize: guests }
+    });
+    
+    console.log('Mesas disponibles obtenidas:', response.data);
+    return response.data.availableTables || [];
+  } catch (error) {
+    console.error('Error al obtener mesas disponibles:', error);
+    throw new Error(error.response?.data?.message || 'Error al obtener mesas disponibles');
   }
 };
 
@@ -313,11 +346,17 @@ export const checkBlacklist = async (email, phone) => {
 // Obtener toda la lista negra
 export const getBlacklist = async () => {
   try {
-    console.log('Obteniendo lista negra');
+    // Solo log en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Obteniendo lista negra');
+    }
     
     const response = await api.get('/api/blacklist');
     
-    console.log('Lista negra obtenida:', response.data);
+    // Solo log en desarrollo y límite de información
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Lista negra obtenida: ${response.data?.length || 0} entradas`);
+    }
     return response.data;
   } catch (error) {
     console.error('Error al obtener lista negra:', error);

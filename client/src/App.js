@@ -11,6 +11,7 @@ import Navbar from './components/layout/Navbar';
 import { AuthProvider } from './context/AuthContext';
 import { ReservationProvider } from './context/ReservationContext';
 import OptimizedImage from './components/common/OptimizedImage';
+import ViewportObserver from './components/common/ViewportObserver';
 import { navigateAndScroll, handleHashScroll } from './utils/scrollUtils';
 
 // ===== LAZY LOADING PARA COMPONENTES NO CRÍTICOS =====
@@ -18,33 +19,21 @@ const Blog = React.lazy(() => import('./components/routes/Blog'));
 const BlogPost = React.lazy(() => import('./components/routes/BlogPost'));
 const About = React.lazy(() => import('./components/routes/About'));
 const ReservationForm = React.lazy(() => import('./components/reservation/ReservationForm'));
-const AdminMainPanel = React.lazy(() => import('./components/admin/AdminReservationPanel'));
 const AdminLogin = React.lazy(() => import('./components/admin/AdminLogin'));
 const Forbidden = React.lazy(() => import('./components/admin/Forbidden'));
 const PrivateRoute = React.lazy(() => import('./components/routes/PrivateRoute'));
 const LeaveReviewPage = React.lazy(() => import('./components/reviews/LeaveReviewPage'));
 const AdminReviewsPanel = React.lazy(() => import('./components/admin/AdminReviewsPanel'));
+const AdminReservationsPanel = React.lazy(() => import('./components/admin/AdminReservationsPanel'));
 const ContactInfo = React.lazy(() => import('./components/contact/ContactInfo'));
 const ContactForm = React.lazy(() => import('./components/ContactForm'));
 
-// ===== DATOS CRÍTICOS =====
-import { menuData } from './data/menuData';
-import { reviewsData } from './data/reviewsData';
-
 // ===== RECURSOS MULTIMEDIA =====
 import videoEjemplo from './images/ejemplo_video.mp4';
-import logoElNopal from './images/logo_elnopal.png';
 
 // Importar nuevas imágenes para el héroe
 import heroImage1 from './images/NOPAL_UNITY-50.JPG';
 import heroImage2 from './images/NOPAL_UNITY-39.JPG';
-import heroImage3 from './images/NOPAL_UNITY-19.JPG';
-import heroImage4 from './images/NOPAL_UNITY-6.JPG';
-
-// Importar imágenes de platos de la semana
-import platoImage1 from './images/p.s.1.JPG';
-import platoImage2 from './images/p_s_2.JPG';
-import platoImage3 from './images/p_s_3.JPG';
 
 // ===== COMPONENTE DE LOADING =====
 const LoadingFallback = ({ message = "Cargando..." }) => (
@@ -61,7 +50,6 @@ const LoadingFallback = ({ message = "Cargando..." }) => (
 // Componentes de página
 const Home = () => {
   const navigate = useNavigate();
-  const [showVideo, setShowVideo] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedPlato, setSelectedPlato] = useState(null);
   const sectionRefs = {
@@ -71,86 +59,39 @@ const Home = () => {
     promociones: useRef(null)
   };
 
-  // Platos de la semana para el carrusel 3D
-  const platosDelaSemana = [
-    {
-      id: 1,
-      title: "Nachos con Guacamole y Salsa",
-      description: "Totopos crujientes acompañados de guacamole fresco y salsa roja picante",
-      image: platoImage1,
-      color: "#e63946",
-      ingredientes: [
-        "Totopos de maíz crujientes",
-        "Guacamole fresco con aguacate",
-        "Salsa roja de tomate y chile",
-        "Cilantro y cebolla picada",
-        "Limón y sal de mar"
-      ],
-      precio: "9€",
-      categoria: "Botanas y Entradas"
-    },
-    {
-      id: 2,
-      title: "Enchiladas Rojas con Pollo",
-      description: "Tortillas bañadas en salsa roja de chiles guajillo con pollo deshebrado",
-      image: platoImage2,
-      color: "#457b9d",
-      ingredientes: [
-        "Tortillas de maíz suaves",
-        "Pollo deshebrado casero",
-        "Salsa roja de chile guajillo",
-        "Queso fresco desmoronado",
-        "Crema mexicana y cebolla"
-      ],
-      precio: "13€",
-      categoria: "Plato Principal"
-    },
-    {
-      id: 3,
-      title: "Tacos de Birria",
-      description: "Tacos dorados rellenos de carne de res guisada en consomé de chiles especiales",
-      image: platoImage3,
-      color: "#2a9d8f",
-      ingredientes: [
-        "Carne de res en birria tradicional",
-        "Tortillas de maíz doradas",
-        "Consomé de chiles guajillo y ancho",
-        "Queso Oaxaca derretido",
-        "Cebolla blanca y cilantro",
-        "Salsa verde y limones"
-      ],
-      precio: "15€",
-      categoria: "Especialidad Jaliciense"
-    }
-  ];
-
   const parallaxRef = useRef();
 
   useEffect(() => {
     const handleScroll = () => {
       if (parallaxRef.current) {
         const offset = window.pageYOffset;
-        parallaxRef.current.style.transform = `translateY(${offset * 0.4}px)`;
+        // Usar requestAnimationFrame para mejor rendimiento
+        requestAnimationFrame(() => {
+          if (parallaxRef.current) {
+            parallaxRef.current.style.transform = `translateY(${offset * 0.4}px)`;
+          }
+        });
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
-  const scrollToSection = (sectionId) => {
-    const section = sectionRefs[sectionId];
-    if (section && section.current) {
-      section.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+    // Throttle a 60fps
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, []);
 
   const handleReservaClick = () => {
     navigateAndScroll(navigate, '/reservaciones', 'reservation-form');
-  };
-
-  const openModal = (plato) => {
-    setSelectedPlato(plato);
-    setShowModal(true);
   };
 
   const closeModal = () => {
@@ -160,8 +101,8 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* HERO SECTION */}
-      <section ref={sectionRefs.hero} className="hero-section">
+      {/* HERO SECTION - OPTIMIZADO PARA LCP */}
+      <section ref={sectionRefs.hero} className="hero-section above-the-fold">
         <div className="hero-background" ref={parallaxRef}>
           <OptimizedImage 
             src={heroImage1} 
@@ -170,6 +111,15 @@ const Home = () => {
             loading="eager"
             className="critical hero-image"
             sizes="100vw"
+            width={1920}
+            height={1080}
+            fetchPriority="high"
+            style={{
+              aspectRatio: '16/9',
+              objectFit: 'cover',
+              width: '100%',
+              height: '100vh'
+            }}
           />
         </div>
         <div className="hero-overlay"></div>
@@ -192,65 +142,149 @@ const Home = () => {
         </div>
       </section>
 
-       {/* ABOUT US SECTION */}
-      <section ref={sectionRefs.about} className="home-section bg-mexican-pattern" id="about">
+       {/* ABOUT US SECTION RENOVADA - DISEÑO MODERNO */}
+      <ViewportObserver ref={sectionRefs.about} className="home-section about-section-animated" id="about" pauseAnimationsOutside={true}>
         <div className="about-mexican-container">
-          {/* Sombreros mexicanos decorativos */}
-          <div className="sombrero-row">
-            <div className="sombrero"></div>
-            <div className="sombrero"></div>
-            <div className="sombrero"></div>
-            <div className="sombrero"></div>
-            <div className="sombrero"></div>
-          </div>
           
-          {/* Título del restaurante */}
-          <div className="mexican-title">
-            <img src={logoElNopal} alt="El Nopal" />
+          {/* Header con título impactante */}
+          <div className="about-hero-header">
+            <h2 className="about-hero-title">Nuestra Historia</h2>
+            <p className="about-hero-subtitle">
+              Un viaje gastronómico que conecta tradiciones milenarias con sabores contemporáneos
+            </p>
           </div>
-          
-          {/* Texto de la imagen */}
-          <div className="mexican-text">
-            <p>Bienvenidos y muchas gracias por visitar nuestra casa. Estás a punto de abrir la puerta a un mundo infinito... como infinitas son las historias alrededor de nuestra mesa.</p>
+
+          {/* Layout en grid con diseño moderno */}
+          <div className="mexican-story-grid">
             
-            <p>Podemos contarte que nuestro restaurante lleva el nombre de la verdura más icónica de México. El nopal, al que en Andalucía se llama chumbera, aparece en nuestra bandera y es uno de los "súper alimentos" del futuro.</p>
-            
-            <p>Quizá no sepas que la comida mexicana es patrimonio cultural inmaterial de la humanidad. Al darle este reconocimiento, la UNESCO destacó las raíces milenarias, la manera de cultivar y preparar los alimentos, el sentido comunitario y, sobre todo, la innovación y creatividad de nuestro arte culinario y la forma de incorporar ingredientes y técnicas que han llegado de otras cocinas del mundo.</p>
-            
-            <p>Como en casi toda América, la base de la comida mexicana es el maíz. Cuando disfrutas de una buena película, seguramente tomas palomitas y otras delicias que vienen de México: vainilla, chocolate, chile...</p>
-            
-            <p>Pero vayamos al grano y hablemos de lo que puedes probar en nuestra casa. En El Nopal te ofrecemos un abanico de platillos de distintas regiones del país. Te proponemos una ruta nueva de sur a norte y de la costa a la montaña. Comienza por alguna de nuestras ensaladas, como la de Nopalitos, que te puede recordar a una pipirrana, pero elaborada con la hoja del nopal; o por la clásica César, inventada en Tijuana y reinterpretada por nuestra chef Rina.</p>
-            
-            <p>Te invitamos a descubrir el mole, esa exquisita salsa hecha a base de cacao, chile y almendras que nació en un convento de la ciudad de Puebla. Puedes continuar con nuestra gran variedad de tacos: los de cochinita pibil, típicos de la península de Yucatán; los de "birria" para remojar en su adictivo caldo; los de "pastor" de herencia libanesa, que combinan lo dulce y lo salado; los ricos tacos de langostinos o pulpo, tan de Cancún o los Cabos; o los sabrosos "taquitos dorados de pollo", que nos transportan a la cocina de nuestras abuelas.</p>
-            
-            <p>Podríamos seguir hablándote del pastel azteca, de los huaraches o de los ancestrales tamales, pero preferimos que te atrevas y experimentes por ti mismo esta comida tan nuestra que desde ahora también es tuya.</p>
+            {/* Panel izquierdo visual */}
+            <div className="mexican-visual-panel">
+              
+              {/* Tarjeta de patrimonio */}
+              <div className="mexican-heritage-card">
+                <span className="heritage-icon">🏛️</span>
+                <h3 className="heritage-title">Patrimonio UNESCO</h3>
+                <p className="heritage-subtitle">
+                  La gastronomía mexicana es reconocida como Patrimonio Cultural Inmaterial de la Humanidad
+                </p>
+                
+                {/* Stats mexicanas */}
+                <div className="mexican-stats">
+                  <div className="stat-item">
+                    <span className="stat-number">+2000</span>
+                    <span className="stat-label">Años</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">32</span>
+                    <span className="stat-label">Estados</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">68</span>
+                    <span className="stat-label">Lenguas</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">∞</span>
+                    <span className="stat-label">Sabores</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tarjeta del nopal */}
+              <div className="mexican-heritage-card">
+                <span className="heritage-icon">🌵</span>
+                <h3 className="heritage-title">El Nopal</h3>
+                <p className="heritage-subtitle">
+                  Símbolo nacional presente en nuestra bandera y uno de los súper alimentos del futuro
+                </p>
+              </div>
+            </div>
+
+            {/* Panel derecho con contenido narrativo */}
+            <div className="mexican-content-panel">
+              
+              {/* Bienvenida */}
+              <div className="mexican-story-section">
+                <span className="story-section-icon">🏠</span>
+                <h3 className="story-title">
+                  <span>🚪</span> Bienvenidos a Nuestra Casa
+                </h3>
+                <p className="story-content">
+                  Estás a punto de abrir la puerta a un mundo infinito... como infinitas son las 
+                  <span className="story-highlight">historias alrededor de nuestra mesa</span>. 
+                  Cada visitante se convierte en parte de nuestra familia, compartiendo no solo comida, 
+                  sino experiencias que perduran en el tiempo.
+                </p>
+              </div>
+
+              {/* Historia del maíz */}
+              <div className="mexican-story-section">
+                <span className="story-section-icon">🌽</span>
+                <h3 className="story-title">
+                  <span>🌽</span> La Base Sagrada: El Maíz
+                </h3>
+                <p className="story-content">
+                  Como en casi toda América, <span className="story-highlight">la base de la comida mexicana es el maíz</span>. 
+                  Cuando disfrutas palomitas en el cine, chocolate o vainilla, estás probando 
+                  <span className="story-highlight">regalos milenarios de México al mundo</span>.
+                </p>
+              </div>
+
+              {/* UNESCO */}
+              <div className="mexican-story-section">
+                <span className="story-section-icon">🏆</span>
+                <h3 className="story-title">
+                  <span>🏆</span> Reconocimiento Mundial
+                </h3>
+                <p className="story-content">
+                  La UNESCO destacó las <span className="story-highlight">raíces milenarias</span>, 
+                  la manera de cultivar y preparar los alimentos, el sentido comunitario y, sobre todo, 
+                  <span className="story-highlight">la innovación y creatividad</span> de nuestro arte culinario.
+                </p>
+              </div>
+
+              {/* Especialidades */}
+              <div className="mexican-story-section">
+                <span className="story-section-icon">🌮</span>
+                <h3 className="story-title">
+                  <span>🌮</span> Viaje Culinario por México
+                </h3>
+                <p className="story-content">
+                  Te proponemos una ruta de <span className="story-highlight">sur a norte y de la costa a la montaña</span>. 
+                  Desde el exquisito <span className="story-highlight">mole poblano</span> hasta los tacos de 
+                  <span className="story-highlight">cochinita pibil yucateca</span>, pasando por la 
+                  <span className="story-highlight">birria jaliciense</span> y los tacos al pastor de herencia libanesa.
+                </p>
+              </div>
+            </div>
           </div>
-          
-          {/* Estampas mexicanas */}
-          <div className="mexican-stamps">
-            <div className="stamp teal">
-              <div className="stamp-snowflake"></div>
-            </div>
-            <div className="stamp red">
-              <div className="stamp-star"></div>
-            </div>
-            <div className="stamp yellow">
-              <div className="stamp-snowflake"></div>
-            </div>
-            <div className="stamp green">
-              <div className="stamp-star"></div>
-            </div>
-            <div className="stamp teal">
-              <div className="stamp-snowflake"></div>
+
+          {/* Invitación final con sabores destacados */}
+          <div className="mexican-invitation">
+            <p className="invitation-text">
+              "Podríamos seguir hablándote del pastel azteca, de los huaraches o de los ancestrales tamales, 
+              pero preferimos que te atrevas y experimentes por ti mismo esta comida tan nuestra que desde ahora también es tuya."
+            </p>
+            
+            <div className="mexican-flavors">
+              <span className="flavor-badge">🫔 Mole</span>
+              <span className="flavor-badge">🌮 Tacos</span>
+              <span className="flavor-badge">🫘 Birria</span>
+              <span className="flavor-badge">🥙 Pastor</span>
+              <span className="flavor-badge">🦐 Langostinos</span>
+              <span className="flavor-badge">🐙 Pulpo</span>
+              <span className="flavor-badge">🔥 Tamales</span>
+              <span className="flavor-badge">🌵 Nopalitos</span>
             </div>
           </div>
+
         </div>
-      </section>
+      </ViewportObserver>
       
-      {/* Video promocional con efecto de revelación */}
-      <section id="video" ref={sectionRefs.video} className={`video-section-reveal`}>
+      {/* Video promocional con reproducción automática */}
+      
+      <ViewportObserver id="video" ref={sectionRefs.video} className={`video-section-simple`} pauseAnimationsOutside={true}>
         <div className={`promo-text`}>
-          <h2 className="text-gradient">Vive la experiencia El Nopal</h2>
+          <h2 className="text-black-title">Vive la experiencia El Nopal</h2>
           <p className="text-appear">
             En El Nopal nos esforzamos por ofrecerte la auténtica gastronomía mexicana, 
             en un ambiente único y acogedor. Nuestros chefs expertos preparan cada platos 
@@ -259,43 +293,23 @@ const Home = () => {
           </p>
         </div>
         
-        <div className="video-curtain">
-          <div className="curtain-left"></div>
-          <div className="curtain-right"></div>
-          <div className={`video-container-animated`}>
-            {!showVideo ? (
-              <div 
-                className="video-placeholder"
-                onClick={() => setShowVideo(true)}
-                style={{
-                  backgroundImage: `url(${heroImage2})` // Mantenemos solo este estilo inline porque es dinámico
-                }}
-              >
-                <div className="video-overlay"></div>
-                
-                <div className="video-content">
-                  <i className="fas fa-play-circle pulse-icon"></i>
-                  <span>Ver Video del Restaurante</span>
-                </div>
-              </div>
-            ) : (
-              <video 
-                className="video-player"
-                controls 
-                autoPlay
-                muted
-                loop
-              >
-                <source src={videoEjemplo} type="video/mp4" />
-                Tu navegador no soporta videos HTML5.
-              </video>
-            )}
-          </div>
+        <div className="video-container-simple">
+          <video 
+            className="video-player-auto"
+            controls 
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src={videoEjemplo} type="video/mp4" />
+            Tu navegador no soporta videos HTML5.
+          </video>
         </div>
-      </section>
+      </ViewportObserver>
 
       {/* Sección de Horario y Opiniones Combinada */}
-      <section className="home-combined-section">
+      <ViewportObserver className="home-combined-section" pauseAnimationsOutside={true}>
         <div className="combined-section-container">
           <div className="schedule-container">
             <h2 className="section-title">Nuestro Horario</h2>
@@ -348,7 +362,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </ViewportObserver>
 
       {/* Modal de Detalles del Plato */}
       {showModal && selectedPlato && (
@@ -387,56 +401,15 @@ const Home = () => {
   );
 };
 
-const Menu = () => {
-  const [categoria, setCategoria] = useState('Entradas');
-  
-  return (
-    <div className="page menu-page">
-      <div className="container">
-        <div className="menu-header">
-          <h1 className="text-gradient text-mexican">Nuestro Menú</h1>
-          <p>Descubre la auténtica cocina mexicana con ingredientes frescos y recetas tradicionales</p>
-        </div>
-        
-        <div className="menu-categories">
-          {Object.keys(menuData).map(cat => (
-            <button 
-              key={cat} 
-              className={`category-btn ${categoria === cat ? 'active' : ''}`}
-              onClick={() => setCategoria(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        
-        <div className="menu-items">
-          {menuData[categoria].map((item) => (
-            <div className="menu-item hover-lift" key={item.id}>
-              <div className="menu-item-image">
-                <OptimizedImage 
-                  src={item.imagen} 
-                  alt={item.nombre}
-                  loading="lazy"
-                  className="menu-image"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
-              <div className="menu-item-content">
-                <h3 className="menu-item-title">{item.nombre}</h3>
-                <p className="menu-item-description">{item.descripcion}</p>
-                <div className="menu-item-footer">
-                  <span className="menu-item-price">{item.precio}</span>
-                  <span className="menu-item-category">{categoria}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+// const Menu = () => { // Comentado porque no se usa actualmente
+//   const [categoria, setCategoria] = useState('Entradas');
+//   
+//   return (
+//     <div className="page menu-page">
+//       // ... contenido del componente Menu
+//     </div>
+//   );
+// };
 
 const Contact = () => {
   // Manejar scroll automático al cargar la página con hash
@@ -520,14 +493,14 @@ function App() {
                   <Route path="/admin/reservaciones" element={
                     <Suspense fallback={<LoadingFallback message="Cargando panel de administración..." />}>
                       <PrivateRoute
-                        component={AdminMainPanel}
+                        component={AdminReservationsPanel}
                         requireAdmin={true}
                       />
                     </Suspense>
                   } />
                   
                   {/* Ruta para administrar reseñas */}
-                  <Route path="/admin/opiniones" element={
+                  <Route path="/admin/reviews" element={
                     <Suspense fallback={<LoadingFallback message="Cargando panel de opiniones..." />}>
                       <PrivateRoute
                         component={AdminReviewsPanel}
