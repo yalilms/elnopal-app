@@ -130,17 +130,18 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Configuración optimizada de MongoDB
+// Configuración optimizada de MongoDB local
 const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
   maxPoolSize: 10, // Máximo de conexiones simultáneas
-  minPoolSize: 2, // Mínimo de conexiones en el pool
+  minPoolSize: 1, // Mínimo de conexiones en el pool
   maxIdleTimeMS: 30000, // Cerrar conexiones inactivas después de 30s
   bufferMaxEntries: 0, // Deshabilitar buffering de mongoose
   connectTimeoutMS: 10000, // Timeout de conexión
+  family: 4, // Usar IPv4
 };
 
 // Configuración de Mongoose para evitar warnings
@@ -150,16 +151,22 @@ mongoose.set('strictQuery', false);
 let mongoConnected = false;
 
 // Conexión a la base de datos (no bloquear el servidor si falla)
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions)
-.then(() => {
-  console.log('Conectado a MongoDB');
-  mongoConnected = true;
-})
-.catch(err => {
-  console.error('Error conectando a MongoDB:', err);
-  console.log('Servidor continuará sin MongoDB (modo de desarrollo)');
-  mongoConnected = false;
-});
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions);
+    console.log(`Conectado a MongoDB: ${conn.connection.host}`);
+    mongoConnected = true;
+  } catch (err) {
+    console.error('Error conectando a MongoDB:', err.message);
+    console.log('Servidor continuará sin MongoDB (modo de desarrollo)');
+    mongoConnected = false;
+    
+    // Reintentar conexión cada 30 segundos
+    setTimeout(connectDB, 30000);
+  }
+};
+
+connectDB();
 
 // Manejar errores de MongoDB después de la conexión inicial
 mongoose.connection.on('error', err => {
@@ -214,13 +221,23 @@ app.post('/api/contact', (req, res) => {
     });
   }
 
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ 
+      message: 'Formato de email inválido',
+      success: false
+    });
+  }
+
   // Simular éxito temporal
   res.status(201).json({
     success: true,
     message: 'Mensaje enviado exitosamente. Nos pondremos en contacto contigo pronto.',
     contact: {
       id: Date.now().toString(),
-      name: name,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       subject: req.body.subject || '',
       status: 'pending',
       createdAt: new Date()
@@ -232,10 +249,40 @@ app.post('/api/reservations', (req, res) => {
   console.log('Reserva recibida:', req.body);
   
   // Validaciones básicas
-  const { name, email, date, time, partySize } = req.body;
-  if (!name || !email || !date || !time || !partySize) {
+  const { name, email, phone, date, time, partySize } = req.body;
+  if (!name || !email || !phone || !date || !time || !partySize) {
     return res.status(400).json({ 
-      message: 'Faltan campos obligatorios',
+      message: 'Faltan campos obligatorios: nombre, email, teléfono, fecha, hora y número de comensales',
+      success: false
+    });
+  }
+
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ 
+      message: 'Formato de email inválido',
+      success: false
+    });
+  }
+
+  // Validar número de comensales
+  const partySizeNum = parseInt(partySize);
+  if (isNaN(partySizeNum) || partySizeNum < 1 || partySizeNum > 20) {
+    return res.status(400).json({ 
+      message: 'El número de comensales debe estar entre 1 y 20',
+      success: false
+    });
+  }
+
+  // Validar fecha (no debe ser en el pasado)
+  const reservationDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  if (reservationDate < today) {
+    return res.status(400).json({ 
+      message: 'No se pueden hacer reservas para fechas pasadas',
       success: false
     });
   }
@@ -246,10 +293,12 @@ app.post('/api/reservations', (req, res) => {
     message: 'Reserva creada exitosamente',
     reservation: {
       id: Date.now().toString(),
-      name: name,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone.trim(),
       date: date,
       time: time,
-      partySize: partySize,
+      partySize: partySizeNum,
       status: 'confirmed',
       createdAt: new Date()
     }
