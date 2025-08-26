@@ -130,17 +130,18 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Configuración optimizada de MongoDB
+// Configuración optimizada de MongoDB local
 const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
   maxPoolSize: 10, // Máximo de conexiones simultáneas
-  minPoolSize: 2, // Mínimo de conexiones en el pool
+  minPoolSize: 1, // Mínimo de conexiones en el pool
   maxIdleTimeMS: 30000, // Cerrar conexiones inactivas después de 30s
   bufferMaxEntries: 0, // Deshabilitar buffering de mongoose
   connectTimeoutMS: 10000, // Timeout de conexión
+  family: 4, // Usar IPv4
 };
 
 // Configuración de Mongoose para evitar warnings
