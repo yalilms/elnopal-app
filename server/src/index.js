@@ -150,16 +150,22 @@ mongoose.set('strictQuery', false);
 let mongoConnected = false;
 
 // Conexión a la base de datos (no bloquear el servidor si falla)
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions)
-.then(() => {
-  console.log('Conectado a MongoDB');
-  mongoConnected = true;
-})
-.catch(err => {
-  console.error('Error conectando a MongoDB:', err);
-  console.log('Servidor continuará sin MongoDB (modo de desarrollo)');
-  mongoConnected = false;
-});
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elnopal', mongoOptions);
+    console.log(`Conectado a MongoDB: ${conn.connection.host}`);
+    mongoConnected = true;
+  } catch (err) {
+    console.error('Error conectando a MongoDB:', err.message);
+    console.log('Servidor continuará sin MongoDB (modo de desarrollo)');
+    mongoConnected = false;
+    
+    // Reintentar conexión cada 30 segundos
+    setTimeout(connectDB, 30000);
+  }
+};
+
+connectDB();
 
 // Manejar errores de MongoDB después de la conexión inicial
 mongoose.connection.on('error', err => {
