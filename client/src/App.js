@@ -449,9 +449,17 @@ function App() {
       <ReservationProvider>
         <Router>
           <div className="App">
-            <Navbar />
+            {/* Skip Links para accesibilidad */}
+            <a href="#main-content" className="skip-link">
+              Saltar al contenido principal
+            </a>
+            <a href="#navigation" className="skip-link">
+              Ir a navegación
+            </a>
             
-            <main className="main-content">
+            <Navbar id="navigation" />
+            
+            <main id="main-content" className="main-content" role="main">
               <Suspense fallback={<LoadingFallback message="Cargando página..." />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
