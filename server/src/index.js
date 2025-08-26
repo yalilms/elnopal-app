@@ -221,13 +221,23 @@ app.post('/api/contact', (req, res) => {
     });
   }
 
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ 
+      message: 'Formato de email inválido',
+      success: false
+    });
+  }
+
   // Simular éxito temporal
   res.status(201).json({
     success: true,
     message: 'Mensaje enviado exitosamente. Nos pondremos en contacto contigo pronto.',
     contact: {
       id: Date.now().toString(),
-      name: name,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       subject: req.body.subject || '',
       status: 'pending',
       createdAt: new Date()
@@ -239,10 +249,40 @@ app.post('/api/reservations', (req, res) => {
   console.log('Reserva recibida:', req.body);
   
   // Validaciones básicas
-  const { name, email, date, time, partySize } = req.body;
-  if (!name || !email || !date || !time || !partySize) {
+  const { name, email, phone, date, time, partySize } = req.body;
+  if (!name || !email || !phone || !date || !time || !partySize) {
     return res.status(400).json({ 
-      message: 'Faltan campos obligatorios',
+      message: 'Faltan campos obligatorios: nombre, email, teléfono, fecha, hora y número de comensales',
+      success: false
+    });
+  }
+
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ 
+      message: 'Formato de email inválido',
+      success: false
+    });
+  }
+
+  // Validar número de comensales
+  const partySizeNum = parseInt(partySize);
+  if (isNaN(partySizeNum) || partySizeNum < 1 || partySizeNum > 20) {
+    return res.status(400).json({ 
+      message: 'El número de comensales debe estar entre 1 y 20',
+      success: false
+    });
+  }
+
+  // Validar fecha (no debe ser en el pasado)
+  const reservationDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  if (reservationDate < today) {
+    return res.status(400).json({ 
+      message: 'No se pueden hacer reservas para fechas pasadas',
       success: false
     });
   }
@@ -253,10 +293,12 @@ app.post('/api/reservations', (req, res) => {
     message: 'Reserva creada exitosamente',
     reservation: {
       id: Date.now().toString(),
-      name: name,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone.trim(),
       date: date,
       time: time,
-      partySize: partySize,
+      partySize: partySizeNum,
       status: 'confirmed',
       createdAt: new Date()
     }
