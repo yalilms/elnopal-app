@@ -2,7 +2,7 @@ module.exports = {
   apps: [{
     name: 'elnopal-backend',
     script: 'src/index.js',
-    cwd: '/var/www/elnopal/server',
+    cwd: '/var/www/elnopal-app/server',
     instances: 1,
     autorestart: true,
     watch: false,

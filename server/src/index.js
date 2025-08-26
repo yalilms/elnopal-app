@@ -16,6 +16,7 @@ const authRoutes = require('./routes/auth');
 const blacklistRoutes = require('./routes/blacklist');
 const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contact');
+const postRoutes = require('./routes/posts');
 
 const app = express();
 const server = http.createServer(app);
@@ -139,7 +140,6 @@ const mongoOptions = {
   maxPoolSize: 10, // Máximo de conexiones simultáneas
   minPoolSize: 1, // Mínimo de conexiones en el pool
   maxIdleTimeMS: 30000, // Cerrar conexiones inactivas después de 30s
-  bufferMaxEntries: 0, // Deshabilitar buffering de mongoose
   connectTimeoutMS: 10000, // Timeout de conexión
   family: 4, // Usar IPv4
 };
@@ -313,6 +313,7 @@ app.use('/api/auth', checkMongo, authRoutes);
 app.use('/api/blacklist', checkMongo, blacklistRoutes);
 app.use('/api/reviews', checkMongo, reviewRoutes);
 app.use('/api/contact', checkMongo, contactRoutes);
+app.use('/api/blog', checkMongo, postRoutes);
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {

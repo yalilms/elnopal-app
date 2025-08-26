@@ -7,28 +7,10 @@ echo "🚀 INICIANDO DESPLIEGUE OPTIMIZADO DE EL NOPAL"
 echo "=================================================="
 
 # Variables
-PROJECT_DIR="/var/www/elnopal"
+PROJECT_DIR="/var/www/elnopal-app"
 CLIENT_DIR="$PROJECT_DIR/client"
 SERVER_DIR="$PROJECT_DIR/server"
 
-# 1. Verificar que estamos en el directorio correcto
-echo "📁 Verificando directorio del proyecto..."
-if [ ! -d "$PROJECT_DIR" ]; then
-    echo "❌ Error: Directorio $PROJECT_DIR no encontrado"
-    exit 1
-fi
-
-cd $PROJECT_DIR
-echo "✅ Directorio correcto: $(pwd)"
-
-# 2. Git pull para obtener últimos cambios
-echo "📥 Obteniendo últimos cambios de Git..."
-git pull origin main
-if [ $? -ne 0 ]; then
-    echo "❌ Error en git pull"
-    exit 1
-fi
-echo "✅ Git pull completado"
 
 # 3. Actualizar dependencias del servidor
 echo "📦 Actualizando dependencias del servidor..."
@@ -108,7 +90,7 @@ echo "🔄 Reiniciando servicios..."
 
 # Reiniciar PM2
 cd $SERVER_DIR
-pm2 restart elnopal-server
+pm2 restart elnopal-backend
 if [ $? -ne 0 ]; then
     echo "❌ Error reiniciando PM2"
     exit 1
@@ -128,12 +110,12 @@ fi
 echo "🔍 Verificaciones finales..."
 
 # Verificar PM2
-PM2_STATUS=$(pm2 list | grep "elnopal-server" | grep "online")
+PM2_STATUS=$(pm2 list | grep "elnopal-backend" | grep "online")
 if [ -n "$PM2_STATUS" ]; then
     echo "✅ Backend corriendo correctamente"
 else
     echo "❌ Problema con el backend"
-    pm2 logs elnopal-server --lines 5
+    pm2 logs elnopal-backend --lines 5
 fi
 
 # Verificar Nginx
@@ -173,8 +155,8 @@ echo "   • Google PageSpeed: https://pagespeed.web.dev/report?url=https://elno
 echo "   • GTmetrix: https://gtmetrix.com/"
 echo ""
 echo "🔧 Si hay problemas:"
-echo "   • Ver logs: pm2 logs elnopal-server"
+echo "   • Ver logs: pm2 logs elnopal-backend"
 echo "   • Ver estado: systemctl status nginx"
-echo "   • Reiniciar: pm2 restart elnopal-server && systemctl restart nginx"
+echo "   • Reiniciar: pm2 restart elnopal-backend && systemctl restart nginx"
 
 exit 0 
