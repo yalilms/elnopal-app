@@ -20,6 +20,11 @@
 @import './styles/footer.css';
 @import './styles/menu-reservation.css';
 
+/* Importar nuevas mejoras */
+@import './styles/accessibility-improvements.css';
+@import './styles/responsive-improvements.css';
+@import './styles/ux-improvements.css';
+
 /* =============================================================================
    ESTILOS GLOBALES ADICIONALES
    ============================================================================= */

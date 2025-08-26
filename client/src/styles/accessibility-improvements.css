@@ -1,0 +1,369 @@
+/* =============================================================================
+   EL NOPAL - MEJORAS DE ACCESIBILIDAD Y CONTRASTE
+   Optimizaciones para garantizar WCAG AA compliance y mejor UX
+   ============================================================================= */
+
+/* === CONTRASTE MEJORADO === */
+:root {
+  /* Colores de texto optimizados para contraste AA */
+  --text-high-contrast: #000000;        /* Negro puro para máximo contraste */
+  --text-medium-contrast: #333333;      /* Gris muy oscuro */
+  --text-link: #0066cc;                 /* Azul accesible para enlaces */
+  --text-link-hover: #004499;           /* Azul más oscuro para hover */
+  --text-success: #0f5132;              /* Verde oscuro accesible */
+  --text-warning: #664d03;              /* Amarillo oscuro accesible */
+  --text-error: #842029;                /* Rojo oscuro accesible */
+  
+  /* Fondos con contraste garantizado */
+  --bg-accessible-light: #ffffff;
+  --bg-accessible-dark: #f8f9fa;
+  --bg-accessible-accent: #e3f2fd;
+  
+  /* Botones con contraste mejorado */
+  --btn-primary-bg: #0d47a1;            /* Azul oscuro */
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #424242;          /* Gris oscuro */
+  --btn-secondary-text: #ffffff;
+  --btn-success-bg: #1b5e20;           /* Verde oscuro */
+  --btn-success-text: #ffffff;
+  --btn-warning-bg: #e65100;           /* Naranja oscuro */
+  --btn-warning-text: #ffffff;
+  --btn-error-bg: #c62828;             /* Rojo oscuro */
+  --btn-error-text: #ffffff;
+}
+
+/* === MEJORAS DE ACCESIBILIDAD GENERAL === */
+
+/* Focus visible mejorado */
+*:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Eliminar outline por defecto pero mantener focus visible */
+*:focus {
+  outline: none;
+}
+
+/* Botones con mejor accesibilidad */
+.btn,
+button,
+[role="button"] {
+  min-height: 44px;                     /* Tamaño mínimo touch */
+  min-width: 44px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.btn:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  transform: scale(1.02);
+}
+
+/* Enlaces con mejor accesibilidad */
+a {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--text-link-hover);
+  text-decoration-thickness: 2px;
+}
+
+a:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  background-color: rgba(0, 95, 204, 0.1);
+  border-radius: 2px;
+}
+
+/* Formularios accesibles */
+.form-control,
+input,
+textarea,
+select {
+  min-height: 44px;
+  border: 2px solid #666666;           /* Contraste mejorado */
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 16px;                     /* Evitar zoom en iOS */
+  color: var(--text-high-contrast);
+  background-color: var(--bg-accessible-light);
+}
+
+.form-control:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #005fcc;
+  box-shadow: 0 0 0 3px rgba(0, 95, 204, 0.2);
+  outline: none;
+}
+
+.form-control:invalid,
+input:invalid,
+textarea:invalid,
+select:invalid {
+  border-color: var(--btn-error-bg);
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2);
+}
+
+/* Labels mejorados */
+label {
+  color: var(--text-high-contrast);
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.required::after {
+  content: " *";
+  color: var(--btn-error-bg);
+  font-weight: bold;
+}
+
+/* Mensajes de error accesibles */
+.error-message {
+  color: var(--text-error);
+  font-size: 14px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-weight: bold;
+}
+
+/* Mensajes de éxito accesibles */
+.success-message {
+  color: var(--text-success);
+  font-size: 14px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.success-message::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+/* === CONTRASTE ESPECÍFICO PARA COMPONENTES === */
+
+/* Navbar con mejor contraste */
+.navbar.scrolled .navbar-links a,
+.navbar.scrolled .navbar-desktop a {
+  color: var(--text-high-contrast);
+  font-weight: 600;
+}
+
+.navbar.scrolled .navbar-links a:hover,
+.navbar.scrolled .navbar-desktop a:hover {
+  color: #0066cc;
+  background-color: rgba(0, 102, 204, 0.1);
+}
+
+/* Tarjetas con contraste mejorado */
+.card,
+.card-mexican {
+  background-color: var(--bg-accessible-light);
+  border: 1px solid #cccccc;
+  color: var(--text-high-contrast);
+}
+
+.card-title,
+.card-mexican .card-title {
+  color: var(--text-high-contrast);
+  font-weight: 700;
+}
+
+.card-description,
+.card-mexican .card-description {
+  color: var(--text-medium-contrast);
+  font-weight: 500;
+}
+
+/* Botones mexicanos con mejor contraste */
+.btn-mexican {
+  background-color: #0d47a1;           /* Azul oscuro accesible */
+  color: #ffffff;
+  border: 2px solid #0d47a1;
+  font-weight: 600;
+}
+
+.btn-mexican:hover {
+  background-color: #ffffff;
+  color: #0d47a1;
+  border-color: #0d47a1;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 2px solid var(--btn-primary-bg);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 2px solid var(--btn-secondary-bg);
+}
+
+.btn-success {
+  background-color: var(--btn-success-bg);
+  color: var(--btn-success-text);
+  border: 2px solid var(--btn-success-bg);
+}
+
+.btn-warning {
+  background-color: var(--btn-warning-bg);
+  color: var(--btn-warning-text);
+  border: 2px solid var(--btn-warning-bg);
+}
+
+.btn-error,
+.btn-danger {
+  background-color: var(--btn-error-bg);
+  color: var(--btn-error-text);
+  border: 2px solid var(--btn-error-bg);
+}
+
+/* === MEJORAS ESPECÍFICAS PARA PANTALLAS PEQUEÑAS === */
+@media (max-width: 768px) {
+  /* Aumentar tamaños táctiles en móvil */
+  .btn,
+  button,
+  [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+  
+  .form-control,
+  input,
+  textarea,
+  select {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+  
+  /* Navegación móvil accesible */
+  .mobile-menu-toggle {
+    min-height: 48px;
+    min-width: 48px;
+    border: 2px solid transparent;
+  }
+  
+  .mobile-menu-toggle:focus-visible {
+    border-color: #005fcc;
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+  }
+}
+
+/* === MODO ALTO CONTRASTE === */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #000000;
+    --bg-primary: #ffffff;
+    --color-primary: #000080;
+    --color-secondary: #008000;
+    --color-accent: #ff8000;
+  }
+  
+  .btn {
+    border-width: 3px;
+    font-weight: 700;
+  }
+  
+  .card {
+    border-width: 2px;
+    border-color: #000000;
+  }
+}
+
+/* === REDUCCIÓN DE MOVIMIENTO === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .parallax-element {
+    transform: none !important;
+  }
+}
+
+/* === SKIP LINKS === */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+}
+
+/* === INDICADORES DE CARGA ACCESIBLES === */
+.loading-spinner {
+  position: relative;
+}
+
+.loading-spinner::before {
+  content: "Cargando...";
+  position: absolute;
+  left: -9999px;                       /* Screen reader only */
+}
+
+/* === MEJORAS PARA LECTORES DE PANTALLA === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: inherit;
+}
