@@ -1,0 +1,463 @@
+/* =============================================================================
+   EL NOPAL - MOBILE ENHANCED STYLES
+   Optimizaciones específicas para dispositivos móviles y touch
+   ============================================================================= */
+
+/* === BREAKPOINTS MODERNOS === */
+:root {
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* === OPTIMIZACIONES PARA TOUCH === */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.touch-friendly {
+  padding: var(--space-sm) var(--space-md);
+  margin: var(--space-2xs);
+}
+
+/* Área de toque expandida */
+.touch-expanded {
+  position: relative;
+}
+
+.touch-expanded::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+}
+
+/* === NAVEGACIÓN MÓVIL MEJORADA === */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transition: var(--transition-all);
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  box-shadow: var(--shadow-xl);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  left: 0;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-all);
+  z-index: 1000;
+}
+
+.mobile-menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-item {
+  display: block;
+  padding: var(--space-md) var(--space-lg);
+  color: var(--neutral-700);
+  text-decoration: none;
+  border-bottom: 1px solid var(--neutral-200);
+  transition: var(--transition-colors);
+  font-weight: 500;
+}
+
+.mobile-menu-item:hover,
+.mobile-menu-item:focus {
+  background-color: var(--mexican-turquoise-50);
+  color: var(--mexican-turquoise-700);
+}
+
+/* === FORMULARIOS MÓVILES === */
+.mobile-form {
+  padding: var(--space-md);
+}
+
+.mobile-form .form-input {
+  font-size: 16px; /* Evita zoom en iOS */
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+}
+
+.mobile-form .form-label {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-xs);
+}
+
+/* Botones móviles optimizados */
+.mobile-btn {
+  width: 100%;
+  padding: var(--space-md);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-xl);
+  font-weight: 600;
+}
+
+.mobile-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* === TARJETAS MÓVILES === */
+.mobile-card {
+  margin: var(--space-sm);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.mobile-card-content {
+  padding: var(--space-lg);
+}
+
+.mobile-card-actions {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--neutral-50);
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* === TABLAS RESPONSIVAS === */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .table-desktop {
+    display: none;
+  }
+  
+  .table-mobile {
+    display: block;
+  }
+  
+  .mobile-table-item {
+    background: white;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-sm);
+    padding: var(--space-md);
+  }
+  
+  .mobile-table-header {
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .mobile-table-value {
+    color: var(--neutral-700);
+    margin-bottom: var(--space-2xs);
+  }
+}
+
+/* === ESPACIADO MÓVIL === */
+@media (max-width: 640px) {
+  .container-modern {
+    padding: 0 var(--space-sm);
+  }
+  
+  .section-mobile {
+    padding: var(--space-xl) 0;
+  }
+  
+  .heading-mobile {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+}
+
+/* === HERO MÓVIL === */
+.hero-mobile {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.hero-mobile h1 {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--space-md);
+}
+
+.hero-mobile p {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-xl);
+  max-width: 500px;
+}
+
+/* === MODAL MÓVIL === */
+.modal-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1002;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-mobile.open {
+  transform: translateY(0);
+}
+
+.modal-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--neutral-200);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.modal-mobile-content {
+  padding: var(--space-lg);
+}
+
+/* === SWIPE GESTURES === */
+.swipeable {
+  touch-action: pan-x;
+  user-select: none;
+}
+
+.swipe-indicator {
+  width: 40px;
+  height: 4px;
+  background: var(--neutral-300);
+  border-radius: var(--radius-full);
+  margin: var(--space-sm) auto;
+}
+
+/* === OPTIMIZACIONES DE RENDIMIENTO MÓVIL === */
+.mobile-optimized {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mobile-smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* === FAB (Floating Action Button) === */
+.fab {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--mexican-turquoise-500);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xl);
+  cursor: pointer;
+  transition: var(--transition-all);
+  z-index: 100;
+}
+
+.fab:hover {
+  background: var(--mexican-turquoise-600);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+/* === NOTIFICACIONES MÓVILES === */
+.toast-mobile {
+  position: fixed;
+  top: var(--space-lg);
+  left: var(--space-md);
+  right: var(--space-md);
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-md);
+  z-index: 1003;
+  transform: translateY(-100px);
+  opacity: 0;
+  transition: var(--transition-all);
+}
+
+.toast-mobile.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* === LOADING MÓVIL === */
+.loading-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl);
+}
+
+.spinner-mobile {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--neutral-200);
+  border-top: 4px solid var(--mexican-turquoise-500);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === ACCESIBILIDAD MÓVIL === */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .modal-mobile,
+  .fab,
+  .toast-mobile {
+    transition: none;
+  }
+  
+  .spinner-mobile {
+    animation: none;
+  }
+}
+
+/* === LANDSCAPE MÓVIL === */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-mobile {
+    min-height: 100vh;
+    padding: var(--space-lg) var(--space-md);
+  }
+  
+  .hero-mobile h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .hero-mobile p {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-lg);
+  }
+}
+
+/* === DARK MODE SUPPORT === */
+@media (prefers-color-scheme: dark) {
+  .mobile-nav,
+  .mobile-menu {
+    background: rgba(23, 23, 23, 0.95);
+    color: white;
+  }
+  
+  .mobile-menu-item {
+    color: var(--neutral-300);
+    border-bottom-color: var(--neutral-700);
+  }
+  
+  .mobile-card {
+    background: var(--neutral-800);
+    color: white;
+  }
+}
+
+/* === UTILS ESPECÍFICOS PARA MÓVIL === */
+.hide-on-mobile {
+  display: block;
+}
+
+.show-on-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none;
+  }
+  
+  .show-on-mobile {
+    display: block;
+  }
+}
+
+/* === STICKY ELEMENTS MÓVIL === */
+.sticky-mobile {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+/* === SAFE AREAS PARA iOS === */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(var(--space-md), env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(var(--space-md), env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(var(--space-md), env(safe-area-inset-right));
+  }
+}
