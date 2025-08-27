@@ -20,6 +20,11 @@
 @import './styles/footer.css';
 @import './styles/menu-reservation.css';
 
+/* Importar nuevos estilos modernos */
+@import './styles/modern-design-system.css';
+@import './styles/mobile-enhanced.css';
+@import './styles/modern-animations.css';
+
 /* =============================================================================
    ESTILOS GLOBALES ADICIONALES
    ============================================================================= */
