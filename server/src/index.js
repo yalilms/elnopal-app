@@ -7,6 +7,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const path = require('path');
 
 // Rutas
 const reservationRoutes = require('./routes/reservations');
@@ -324,9 +325,23 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('API de El Nopal funcionando correctamente');
+// Ruta de prueba - comentada para permitir que el frontend maneje la ruta raíz
+// app.get('/', (req, res) => {
+//   res.send('API de El Nopal funcionando correctamente');
+// });
+
+// Servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, '../../client/build')));
+
+// Middleware para manejar rutas del frontend (SPA) - debe ir después de las rutas de la API
+app.get('*', (req, res, next) => {
+  // Si la ruta comienza con /api, continuar con las rutas de la API
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  
+  // Para todas las demás rutas, servir el index.html del frontend
+  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
 });
 
 // Middleware para rutas no encontradas
