@@ -1,305 +1,303 @@
-# 🌮 Restaurant Management System - El Nopal
+# 🌮 Sistema de Gestión de Restaurante - El Nopal
 
-> A full-stack restaurant management system with online reservations, admin panel, and real-time updates. Built for a Mexican restaurant but adaptable to any dining establishment.
+> Un sistema completo de gestión de restaurante con reservas online, panel administrativo y actualizaciones en tiempo real. Desarrollado para un restaurante mexicano pero adaptable a cualquier establecimiento gastronómico.
 
-[![React](https://img.shields.io/badge/React-17-blue.svg)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-brightgreen.svg)](https://www.mongodb.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 📋 Overview
+## 📋 Descripción General
 
-This project was developed as a complete solution for restaurant management, featuring customer-facing reservation system, administrative dashboard, and real-time communication capabilities. Although initially created for a Mexican restaurant, the system is designed to be easily customizable for any restaurant type.
+Este proyecto fue desarrollado como una solución completa para la gestión de restaurantes, con sistema de reservas orientado al cliente, panel administrativo y capacidades de comunicación en tiempo real. Aunque fue creado inicialmente para un restaurante mexicano, el sistema está diseñado para ser fácilmente personalizable para cualquier tipo de restaurante.
 
-**Project Status:** Completed but not deployed in production (client contract ended before deployment date).
+**Estado del Proyecto:** Completado pero no desplegado en producción (el contrato con el cliente finalizó antes de la fecha de despliegue).
 
-## ✨ Key Features
+## ✨ Características Principales
 
-### Customer Features
-- 📅 **Online Reservation System** - Interactive table selection with real-time availability
-- 🍽️ **Interactive Table Map** - Visual representation of restaurant layout
-- ⭐ **Review System** - Customers can leave reviews and ratings
-- 📱 **Responsive Design** - Fully optimized for mobile, tablet, and desktop
-- 📖 **Blog Section** - Restaurant news, recipes, and events
-- 📧 **Contact Form** - Direct communication with restaurant staff
+### Características para Clientes
+- 📅 **Sistema de Reservas Online** - Selección interactiva de mesas con disponibilidad en tiempo real
+- 🍽️ **Mapa Interactivo de Mesas** - Representación visual del diseño del restaurante
+- ⭐ **Sistema de Reseñas** - Los clientes pueden dejar reseñas y calificaciones
+- 📱 **Diseño Responsive** - Totalmente optimizado para móviles, tablets y escritorio
+- 📖 **Sección de Blog** - Noticias del restaurante, recetas y eventos
+- 📧 **Formulario de Contacto** - Comunicación directa con el personal del restaurante
 
-### Administrative Features
-- 🔐 **Secure Admin Dashboard** - JWT-based authentication with role-based access
-- 📊 **Reservation Management** - View, create, edit, and cancel reservations
-- 🚫 **Blacklist System** - Block problematic customers by email/phone
-- ✅ **Review Moderation** - Approve or reject customer reviews
-- 📈 **Real-time Updates** - Socket.io integration for live reservation updates
-- 📧 **Email Notifications** - Automatic confirmation emails via Nodemailer
+### Características Administrativas
+- 🔐 **Panel de Administración Seguro** - Autenticación basada en JWT con control de acceso por roles
+- 📊 **Gestión de Reservas** - Ver, crear, editar y cancelar reservas
+- 🚫 **Sistema de Lista Negra** - Bloquear clientes problemáticos por email/teléfono
+- ✅ **Moderación de Reseñas** - Aprobar o rechazar reseñas de clientes
+- 📈 **Actualizaciones en Tiempo Real** - Integración Socket.io para actualizaciones de reservas en vivo
+- 📧 **Notificaciones por Email** - Emails automáticos de confirmación vía Nodemailer
 
-## 🛠️ Technology Stack
+## 🛠️ Stack Tecnológico
 
 ### Frontend
-- **React 17** - UI library with hooks and context API
-- **React Router v5** - Client-side routing
-- **Socket.io Client** - Real-time communication
-- **Axios** - HTTP client for API requests
-- **React Toastify** - User notifications
-- **CSS3** - Custom styling with animations
+- **React 18** - Librería UI con hooks y Context API
+- **React Router v6** - Enrutamiento del lado del cliente
+- **Socket.io Client** - Comunicación en tiempo real
+- **Axios** - Cliente HTTP para peticiones a la API
+- **React Toastify** - Notificaciones al usuario
+- **CSS3** - Estilos personalizados con animaciones
 
 ### Backend
-- **Node.js & Express** - RESTful API server
-- **MongoDB & Mongoose** - Database and ODM
-- **JWT (jsonwebtoken)** - Authentication
-- **bcrypt** - Password hashing
-- **Socket.io** - WebSocket server for real-time features
-- **Nodemailer** - Email service integration
-- **Helmet** - Security headers
-- **express-rate-limit** - DDoS protection
+- **Node.js y Express** - Servidor API RESTful
+- **MongoDB y Mongoose** - Base de datos y ODM
+- **JWT (jsonwebtoken)** - Autenticación
+- **bcrypt** - Hashing de contraseñas
+- **Socket.io** - Servidor WebSocket para características en tiempo real
+- **Nodemailer** - Integración de servicio de email
+- **Helmet** - Headers de seguridad
+- **express-rate-limit** - Protección DDoS
 
-### Security Features
-- 🔒 Bcrypt password hashing (cost factor 12)
-- 🛡️ JWT token-based authentication
-- 🚦 Rate limiting (5 login attempts per 15 min)
-- 🔐 Helmet security headers (CSP, XSS protection)
-- ✅ Input validation and sanitization
-- 🔑 Environment-based configuration
+### Características de Seguridad
+- 🔒 Hashing de contraseñas con Bcrypt (factor de coste 12)
+- 🛡️ Autenticación basada en tokens JWT
+- 🚦 Rate limiting (5 intentos de login por 15 min)
+- 🔐 Headers de seguridad con Helmet (CSP, protección XSS)
+- ✅ Validación y sanitización de entradas
+- 🔑 Configuración basada en variables de entorno
 
-## 📁 Project Structure
+## 📁 Estructura del Proyecto
 
 ```
 restaurant-management/
-├── client/                 # React frontend
+├── client/                 # Frontend React
 │   ├── public/
 │   ├── src/
-│   │   ├── components/    # React components
-│   │   │   ├── admin/     # Admin panel components
-│   │   │   ├── common/    # Reusable components
-│   │   │   ├── layout/    # Layout components
+│   │   ├── components/    # Componentes React
+│   │   │   ├── admin/     # Componentes del panel de administración
+│   │   │   ├── common/    # Componentes reutilizables
+│   │   │   ├── layout/    # Componentes de diseño
 │   │   │   ├── reservation/
 │   │   │   ├── reviews/
 │   │   │   └── routes/
-│   │   ├── context/       # React Context providers
-│   │   ├── services/      # API service layer
-│   │   ├── utils/         # Utility functions
-│   │   └── App.js         # Main app component
+│   │   ├── context/       # Proveedores de React Context
+│   │   ├── services/      # Capa de servicios API
+│   │   ├── utils/         # Funciones de utilidad
+│   │   └── App.js         # Componente principal de la aplicación
 │   └── package.json
-├── server/                # Node.js backend
+├── server/                # Backend Node.js
 │   ├── src/
-│   │   ├── controllers/   # Business logic
-│   │   ├── middleware/    # Express middleware
-│   │   ├── models/        # Mongoose models
-│   │   ├── routes/        # API routes
-│   │   ├── services/      # Service layer
-│   │   └── index.js       # Server entry point
-│   ├── .env.example       # Environment variables template
+│   │   ├── controllers/   # Lógica de negocio
+│   │   ├── middleware/    # Middleware de Express
+│   │   ├── models/        # Modelos de Mongoose
+│   │   ├── routes/        # Rutas de la API
+│   │   ├── services/      # Capa de servicios
+│   │   └── index.js       # Punto de entrada del servidor
+│   ├── .env.example       # Plantilla de variables de entorno
 │   └── package.json
-├── create-admin.js        # Admin user creation script
-├── init-database.js       # Database initialization script
+├── create-admin.js        # Script de creación de usuario administrador
+├── init-database.js       # Script de inicialización de base de datos
 └── README.md
 ```
 
-## 🚀 Getting Started
+## 🚀 Comenzar
 
-### Prerequisites
+### Prerrequisitos
 
 - Node.js 18+
 - MongoDB 6.0+
-- npm or yarn
+- npm o yarn
 
-### Installation
+### Instalación
 
-1. **Clone the repository**
+1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/yourusername/restaurant-management.git
+   git clone https://github.com/tuusuario/restaurant-management.git
    cd restaurant-management
    ```
 
-2. **Install backend dependencies**
+2. **Instalar dependencias del backend**
    ```bash
    cd server
    npm install
    ```
 
-3. **Configure environment variables**
+3. **Configurar variables de entorno**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edita .env con tu configuración
    ```
 
-4. **Install frontend dependencies**
+4. **Instalar dependencias del frontend**
    ```bash
    cd ../client
    npm install
    ```
 
-### Configuration
+### Configuración
 
-Create a `.env` file in the `server` directory with the following variables:
+Crea un archivo `.env` en el directorio `server` con las siguientes variables:
 
 ```env
 NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/restaurant_db
-JWT_SECRET=your-super-secret-jwt-key
+JWT_SECRET=tu-clave-secreta-super-segura-jwt
 CORS_ORIGIN=http://localhost:3000
 
-# Email Configuration (Optional)
+# Configuración de Email (Opcional)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_USER=your-email@example.com
-EMAIL_PASS=your-gmail-app-password
+EMAIL_USER=tu-email@ejemplo.com
+EMAIL_PASS=tu-contraseña-de-aplicación-gmail
 ```
 
-### Running the Application
+### Ejecutar la Aplicación
 
-**Development Mode:**
+**Modo Desarrollo:**
 
 ```bash
-# Terminal 1 - Start backend server
+# Terminal 1 - Iniciar servidor backend
 cd server
 npm run dev
 
-# Terminal 2 - Start frontend
+# Terminal 2 - Iniciar frontend
 cd client
 npm start
 ```
 
-The frontend will be available at `http://localhost:3000` and the backend API at `http://localhost:5000`.
+El frontend estará disponible en `http://localhost:3000` y la API backend en `http://localhost:5000`.
 
-### Database Setup
+### Configuración de Base de Datos
 
-Initialize the database with sample data:
+Inicializar la base de datos con datos de ejemplo:
 
 ```bash
-# From project root
+# Desde la raíz del proyecto
 node init-database.js
 ```
 
-Create an admin user:
+Crear un usuario administrador:
 
 ```bash
-# Set environment variables first
-export ADMIN_EMAIL=admin@example.com
-export ADMIN_PASSWORD=YourSecurePassword123!
+# Establece primero las variables de entorno
+export ADMIN_EMAIL=admin@ejemplo.com
+export ADMIN_PASSWORD=TuContraseñaSegura123!
 
-# Run script
+# Ejecutar script
 node create-admin.js
 ```
 
-## 📚 API Documentation
+## 📚 Documentación de la API
 
-### Authentication Endpoints
+### Endpoints de Autenticación
 
-- `POST /api/auth/login` - Admin login
-- `POST /api/auth/register` - Register new admin (protected)
-- `GET /api/auth/me` - Get current user info
+- `POST /api/auth/login` - Login de administrador
+- `POST /api/auth/register` - Registrar nuevo administrador (protegido)
+- `GET /api/auth/me` - Obtener información del usuario actual
 
-### Reservation Endpoints
+### Endpoints de Reservas
 
-- `GET /api/reservations` - Get all reservations (admin)
-- `POST /api/reservations` - Create new reservation
-- `PUT /api/reservations/:id` - Update reservation (admin)
-- `DELETE /api/reservations/:id` - Cancel reservation (admin)
+- `GET /api/reservations` - Obtener todas las reservas (admin)
+- `POST /api/reservations` - Crear nueva reserva
+- `PUT /api/reservations/:id` - Actualizar reserva (admin)
+- `DELETE /api/reservations/:id` - Cancelar reserva (admin)
 
-### Table Endpoints
+### Endpoints de Mesas
 
-- `GET /api/tables` - Get all tables
-- `GET /api/tables/available` - Check table availability
-- `POST /api/tables` - Create table (admin)
+- `GET /api/tables` - Obtener todas las mesas
+- `GET /api/tables/available` - Verificar disponibilidad de mesas
+- `POST /api/tables` - Crear mesa (admin)
 
-### Review Endpoints
+### Endpoints de Reseñas
 
-- `GET /api/reviews` - Get approved reviews
-- `POST /api/reviews` - Submit new review
-- `PUT /api/reviews/:id/approve` - Approve review (admin)
-- `DELETE /api/reviews/:id` - Delete review (admin)
+- `GET /api/reviews` - Obtener reseñas aprobadas
+- `POST /api/reviews` - Enviar nueva reseña
+- `PUT /api/reviews/:id/approve` - Aprobar reseña (admin)
+- `DELETE /api/reviews/:id` - Eliminar reseña (admin)
 
-### Blacklist Endpoints
+### Endpoints de Lista Negra
 
-- `GET /api/blacklist` - Get blacklist (admin)
-- `POST /api/blacklist` - Add to blacklist (admin)
-- `DELETE /api/blacklist/:id` - Remove from blacklist (admin)
+- `GET /api/blacklist` - Obtener lista negra (admin)
+- `POST /api/blacklist` - Añadir a lista negra (admin)
+- `DELETE /api/blacklist/:id` - Eliminar de lista negra (admin)
 
-## 🎨 Features Deep Dive
+## 🎨 Profundización en Características
 
-### Real-time Reservation Updates
+### Actualizaciones de Reservas en Tiempo Real
 
-The system uses Socket.io to provide real-time updates to the admin panel when new reservations are made or cancelled. This ensures that multiple admin users always see the most current data.
+El sistema usa Socket.io para proporcionar actualizaciones en tiempo real al panel de administración cuando se realizan o cancelan nuevas reservas. Esto asegura que múltiples usuarios administradores siempre vean los datos más actuales.
 
-### Table Selection System
+### Sistema de Selección de Mesas
 
-Customers can visually select tables from an interactive map showing the restaurant layout. The system checks availability in real-time and provides immediate feedback.
+Los clientes pueden seleccionar visualmente las mesas desde un mapa interactivo que muestra el diseño del restaurante. El sistema verifica la disponibilidad en tiempo real y proporciona retroalimentación inmediata.
 
-### Email Notifications
+### Notificaciones por Email
 
-Automatic email confirmations are sent to customers upon successful reservation using Nodemailer with Gmail SMTP. Emails are customizable through templates.
+Se envían confirmaciones automáticas por email a los clientes tras una reserva exitosa usando Nodemailer con SMTP de Gmail. Los emails son personalizables mediante plantillas.
 
-### Performance Optimizations
+### Optimizaciones de Rendimiento
 
-- Lazy loading of components using React.lazy()
-- Image optimization with WebP format support
-- Viewport-based component rendering
-- Efficient MongoDB queries with proper indexing
+- Carga diferida de componentes usando React.lazy()
+- Optimización de imágenes con soporte de formato WebP
+- Renderizado de componentes basado en viewport
+- Consultas eficientes de MongoDB con indexación apropiada
 
-## 🔐 Security Considerations
+## 🔐 Consideraciones de Seguridad
 
-- All passwords are hashed using bcrypt with a cost factor of 12
-- JWT tokens expire after 24 hours
-- Rate limiting prevents brute force attacks
-- Input validation prevents injection attacks
-- CORS is configured for specific origins only
-- Security headers are set via Helmet.js
+- Todas las contraseñas se hashean usando bcrypt con un factor de coste de 12
+- Los tokens JWT expiran después de 24 horas
+- El rate limiting previene ataques de fuerza bruta
+- La validación de entradas previene ataques de inyección
+- CORS está configurado solo para orígenes específicos
+- Los headers de seguridad se establecen mediante Helmet.js
 
 ## 🧪 Testing
 
 ```bash
-# Backend tests
+# Tests del backend
 cd server
 npm test
 
-# Frontend tests
+# Tests del frontend
 cd client
 npm test
 ```
 
-## 📦 Building for Production
+## 📦 Construcción para Producción
 
 ```bash
-# Build frontend
+# Construir frontend
 cd client
 npm run build
 
-# The build folder can then be served by the backend
-# or deployed to a static hosting service
+# La carpeta build puede ser servida por el backend
+# o desplegada en un servicio de hosting estático
 ```
 
-## 🚀 Deployment
+## 🚀 Despliegue
 
-The backend serves the React build in production. Simply:
+El backend sirve el build de React en producción. Simplemente:
 
-1. Build the frontend with `npm run build`
-2. Set `NODE_ENV=production` in your server environment
-3. Start the backend with `npm start`
-4. The backend will serve the React app from `/client/build`
+1. Construye el frontend con `npm run build`
+2. Establece `NODE_ENV=production` en las variables de entorno del servidor
+3. Inicia el backend con `npm start`
+4. El backend servirá la aplicación React desde `/client/build`
 
-For detailed deployment instructions, see [CLAUDE.md](CLAUDE.md).
+## 🤝 Contribuir
 
-## 🤝 Contributing
+Este es un proyecto de portfolio y no se mantiene activamente. Sin embargo, siéntete libre de hacer fork y adaptarlo para tu propio uso.
 
-This is a portfolio project and is not actively maintained. However, feel free to fork and adapt for your own use.
+## 📝 Licencia
 
-## 📝 License
+Este proyecto está bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 👤 Autor
 
-## 👤 Author
+**Tu Nombre**
+- Portfolio: [tuwebsite.com](https://tuwebsite.com)
+- LinkedIn: [Tu LinkedIn](https://linkedin.com/in/tuperfil)
+- GitHub: [@yalilms](https://github.com/yalilms)
 
-**Your Name**
-- Portfolio: [yourwebsite.com](https://yourwebsite.com)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourusername](https://github.com/yourusername)
+## 🙏 Agradecimientos
 
-## 🙏 Acknowledgments
-
-- Originally developed for a Mexican restaurant concept
-- Designed with scalability and security in mind
-- Built as a demonstration of full-stack development capabilities
+- Desarrollado originalmente para un concepto de restaurante mexicano
+- Diseñado con escalabilidad y seguridad en mente
+- Construido como demostración de capacidades de desarrollo full-stack
 
 ---
 
-**Note:** This project was developed as a professional contract but was not deployed due to the client contract ending before the scheduled deployment date. It represents a complete, production-ready system that demonstrates full-stack development skills, security best practices, and modern web development patterns.
+**Nota:** Este proyecto fue desarrollado como un contrato profesional pero no fue desplegado debido a que el contrato del cliente finalizó antes de la fecha de despliegue programada. Representa un sistema completo y listo para producción que demuestra habilidades de desarrollo full-stack, mejores prácticas de seguridad y patrones modernos de desarrollo web.
