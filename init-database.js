@@ -61,17 +61,18 @@ mongoose.model('Post', postSchema);
 mongoose.model('Review', reviewSchema);
 
 // Datos iniciales
+// NOTA: Cambiar contraseñas antes de usar en producción
 const initialUsers = [
   {
-    name: 'Administrador',
-    email: 'admin@elnopal.es',
-    password: 'AdminElNopal2024!',
+    name: process.env.ADMIN_NAME || 'Administrador',
+    email: process.env.ADMIN_EMAIL || 'admin@example.com',
+    password: process.env.ADMIN_PASSWORD || 'ChangeThisPassword123!',
     role: 'admin'
   },
   {
-    name: 'Empleado',
-    email: 'staff@elnopal.es',
-    password: 'StaffElNopal2024!',
+    name: process.env.STAFF_NAME || 'Empleado',
+    email: process.env.STAFF_EMAIL || 'staff@example.com',
+    password: process.env.STAFF_PASSWORD || 'ChangeThisPassword123!',
     role: 'staff'
   }
 ];

@@ -36,8 +36,8 @@ app.use(express.json({
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      process.env.CORS_ORIGIN || 'http://elnopal.es',
-      'https://elnopal.es', // IONOS puede activar HTTPS automáticamente
+      process.env.CORS_ORIGIN || 'http://localhost:3000',
+      'https://localhost:3000',
       'http://localhost:3000',
       'http://127.0.0.1:3000'
     ];
@@ -60,8 +60,8 @@ const corsOptions = {
 const io = socketIo(server, {
   cors: {
     origin: [
-      process.env.CORS_ORIGIN || 'http://elnopal.es',
-      'https://elnopal.es' // IONOS puede activar HTTPS automáticamente
+      process.env.CORS_ORIGIN || 'http://localhost:3000',
+      'https://localhost:3000'
     ],
     methods: ['GET', 'POST']
   }

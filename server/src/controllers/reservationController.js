@@ -34,15 +34,29 @@ const autoCompleteReservations = async () => {
         });
       }
 
-      console.log(`Reserva ${reservation._id} completada automáticamente y mesa liberada`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Reserva ${reservation._id} completada automáticamente y mesa liberada`);
+      }
     }
   } catch (error) {
     console.error('Error en autoCompleteReservations:', error);
   }
 };
 
-// Iniciar el proceso de liberación automática
-setInterval(autoCompleteReservations, 60000); // Ejecutar cada minuto
+// Iniciar el proceso de liberación automática solo una vez
+// Note: In production, this should be moved to a cron job or scheduled task
+let autoCompleteInterval = null;
+if (!autoCompleteInterval) {
+  autoCompleteInterval = setInterval(autoCompleteReservations, 60000); // Ejecutar cada minuto
+}
+
+// Export function to clear interval (for testing/cleanup)
+exports.clearAutoCompleteInterval = () => {
+  if (autoCompleteInterval) {
+    clearInterval(autoCompleteInterval);
+    autoCompleteInterval = null;
+  }
+};
 
 // Función para asignar mesa automáticamente según las reglas del restaurante
 const getAutomaticTableAssignment = async (partySize, date, time) => {

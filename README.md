@@ -1,198 +1,249 @@
-# 🌮 El Nopal Restaurant - Sistema de Gestión
+# 🌮 Restaurant Management System - El Nopal
 
-Sistema completo de gestión para restaurante con reservas online, panel de administración y características de seguridad empresarial.
+> A full-stack restaurant management system with online reservations, admin panel, and real-time updates. Built for a Mexican restaurant but adaptable to any dining establishment.
 
-## 🚀 Características Principales
+[![React](https://img.shields.io/badge/React-17-blue.svg)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0-brightgreen.svg)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **🍽️ Reservas Online**: Sistema completo de reservas con validación en tiempo real
-- **👨‍💼 Panel de Administración**: Gestión completa de reservas, mesas y usuarios
-- **📧 Notificaciones por Email**: Confirmaciones automáticas vía Gmail
-- **📱 Responsive Design**: Optimizado para móviles y tablets
-- **🔒 Seguridad Empresarial**: Rate limiting, validación de entrada, autenticación robusta
-- **⚡ Tiempo Real**: Actualizaciones instantáneas con Socket.io
-- **🛡️ Lista Negra**: Sistema de gestión de clientes problemáticos
+## 📋 Overview
 
-## 🛡️ Características de Seguridad
+This project was developed as a complete solution for restaurant management, featuring customer-facing reservation system, administrative dashboard, and real-time communication capabilities. Although initially created for a Mexican restaurant, the system is designed to be easily customizable for any restaurant type.
 
-### 🔐 Autenticación y Autorización
-- JWT con secretos fuertes y expiración
-- Contraseñas hasheadas con bcrypt (cost factor 12)
-- Validación de fortaleza de contraseñas (8+ caracteres, mayúsculas, minúsculas, números, símbolos)
-- Bloqueo automático de cuentas tras 5 intentos fallidos
-- Roles de usuario con permisos granulares
+**Project Status:** Completed but not deployed in production (client contract ended before deployment date).
 
-### 🚫 Protección contra Ataques
-- **Rate Limiting**: 5 intentos de login por 15 minutos
-- **Rate Limiting General**: 100 requests por IP por 15 minutos
-- **Headers de Seguridad**: Helmet.js con CSP, XSS Protection, etc.
-- **Validación de Entrada**: Sanitización y validación estricta
-- **CORS Configurado**: Orígenes permitidos específicos
-- **Protección CSRF**: Headers y validación de origen
+## ✨ Key Features
 
-### 🔍 Monitoreo y Logs
-- Logs de producción sin información sensible
-- Manejo seguro de errores
-- Eliminación de tokens mock y credenciales de desarrollo
+### Customer Features
+- 📅 **Online Reservation System** - Interactive table selection with real-time availability
+- 🍽️ **Interactive Table Map** - Visual representation of restaurant layout
+- ⭐ **Review System** - Customers can leave reviews and ratings
+- 📱 **Responsive Design** - Fully optimized for mobile, tablet, and desktop
+- 📖 **Blog Section** - Restaurant news, recipes, and events
+- 📧 **Contact Form** - Direct communication with restaurant staff
 
-## 🏗️ Arquitectura
+### Administrative Features
+- 🔐 **Secure Admin Dashboard** - JWT-based authentication with role-based access
+- 📊 **Reservation Management** - View, create, edit, and cancel reservations
+- 🚫 **Blacklist System** - Block problematic customers by email/phone
+- ✅ **Review Moderation** - Approve or reject customer reviews
+- 📈 **Real-time Updates** - Socket.io integration for live reservation updates
+- 📧 **Email Notifications** - Automatic confirmation emails via Nodemailer
 
-```
-elnopal/
-├── client/          # Frontend React
-├── server/          # Backend Node.js/Express
-├── deploy-git.sh    # Script de despliegue automatizado
-└── docs/           # Documentación
-```
-
-## 🛠️ Tecnologías
+## 🛠️ Technology Stack
 
 ### Frontend
-- **React 18** con Hooks
-- **React Router** para navegación
-- **Axios** para API calls
-- **Socket.io Client** para tiempo real
-- **CSS3** con diseño responsive
+- **React 17** - UI library with hooks and context API
+- **React Router v5** - Client-side routing
+- **Socket.io Client** - Real-time communication
+- **Axios** - HTTP client for API requests
+- **React Toastify** - User notifications
+- **CSS3** - Custom styling with animations
 
 ### Backend
-- **Node.js** con Express
-- **MongoDB** con Mongoose
-- **JWT** para autenticación
-- **bcrypt** para hashing de contraseñas
-- **Nodemailer** para emails
-- **Socket.io** para tiempo real
-- **Helmet** para seguridad
-- **express-rate-limit** para protección
+- **Node.js & Express** - RESTful API server
+- **MongoDB & Mongoose** - Database and ODM
+- **JWT (jsonwebtoken)** - Authentication
+- **bcrypt** - Password hashing
+- **Socket.io** - WebSocket server for real-time features
+- **Nodemailer** - Email service integration
+- **Helmet** - Security headers
+- **express-rate-limit** - DDoS protection
 
-### Infraestructura
-- **Nginx** como proxy reverso
-- **PM2** para gestión de procesos
-- **Let's Encrypt** para SSL
-- **UFW** firewall configurado
+### Security Features
+- 🔒 Bcrypt password hashing (cost factor 12)
+- 🛡️ JWT token-based authentication
+- 🚦 Rate limiting (5 login attempts per 15 min)
+- 🔐 Helmet security headers (CSP, XSS protection)
+- ✅ Input validation and sanitization
+- 🔑 Environment-based configuration
 
-## 🚀 Despliegue Rápido
+## 📁 Project Structure
 
-### Opción 1: Despliegue Automatizado (Recomendado)
+```
+restaurant-management/
+├── client/                 # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/    # React components
+│   │   │   ├── admin/     # Admin panel components
+│   │   │   ├── common/    # Reusable components
+│   │   │   ├── layout/    # Layout components
+│   │   │   ├── reservation/
+│   │   │   ├── reviews/
+│   │   │   └── routes/
+│   │   ├── context/       # React Context providers
+│   │   ├── services/      # API service layer
+│   │   ├── utils/         # Utility functions
+│   │   └── App.js         # Main app component
+│   └── package.json
+├── server/                # Node.js backend
+│   ├── src/
+│   │   ├── controllers/   # Business logic
+│   │   ├── middleware/    # Express middleware
+│   │   ├── models/        # Mongoose models
+│   │   ├── routes/        # API routes
+│   │   ├── services/      # Service layer
+│   │   └── index.js       # Server entry point
+│   ├── .env.example       # Environment variables template
+│   └── package.json
+├── create-admin.js        # Admin user creation script
+├── init-database.js       # Database initialization script
+└── README.md
+```
 
-1. **Configurar repositorio Git**:
-   ```bash
-   git clone https://github.com/TU_USUARIO/elnopal.git
-   cd elnopal
-   ```
+## 🚀 Getting Started
 
-2. **Configurar script de despliegue**:
-   - Editar `deploy-git.sh`
-   - Cambiar `REPO_URL` por tu repositorio
+### Prerequisites
 
-3. **Ejecutar despliegue**:
-   ```bash
-   chmod +x deploy-git.sh
-   ./deploy-git.sh
-   ```
-
-### Credenciales por Defecto
-
-**Panel de Administración**: http://elnopal.es/admin (HTTPS automático por IONOS)
-- **Usuario**: `admin@elnopal.es`
-- **Contraseña**: `Admin123!Seguro`
-
-⚠️ **IMPORTANTE**: Cambiar estas credenciales inmediatamente después del primer login.
-
-## 📧 Configuración de Email
-
-1. **Configurar Gmail**:
-   - Habilitar verificación en 2 pasos
-   - Generar contraseña de aplicación
-   - Usar: `reservas@elnopal.es`
-
-2. **Variables de entorno**:
-   ```env
-   EMAIL_USER=reservas@elnopal.es
-   EMAIL_PASS=tu-app-password-de-16-caracteres
-   ```
-
-## 🔧 Configuración de Desarrollo
-
-### Prerrequisitos
 - Node.js 18+
 - MongoDB 6.0+
-- Git
+- npm or yarn
 
-### Instalación Local
+### Installation
 
-1. **Clonar repositorio**:
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/TU_USUARIO/elnopal.git
-   cd elnopal
+   git clone https://github.com/yourusername/restaurant-management.git
+   cd restaurant-management
    ```
 
-2. **Instalar dependencias**:
+2. **Install backend dependencies**
    ```bash
-   # Backend
    cd server
    npm install
-   
-   # Frontend
+   ```
+
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+4. **Install frontend dependencies**
+   ```bash
    cd ../client
    npm install
    ```
 
-3. **Configurar variables de entorno**:
-   ```bash
-   # En server/
-   cp .env.example .env
-   # Editar .env con tus configuraciones
-   ```
+### Configuration
 
-4. **Iniciar desarrollo**:
-   ```bash
-   # Terminal 1 - Backend
-   cd server
-   npm run dev
-   
-   # Terminal 2 - Frontend
-   cd client
-   npm start
-   ```
-
-## 📁 Estructura del Proyecto
-
-```
-elnopal/
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/     # Componentes React
-│   │   ├── context/        # Context API
-│   │   ├── services/       # API calls
-│   │   ├── styles/         # CSS
-│   │   └── utils/          # Utilidades
-│   └── package.json
-├── server/
-│   ├── src/
-│   │   ├── controllers/    # Lógica de negocio
-│   │   ├── middleware/     # Middleware personalizado
-│   │   ├── models/         # Modelos de MongoDB
-│   │   ├── routes/         # Rutas de API
-│   │   └── services/       # Servicios
-│   └── package.json
-├── deploy-git.sh          # Script de despliegue
-├── DESPLIEGUE-COMPLETO.md # Guía de despliegue
-└── README.md
-```
-
-## 🔒 Variables de Entorno de Producción
+Create a `.env` file in the `server` directory with the following variables:
 
 ```env
-NODE_ENV=production
+NODE_ENV=development
 PORT=5000
-MONGODB_URI=mongodb://elnopal_user:ElNopal_DB_2024_SuperSeguro!@localhost:27017/elnopal
-JWT_SECRET=ElNopal_JWT_SuperSecreto_2024_ProduccionSegura_CambiarEsteValor!
-CORS_ORIGIN=http://elnopal.es
+MONGODB_URI=mongodb://localhost:27017/restaurant_db
+JWT_SECRET=your-super-secret-jwt-key
+CORS_ORIGIN=http://localhost:3000
+
+# Email Configuration (Optional)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_USER=reservas@elnopal.es
-EMAIL_PASS=tu-app-password-de-gmail
+EMAIL_USER=your-email@example.com
+EMAIL_PASS=your-gmail-app-password
 ```
+
+### Running the Application
+
+**Development Mode:**
+
+```bash
+# Terminal 1 - Start backend server
+cd server
+npm run dev
+
+# Terminal 2 - Start frontend
+cd client
+npm start
+```
+
+The frontend will be available at `http://localhost:3000` and the backend API at `http://localhost:5000`.
+
+### Database Setup
+
+Initialize the database with sample data:
+
+```bash
+# From project root
+node init-database.js
+```
+
+Create an admin user:
+
+```bash
+# Set environment variables first
+export ADMIN_EMAIL=admin@example.com
+export ADMIN_PASSWORD=YourSecurePassword123!
+
+# Run script
+node create-admin.js
+```
+
+## 📚 API Documentation
+
+### Authentication Endpoints
+
+- `POST /api/auth/login` - Admin login
+- `POST /api/auth/register` - Register new admin (protected)
+- `GET /api/auth/me` - Get current user info
+
+### Reservation Endpoints
+
+- `GET /api/reservations` - Get all reservations (admin)
+- `POST /api/reservations` - Create new reservation
+- `PUT /api/reservations/:id` - Update reservation (admin)
+- `DELETE /api/reservations/:id` - Cancel reservation (admin)
+
+### Table Endpoints
+
+- `GET /api/tables` - Get all tables
+- `GET /api/tables/available` - Check table availability
+- `POST /api/tables` - Create table (admin)
+
+### Review Endpoints
+
+- `GET /api/reviews` - Get approved reviews
+- `POST /api/reviews` - Submit new review
+- `PUT /api/reviews/:id/approve` - Approve review (admin)
+- `DELETE /api/reviews/:id` - Delete review (admin)
+
+### Blacklist Endpoints
+
+- `GET /api/blacklist` - Get blacklist (admin)
+- `POST /api/blacklist` - Add to blacklist (admin)
+- `DELETE /api/blacklist/:id` - Remove from blacklist (admin)
+
+## 🎨 Features Deep Dive
+
+### Real-time Reservation Updates
+
+The system uses Socket.io to provide real-time updates to the admin panel when new reservations are made or cancelled. This ensures that multiple admin users always see the most current data.
+
+### Table Selection System
+
+Customers can visually select tables from an interactive map showing the restaurant layout. The system checks availability in real-time and provides immediate feedback.
+
+### Email Notifications
+
+Automatic email confirmations are sent to customers upon successful reservation using Nodemailer with Gmail SMTP. Emails are customizable through templates.
+
+### Performance Optimizations
+
+- Lazy loading of components using React.lazy()
+- Image optimization with WebP format support
+- Viewport-based component rendering
+- Efficient MongoDB queries with proper indexing
+
+## 🔐 Security Considerations
+
+- All passwords are hashed using bcrypt with a cost factor of 12
+- JWT tokens expire after 24 hours
+- Rate limiting prevents brute force attacks
+- Input validation prevents injection attacks
+- CORS is configured for specific origins only
+- Security headers are set via Helmet.js
 
 ## 🧪 Testing
 
@@ -206,105 +257,49 @@ cd client
 npm test
 ```
 
-## 📊 Monitoreo
+## 📦 Building for Production
 
-### Logs del Sistema
 ```bash
-# Logs de la aplicación
-pm2 logs elnopal-backend
+# Build frontend
+cd client
+npm run build
 
-# Logs de Nginx
-tail -f /var/log/nginx/elnopal_error.log
-
-# Logs del sistema
-journalctl -u mongod -f
+# The build folder can then be served by the backend
+# or deployed to a static hosting service
 ```
 
-### Comandos Útiles
-```bash
-# Estado de servicios
-pm2 status
-systemctl status nginx
-systemctl status mongod
+## 🚀 Deployment
 
-# Reiniciar servicios
-pm2 restart elnopal-backend
-systemctl restart nginx
-systemctl restart mongod
-```
+The backend serves the React build in production. Simply:
 
-## 🆘 Solución de Problemas
+1. Build the frontend with `npm run build`
+2. Set `NODE_ENV=production` in your server environment
+3. Start the backend with `npm start`
+4. The backend will serve the React app from `/client/build`
 
-### Error 502 Bad Gateway
-```bash
-pm2 restart elnopal-backend
-systemctl restart nginx
-```
+For detailed deployment instructions, see [CLAUDE.md](CLAUDE.md).
 
-### Problemas de Base de Datos
-```bash
-# Verificar conexión MongoDB
-mongo --eval "db.adminCommand('ismaster')"
+## 🤝 Contributing
 
-# Verificar autenticación
-mongo -u elnopal_user -p --authenticationDatabase elnopal
-```
+This is a portfolio project and is not actively maintained. However, feel free to fork and adapt for your own use.
 
-### Problemas de SSL
-```bash
-# Renovar certificados
-certbot renew --dry-run
-systemctl restart nginx
-```
+## 📝 License
 
-## 🔄 Actualizaciones
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Método Automático
-```bash
-./update-git.sh
-```
+## 👤 Author
 
-### Método Manual
-```bash
-git pull origin main
-cd client && npm run build
-pm2 restart elnopal-backend
-```
+**Your Name**
+- Portfolio: [yourwebsite.com](https://yourwebsite.com)
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- GitHub: [@yourusername](https://github.com/yourusername)
 
-## 📈 Rendimiento
+## 🙏 Acknowledgments
 
-- **Tiempo de carga**: < 2 segundos
-- **Optimización de imágenes**: WebP y lazy loading
-- **Compresión**: Gzip habilitado
-- **Cache**: Headers de cache optimizados
-- **CDN Ready**: Preparado para CDN
-
-## 🌍 SEO y Accesibilidad
-
-- **Meta tags** optimizados
-- **Schema.org** markup
-- **Accesibilidad WCAG 2.1**
-- **Responsive design**
-- **Progressive Web App** ready
-
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 👥 Contribuir
-
-1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
-
-## 📞 Soporte
-
-- **Email**: soporte@elnopal.es
-- **Documentación**: [DESPLIEGUE-COMPLETO.md](./DESPLIEGUE-COMPLETO.md)
-- **Issues**: GitHub Issues
+- Originally developed for a Mexican restaurant concept
+- Designed with scalability and security in mind
+- Built as a demonstration of full-stack development capabilities
 
 ---
 
-**¡El Nopal Restaurant - Gestión profesional con seguridad empresarial!** 🌮🔒
+**Note:** This project was developed as a professional contract but was not deployed due to the client contract ending before the scheduled deployment date. It represents a complete, production-ready system that demonstrates full-stack development skills, security best practices, and modern web development patterns.

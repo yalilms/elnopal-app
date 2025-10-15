@@ -1,9 +1,19 @@
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 const User = require('../models/User');
 
 // Registro de usuario
 exports.register = async (req, res) => {
   try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: 'Errores de validación',
+        errors: errors.array()
+      });
+    }
+
     const { name, email, password, role } = req.body;
 
     // Verificar si el usuario ya existe
@@ -52,6 +62,15 @@ exports.register = async (req, res) => {
 // Login de usuario
 exports.login = async (req, res) => {
   try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: 'Errores de validación',
+        errors: errors.array()
+      });
+    }
+
     const { email, password } = req.body;
 
     // Buscar usuario por email
@@ -93,6 +112,7 @@ exports.login = async (req, res) => {
       }
     );
   } catch (error) {
+    console.error('Error en el login:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
@@ -106,6 +126,7 @@ exports.getCurrentUser = async (req, res) => {
     }
     res.json(user);
   } catch (error) {
+    console.error('Error al obtener usuario actual:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 }; 

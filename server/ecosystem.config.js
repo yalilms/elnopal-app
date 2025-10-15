@@ -1,8 +1,7 @@
 module.exports = {
   apps: [{
-    name: 'elnopal-backend',
+    name: 'restaurant-backend',
     script: 'src/index.js',
-    cwd: '/var/www/elnopal-app/server',
     instances: 1,
     autorestart: true,
     watch: false,
@@ -11,9 +10,9 @@ module.exports = {
       NODE_ENV: 'production',
       PORT: 5000
     },
-    error_file: '/var/log/pm2/elnopal-backend-error.log',
-    out_file: '/var/log/pm2/elnopal-backend-out.log',
-    log_file: '/var/log/pm2/elnopal-backend.log',
+    error_file: 'logs/error.log',
+    out_file: 'logs/out.log',
+    log_file: 'logs/combined.log',
     time: true
   }]
 }; 

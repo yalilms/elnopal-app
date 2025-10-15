@@ -14,8 +14,14 @@ dist/
 .env.development.local
 .env.test.local
 .env.production.local
-*.env*
+.env.production
+server/.env
+server/.env.local
+server/.env.production
 server/.env.save
+!.env.example
+!server/.env.example
+!server/env.production.example
 
 # Logs
 npm-debug.log*
@@ -84,6 +90,7 @@ Thumbs.db
 # IDE files
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~

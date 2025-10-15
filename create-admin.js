@@ -56,10 +56,11 @@ const mongoOptions = {
 mongoose.set('strictQuery', false);
 
 // Datos del administrador
+// CAMBIAR ESTOS VALORES antes de ejecutar en producción
 const adminData = {
-  name: 'Administrador',
-  email: 'admin@elnopal.es',
-  password: 'AdminElNopal2024!',
+  name: process.env.ADMIN_NAME || 'Administrador',
+  email: process.env.ADMIN_EMAIL || 'admin@example.com',
+  password: process.env.ADMIN_PASSWORD || 'ChangeThisPassword123!',
   role: 'admin'
 };
 
